@@ -1,0 +1,172 @@
+
+
+<div class="page-content">
+  <div class="container-fluid">
+
+   
+
+    <!-- STAT CARDS ROW -->
+    <div class="row g-3 mb-1">
+
+      <div class="col-12 col-sm-6 col-md-4 col-lg-2" style="
+    padding: 10px 10px 10px 0px;
+"
+           *ngFor="let card of cards">
+        <div class="stat-card h-100" [ngClass]="card.colorClass">
+          <div class="card-left">
+            <p class="card-title">{{ card.title }}</p>
+            <h2 class="card-value">{{ card.value | number }}</h2>
+          </div>
+          <div class="card-right">
+            <i class="ti {{ card.icon }}"
+               [style.color]="card.iconColor"></i>
+            <i class="ti ti-eye eye-icon"
+               [style.color]="card.iconColor"></i>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- MIDDLE ROW: CHART + TODO -->
+    <div class="row g-2 mb-3">
+
+      <!-- Salary Chart — 8 cols -->
+      <div class="col-12 col-lg-8" style="
+    padding: 5px 0px 0px 0px;
+">
+        <div class="dash-card h-100">
+          <div class="section-header">
+            <h2 class="section-title">Salary Details</h2>
+            <select
+              class="year-select"
+              [(ngModel)]="selectedYear"
+              (change)="onYearChange(selectedYear)">
+              <option *ngFor="let y of yearOptions" [value]="y">
+                {{ y }}
+              </option>
+            </select>
+          </div>
+          <div class="chart-container">
+            <canvas #salaryChart></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- To Do Task — 4 cols -->
+      <div class="col-12 col-lg-4" style="
+    padding: 5px 10px 0px 10px;
+">
+        <div class="dash-card h-100">
+          <div class="todo-header">
+            <h2 class="todo-title">To Do Task</h2>
+            <div class="d-flex gap-1">
+              <button class="icon-btn-sm" title="Refresh">
+                <i class="ti ti-refresh"></i>
+              </button>
+              <button class="icon-btn-sm icon-btn-dark" title="View">
+                <i class="ti ti-layout-grid"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="todo-list">
+            <div class="todo-item" *ngFor="let item of todoItems">
+              <div class="bell-badge">
+                <i class="ti ti-bell"></i>
+              </div>
+              <div class="todo-content">
+                <p class="todo-msg">{{ item.message }}</p>
+                <p class="todo-time" *ngIf="item.time">{{ item.time }}</p>
+              </div>
+            </div>
+          </div>
+
+          <p class="view-more">+ View more</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- BOTTOM ROW: 4 CARDS -->
+    <div class="row g-2">
+
+      <!-- Holidays — 3 cols -->
+      <div class="col-12 col-sm-6 col-lg-3" style="
+    padding: 10px 20px 10px 0px;
+">
+        <div class="dash-card">
+          <div class="bottom-card-header">
+            <h3 class="bottom-card-title">Holidays</h3>
+            <i class="ti ti-calendar" style="color:#185FA5"></i>
+          </div>
+          <div class="bottom-item" *ngFor="let h of holidays">
+            <div>
+              <p class="item-name">{{ h.name }}</p>
+              <p class="item-sub">{{ h.date }}</p>
+            </div>
+            <span class="badge" [ngClass]="h.badgeClass">
+              {{ h.badgeLabel }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Anniversaries — 3 cols -->
+      <div class="col-12 col-sm-6 col-lg-3" style="
+    padding: 10px 20px 10px 0px;
+">
+        <div class="dash-card">
+          <div class="bottom-card-header">
+            <h3 class="bottom-card-title">Anniversaries</h3>
+            <i class="ti ti-star" style="color:#EF9F27"></i>
+          </div>
+          <div class="bottom-item" *ngFor="let a of anniversaries">
+            <div>
+              <p class="item-name">{{ a.name }}</p>
+              <p class="item-sub">{{ a.detail }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Birthdays — 3 cols -->
+      <div class="col-12 col-sm-6 col-lg-3" style="
+    padding: 10px 20px 10px 0px;
+">
+        <div class="dash-card">
+          <div class="bottom-card-header">
+            <h3 class="bottom-card-title">Birthdays</h3>
+            <i class="ti ti-cake" style="color:#D85A30"></i>
+          </div>
+          <div class="bottom-item" *ngFor="let b of birthdays">
+            <div>
+              <p class="item-name">{{ b.name }}</p>
+              <p class="item-sub">{{ b.date }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Leave — 3 cols -->
+      <div class="col-12 col-sm-6 col-lg-3" style="
+    padding: 10px 10px 10px 0px;
+">
+        <div class="dash-card">
+          <div class="bottom-card-header">
+            <h3 class="bottom-card-title">Leave</h3>
+            <i class="ti ti-door-exit" style="color:#D4537E"></i>
+          </div>
+          <div class="bottom-item" *ngFor="let l of leaveItems">
+            <p class="item-name">{{ l.type }}</p>
+            <span class="badge" [ngClass]="l.badgeClass">
+              {{ l.days }} days
+            </span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>

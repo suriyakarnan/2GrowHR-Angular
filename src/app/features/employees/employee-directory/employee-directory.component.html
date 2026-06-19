@@ -1,0 +1,93 @@
+<div class="page-content">
+    <div>
+        <div class="card">
+            <div class="card-header">
+                <div class="row align-items-center">
+                    <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4 col-xxl-4">
+                        <div class="d-flex align-items-center gap-2">
+                            <select selectpicker pickerPlaceholder="Search division..." [multiple]="true" [(ngModel)]="selectedDivision" >
+                                <option>Saneforce</option>
+                                <option>San Media</option>
+                                <option>2GrowHr</option>
+                            </select>
+                            <button type="button" class="btn btn-teal" routerLink="add">
+                                + ADD EMPLOYEE
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-6 col-lg-2 col-xl-2 col-xxl-2">
+                        <input
+                            dateRangePicker
+                            [(ngModel)]="selectedDateRange"
+                            placeholder="Select date range" />
+
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xxl-6 text-end">
+                        <div class="d-flex align-items-center justify-content-end gap-2">
+                            <button type="button" class="btn btn-light btn-icon">
+                                <i class="fa fa-ellipsis-h"></i>
+                            </button>
+                            <button type="button" class="btn btn-light btn-filter">
+                                <span class="filter-badge">0</span>
+                                <img src="/Assets/NewLoginPage/img/filter_icon.svg" alt=""> Filter
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="py-1" style="background: #F0F0F8;">
+            </div>
+
+            <div class="card-body">
+                
+                <div class="row">
+                    <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12">
+                        <div class="table-responsive">
+                            <table class="table employee-table" appDatatable [rowsPerPage]="10">
+                                <thead>
+                                    <tr>
+                                        <th>Employee ID<i class="fa fa-sort"></i></th>
+                                        <th>Employee Name<i class="fa fa-sort"></i></th>
+                                        <th>Employee Profile<i class="fa fa-sort"></i></th>
+                                        <th>Employee Reports<i class="fa fa-sort"></i></th>
+                                        <th>Finance<i class="fa fa-sort"></i></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let emp of employees">
+                                        <td [class.text-danger]="emp.deactivated">{{ emp.id }}</td>
+                                        <td [class.text-danger]="emp.deactivated">{{ emp.name }}</td>
+                                        <td class="d-flex align-items-center">
+                                            <a href="javascript:void(0)" class="link-view">
+                                                <i class="bi bi-eye"></i> <span>View</span>
+                                            </a>
+                                            <a *ngIf="emp.deactivated" href="javascript:void(0)" class="link-deactivate">
+                                                <i class="bi bi-person-x f-20 fw-5"></i> Deactivate
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a href="javascript:void(0)" class="link-view">
+                                                <i class="bi bi-eye"></i> View
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a href="javascript:void(0)" class="link-view">
+                                                <i class="bi bi-eye"></i> View
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr *ngIf="employees.length === 0">
+                                        <td colspan="5" class="text-center no-data">No data available</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                
+            </div>
+        </div>
+    </div>
+</div>

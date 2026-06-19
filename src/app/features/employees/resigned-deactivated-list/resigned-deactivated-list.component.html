@@ -1,0 +1,91 @@
+<div class="page-content">
+  <div class="container-fluid">
+    <ul class="nav nav-tabs employee-tabs">
+      <li class="nav-item">
+        <a class="nav-link" routerLink="overview" routerLinkActive="active">Overview</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="detailed-view" routerLinkActive="active">Detailed View</a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Overview UI — shows only when NOT on detailed-view -->
+  <div *ngIf="!isDetailedView">
+    <div class="card">
+      <div class="card-header">
+        <div class="row align-items-center">
+          <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12">
+            <div class="col-12 col-sm-6 col-md-6 col-lg-6 col-xl-3 col-xxl-3">
+              <div class="d-flex align-items-center gap-2">
+                <select selectpicker [(ngModel)]="selectedDivision">
+                                <option value="">---All Division----</option>       <!-- ✅ value="" for default -->
+                                <option>Saneforce</option>
+                                <option>San Media</option>
+                                <option>2GrowHr</option>
+                            </select>
+              </div>
+            </div>
+            <div class="col-12 col-sm-6 col-md-6 col-lg-6 col-xl-9 col-xxl-9"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="py-1" style="background: #F0F0F8;"></div>
+
+      <div class="card-body">
+        <div class="row">
+          <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12">
+            <div class="table-responsive">
+              <table class="table employee-table" appDatatable [rowsPerPage]="10">
+                <thead>
+                  <tr>
+                    <th>Employee Id <i class="fa fa-sort"></i></th>
+                    <th>Employee Name <i class="fa fa-sort"></i></th>
+                    <th>Employee Profile <i class="fa fa-sort"></i></th>
+                    <th>Employee Reports <i class="fa fa-sort"></i></th>
+                    <th>Status <i class="fa fa-sort"></i></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let emp of employees">
+                    <td [class.text-danger]="emp.deactivated">{{ emp.id }}</td>
+                    <td [class.text-danger]="emp.deactivated">{{ emp.name }}</td>
+                    <td class="d-flex align-items-center">
+                      <a href="javascript:void(0)" class="link-view">
+                        <i class="bi bi-eye"></i> <span>View</span>
+                      </a>
+                      <a *ngIf="emp.deactivated" href="javascript:void(0)" class="link-deactivate">
+                        <i class="bi bi-person-x f-20 fw-5"></i> Deactivate
+                      </a>
+                    </td>
+                    <td>
+                      <a href="javascript:void(0)" class="link-view">
+                        <i class="bi bi-eye"></i> View
+                      </a>
+                    </td>
+                    <td>
+                      <span class="status-badge" [ngClass]="{
+                        'status-deactivate': emp.status === 'Deactivate',
+                        'status-disability': emp.status === 'By Disability',
+                        'status-regular': emp.status === 'Regular',
+                        'status-abscond': emp.status === 'Abscond',
+                        'status-duplicate': emp.status === 'Duplicate User'
+                      }">{{ emp.status }}</span>
+                    </td>
+                  </tr>
+                  <tr *ngIf="employees.length === 0">
+                    <td colspan="5" class="text-center no-data">No data available</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Detailed View loads here only when that tab is active -->
+  <router-outlet></router-outlet>
+</div>

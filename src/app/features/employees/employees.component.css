@@ -1,0 +1,62 @@
+/* Tabs Container */
+
+.employee-tabs{
+
+    border-bottom: 1px solid #6272b1;
+    margin-bottom: 20px;
+
+}
+
+/* Remove Bootstrap default */
+
+.employee-tabs .nav-link{
+    border:none !important;
+    background:none !important;
+    color: #7c7e86;
+    font-size:15px;
+    font-weight: 500;
+    padding: 5px 18px 14px 18px;
+    position:relative;
+    transition:all .3s ease;
+    white-space:nowrap;
+}
+
+/* Hover */
+
+.employee-tabs .nav-link:hover{
+    color:#405189;
+}
+
+/* Active Tab */
+
+.employee-tabs .nav-link.active{
+    color:#405189 !important;
+    font-weight: 600;
+    background:transparent !important;
+}
+
+/* Animated Underline */
+
+.employee-tabs .nav-link::after{
+    content:'';
+    position:absolute;
+    left:0;
+    bottom:-1px;
+    width:0;
+     height:4px;
+    border-radius:50px;
+    border-top: 2px solid #405189;
+    transition:width .35s ease;
+}
+
+/* Active Underline */
+
+.employee-tabs .nav-link.active::after{
+    width:100%;
+}
+
+/* Optional smooth effect */
+
+.employee-tabs .nav-item{
+    position:relative;
+}

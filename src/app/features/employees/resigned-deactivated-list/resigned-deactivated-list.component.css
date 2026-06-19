@@ -1,0 +1,157 @@
+.page-content {
+    padding: 0px 0;
+    background-color: #f1f3f9;
+}
+
+.employee-tabs{
+    border-bottom: 1px thin #a3acd1;
+    margin-bottom: 20px;
+}
+
+/* Remove Bootstrap default */
+
+.employee-tabs .nav-link{
+    border:none !important;
+    background:none !important;
+    color: #7c7e86;
+    font-size:15px;
+    font-weight: 500;
+    padding: 5px 18px 14px 18px;
+    position:relative;
+    transition:all .3s ease;
+    white-space:nowrap;
+    border-top: 2px solid #405189;
+}
+
+/* Hover */
+
+.employee-tabs .nav-link:hover{
+    color:#405189;
+}
+
+/* Active Tab */
+
+.employee-tabs .nav-link.active{
+    color:#405189 !important;
+    font-weight: 600;
+    background:transparent !important;
+}
+
+/* Animated Underline */
+
+.employee-tabs .nav-link::after{
+    content:'';
+    position:absolute;
+    left:0;
+    bottom:-1px;
+    width:0;
+    height:4px;
+    border-radius: 50px;
+    border-top: 3px solid #405189;
+    transition:width .35s ease;
+}
+
+/* Active Underline */
+
+.employee-tabs .nav-link.active::after{
+    width:100%;
+}
+
+/* Optional smooth effect */
+
+.employee-tabs .nav-item{
+    position:relative;
+}
+/* Card */
+.card {
+    border: none;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.card-header {
+    background: #fff;
+    border-bottom: 1px solid #eef0f5;
+    padding: 16px;
+    border-radius: 6px 6px 0 0;
+}
+
+.card-body {
+    padding: 16px;
+}
+
+/* Add employee button */
+.btn-teal {
+    background-color: #16a596;
+    border-color: #16a596;
+    color: #fff;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.3px;
+    padding: 8px 16px;
+    border-radius: 4px;
+    white-space: nowrap;
+}
+
+.btn-teal:hover {
+    background-color: #128c80;
+}
+
+/* Icon / filter buttons */
+.btn-icon {
+    background-color: #EFF1F9;
+    color: #405189;
+    font-weight: 500;
+    padding: .5rem .9rem;
+}
+
+.btn-filter {
+    background: #EFF1F9;
+    border: 1px solid #dee2e6;
+    color: #405189;
+    font-weight: 500;
+    border-radius: 6px;
+    padding: 8px 14px;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.filter-icon {
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
+}
+
+.filter-badge {
+    position: absolute;
+    top: -11px;
+    right: 3px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #405189;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #fff;
+}
+
+/* Show entries */
+.show-label {
+    font-size: 14px;
+    color: #6c757d;
+}
+
+.entries-select {
+    width: auto;
+    min-width: 64px;
+    font-size: 14px;
+    padding: 6px 10px;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+}

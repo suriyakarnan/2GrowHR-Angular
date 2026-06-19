@@ -1,0 +1,58 @@
+<div class="card">
+  <div class="card-header">
+    <div class="row align-items-center">
+      <div class="col-12 col-sm-6 col-md-6 col-lg-3 col-xl-3 col-xxl-3">
+            <select selectpicker pickerPlaceholder="Search division..." [(ngModel)]="selectedDivision" >
+               <option value="">---All Division----</option>       <!-- ✅ value="" for default -->
+               <option>Saneforce</option>
+               <option>San Media</option>
+               <option>2GrowHr</option>                                                                                          
+            </select>
+      </div>
+      <div class="col-12 col-sm-6 col-md-6 col-lg-3 col-xl-3 col-xxl-3">
+        
+      </div>
+      <div class="col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xxl-6 text-end">
+        <button type="button" class="btn btn-light btn-icon">
+          <i class="fa fa-ellipsis-h"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table detailed-view-table" appDatatable [rowsPerPage]="10">
+        <thead>
+          <tr>
+            <th>Sl.No <i class="fa fa-sort"></i></th>
+            <th>Employee Code <i class="fa fa-sort"></i></th>
+            <th>Employee Id <i class="fa fa-sort"></i></th>
+            <th>Employee Name <i class="fa fa-sort"></i></th>
+            <th>Gender <i class="fa fa-sort"></i></th>
+            <th>MARITAL <i class="fa fa-sort"></i></th>
+            <th>DOJ <i class="fa fa-sort"></i></th>
+            <th>DOC <i class="fa fa-sort"></i></th>
+            <th>Reporting To <i class="fa fa-sort"></i></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let emp of employees">
+            <td>{{ emp.slNo }}</td>
+            <td>{{ emp.employeeCode }}</td>
+            <td>{{ emp.employeeId }}</td>
+            <td>{{ emp.employeeName }}</td>
+            <td>{{ emp.gender }}</td>
+            <td>{{ emp.marital }}</td>
+            <td>{{ emp.doj }}</td>
+            <td>{{ emp.doc }}</td>
+            <td>{{ emp.reportingTo }}</td>
+          </tr>
+          <tr *ngIf="employees.length === 0">
+            <td colspan="9" class="text-center no-data">No data available</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

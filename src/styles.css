@@ -1,1 +1,805 @@
-/* You can add global styles to this file, and also import other style files */
+/* === Top bar: Show entries + Search === */
+.app-dt-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  font-size: 14px;
+  color: #6c757d;
+}
+
+.app-dt-show {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.app-dt-entries-select {
+  padding: 8px 6px;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #141516;
+  background-color: #ffffff;
+}
+
+.app-dt-search {
+  display: flex;
+}
+
+.app-dt-search-input {
+  padding: 6px 12px;
+  border: 0.5px solid grey;
+  border-radius: 4px;
+  font-size: 14px;
+  width: 220px;
+  color: #1883b8;
+  background: #ffffff;
+}
+
+.app-dt-search-input:focus {
+  outline: none;
+  border-color: #80bdff;
+  box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.1);
+}
+
+/* === Table base look (font/color confirmed from resigned-deactivated-list) === */
+table.app-datatable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table.app-datatable thead th {
+  color: #1d2124;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 15px;
+  text-align: left;
+  padding: 12px 8px;
+  border-bottom: 1px solid #eef0f5;
+  border-top: none;
+  white-space: nowrap;
+  background-color: #f0f0f6;
+}
+
+table.app-datatable thead th i.fa-sort {
+  color: #ced4da;
+  font-size: 12px;
+  margin-left: 6px;
+}
+
+table.app-datatable tbody td {
+  padding: 12px 8px;
+  font-size: 15px;
+  color: #2e3236;
+  border-bottom: 1px solid #e1e2e4;
+  vertical-align: middle;
+  font-weight: 400;
+}
+
+table.app-datatable tbody td:first-child {
+
+  font-weight: 600;
+}
+
+table.app-datatable tbody tr:hover {
+  background-color: #fafbfd;
+}
+
+/* === Deactivated row styling (red text) === */
+table.app-datatable tbody td.text-danger,
+table.app-datatable tbody td .text-danger,
+table.app-datatable tbody td.text-danger * {
+  color: #e85656 !important;
+}
+
+/* === View / Deactivate action links === */
+table.app-datatable .link-view {
+  color: #2f7ed8;
+  text-decoration: none;
+  font-size: 13px;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+}
+
+table.app-datatable .link-view i {
+  margin-right: 4px;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+table.app-datatable .link-view:hover {
+  text-decoration: underline;
+}
+
+table.app-datatable .link-deactivate {
+  color: #e85656;
+  text-decoration: none;
+  font-size: 13px;
+  white-space: nowrap;
+  margin-left: 12px;
+}
+
+table.app-datatable .link-deactivate i {
+  margin-right: 4px;
+  font-size: 19px;
+  font-weight: 600;
+}
+
+table.app-datatable .link-deactivate:hover {
+  text-decoration: underline;
+}
+
+/* === Status badges (reusable across any table) === */
+.status-badge {
+  display: inline-block;
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+.status-deactivate {
+  color: #16a596;
+  border-color: #16a596;
+  background-color: #e7f7f5;
+  border-radius: 5px;
+  font-size: 11px;
+  font-weight: bold;
+  padding: 4px 10px;
+}
+
+.status-disability {
+  color: #16a596;
+  border-color: #16a596;
+  background-color: #e7f7f5;
+  border-radius: 5px;
+  font-size: 11px;
+  font-weight: bold;
+  padding: 4px 10px;
+}
+
+.status-regular {
+  color: #8a7fd6;
+  border-color: #8a7fd6;
+  background-color: #f3f3f9;
+  border-radius: 5px;
+  font-size: 11px;
+  font-weight: bold;
+  padding: 4px 10px;
+}
+
+.status-abscond {
+  color: #e85656;
+  border-color: #e85656;
+  background-color: #fff;
+  border-radius: 5px;
+  font-size: 11px;
+  font-weight: bold;
+  padding: 4px 10px;
+}
+
+.status-duplicate {
+  color: #e8a83b;
+  border-color: #e8a83b;
+  background-color: #fef8ed;
+  border-radius: 5px;
+  font-size: 11px;
+  font-weight: bold;
+  padding: 4px 10px;
+}
+
+.no-data {
+  padding: 24px;
+  color: #6c757d;
+}
+
+/* === Bottom bar: Showing text + Pagination === */
+.app-dt-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 16px;
+  font-size: 14px;
+  color: #6c757d;
+}
+
+.app-dt-showing-text {
+  font-size: 14px;
+  color: #6c757d;
+}
+
+.app-dt-pagination {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 4px;
+}
+
+.app-dt-page-item {
+  display: inline-block;
+}
+
+.app-dt-page-link {
+  display: inline-block;
+  padding: 6px 12px;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #495057;
+  text-decoration: none;
+  background-color: #fff;
+  min-width: 36px;
+  text-align: center;
+}
+
+.app-dt-page-link:hover {
+  background-color: #f1f3f9;
+}
+
+.app-dt-page-item.active .app-dt-page-link {
+  background-color: #2c3e91;
+  color: #fff;
+  border-color: #2c3e91;
+}
+
+.app-dt-page-item.disabled .app-dt-page-link {
+  color: #c0c4cc;
+  cursor: not-allowed;
+  background-color: #fff;
+}
+
+.app-dt-page-item.disabled .app-dt-page-link:hover {
+  background-color: #fff;
+}
+
+/* ============================================================
+   SELECTPICKER — Global Custom Dropdown
+   ============================================================ */
+
+.sp-wrapper {
+  position: relative;
+  font-family: inherit;
+  display: inline-block;
+  width: 100%;
+}
+
+/* ─── Trigger Button ───────────────────────────────────────── */
+
+.sp-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 12px;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  background: #fff;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  color: #000000;
+  transition: border-color 0.2s;
+  user-select: none;
+  gap: 8px;
+}
+
+.sp-trigger.sp-active {
+  border-color: #dee2e6;
+  box-shadow: none;
+}
+
+/* ─── Label ────────────────────────────────────────────────── */
+
+.sp-label {
+  color: #000000;
+  font-size: 13px;
+  font-weight: 400;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sp-label.sp-has-value {
+  color: #000000;
+  font-weight: 500;
+}
+
+/* ─── Arrow ────────────────────────────────────────────────── */
+
+.sp-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.sp-trigger.sp-active .sp-arrow {
+  transform: rotate(180deg);
+}
+
+/* ─── Dropdown Panel ───────────────────────────────────────── */
+
+.sp-dropdown {
+  display: none;
+  position: absolute;
+  top: calc(100% + 2px);
+  left: 0;
+  right: 0;
+  z-index: 1055;
+  background: #fff;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.sp-dropdown.sp-open {
+  display: block;
+}
+
+/* ─── Search Input ─────────────────────────────────────────── */
+
+.sp-search {
+  display: block;
+  width: calc(100% - 12px);
+  margin: 6px;
+  padding: 7px 10px;
+  border: 1px solid #dee2e6;
+  border-radius: 3px;
+  outline: none;
+  font-size: 13px;
+  box-sizing: border-box;
+  color: #000000;
+  background: #fff;
+}
+
+.sp-search:focus {
+  border-color: #adb5bd;
+}
+
+/* ─── Options List ─────────────────────────────────────────── */
+
+.sp-options {
+  list-style: none;
+  margin: 0;
+  padding: 2px 0 6px 0;
+  max-height: 200px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Slim scrollbar */
+.sp-options::-webkit-scrollbar {
+  width: 4px;
+}
+
+.sp-options::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sp-options::-webkit-scrollbar-thumb {
+  background: #ced4da;
+  border-radius: 4px;
+}
+
+/* ─── Option Items ─────────────────────────────────────────── */
+
+.sp-options li {
+  padding: 9px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  color: #000000;
+  transition: background 0.1s;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sp-options li:hover {
+  background: #dddee0;
+  color: #000000;
+}
+
+/* ─── Multi Select Action Row ──────────────────────────────── */
+
+.sp-action-row {
+  display: flex;
+  gap: 6px;
+  padding: 6px 8px;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.sp-action-btn {
+  flex: 1;
+  padding: 5px 10px;
+  font-size: 12px;
+  font-weight: 500;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  background: #f8f9fa;
+  color: #212529;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.sp-action-btn:hover {
+  background: #e9ecef;
+}
+
+/* ─── Multi Option Row ─────────────────────────────────────── */
+
+.sp-options li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;  /* ✅ text left, check right */
+}
+
+.sp-option-text {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sp-check {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-left: 8px;
+}
+
+/* Calender */
+
+/* ============================================================
+   DATEPICKER — Global Styles (All 3 Types)
+   ============================================================ */
+
+/* ─── Shared Wrapper ────────────────────────────────────────── */
+
+.dp-wrapper {
+  position: relative;
+  font-family: inherit;
+  display: inline-flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.dp-input-row {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.dp-input {
+  flex: 1;
+  padding: 7px 12px;
+  border: 1px solid #dee2e6;
+  border-right: none;
+  border-radius: 4px 0 0 4px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #0d0d0e;
+  outline: none;
+  background: #fff;
+  cursor: pointer;
+}
+
+.dp-input:focus {
+  border-color: #adb5bd;
+}
+
+.dp-icon-btn {
+  padding: 7px 10px;
+  background: #405189;
+  border: 1px solid #405189;
+  border-radius: 0 4px 4px 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.dp-icon-btn:hover {
+  background: #364474;
+}
+
+/* ─── Dropdown Base ─────────────────────────────────────────── */
+
+.dp-dropdown {
+  display: none;
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  z-index: 1055;
+  background: #fff;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+  overflow: hidden;
+}
+
+.dp-dropdown.dp-open {
+  display: block;
+}
+
+/* ─── Single datepicker width ───────────────────────────────── */
+
+.dp-dropdown.dp-single {
+  width: 260px;
+}
+
+/* ─── Range picker width ────────────────────────────────────── */
+
+/* Default — preset list only, narrow */
+.dp-dropdown.dp-range {
+  display: none;
+  flex-direction: row;
+  width: auto;
+  min-width: 160px;       /* ✅ Just wide enough for preset list */
+}
+
+.dp-dropdown.dp-range.dp-open {
+  display: flex;           /* ✅ Always flex row — preset left, calendar right */
+}
+
+/* ✅ Preset panel always same width */
+.dp-preset-panel {
+  width: 160px;
+  border-right: 1px solid #dee2e6;
+  padding: 10px 0;
+  flex-shrink: 0;
+}
+
+/* ✅ Calendar panel only appears for Custom Range */
+.dp-cal-panel {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 480px;        /* ✅ Enough for two calendars side by side */
+}
+
+/* ─── Header Row ────────────────────────────────────────────── */
+
+.dp-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.dp-header-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #405189;
+  flex: 1;
+  text-align: center;
+}
+
+.dp-nav-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #6c757d;
+  cursor: pointer;
+  padding: 0 4px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+}
+
+.dp-nav-btn:hover {
+  color: #405189;
+}
+
+/* ─── Day Name Row ──────────────────────────────────────────── */
+
+.dp-day-row {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  padding: 6px 8px 2px;
+}
+
+.dp-day-name {
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: #6c757d;
+  padding: 4px 0;
+}
+
+/* ─── Date Grid ─────────────────────────────────────────────── */
+
+.dp-date-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  padding: 2px 8px 10px;
+  gap: 1px 0;
+}
+
+.dp-date-cell {
+  text-align: center;
+  font-size: 12px;
+  font-weight: 500;
+  color: #212529;
+  padding: 6px 4px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.dp-date-cell:hover:not(.dp-muted) {
+  background: #eef0fb;
+  color: #405189;
+}
+
+.dp-muted {
+  color: #adb5bd !important;
+  cursor: default;
+  pointer-events: none;
+}
+
+/* Today highlighted — dark navy blue circle */
+.dp-today {
+  background: #405189 !important;
+  color: #fff !important;
+  border-radius: 50% !important;
+  font-weight: 700;
+}
+
+/* Single picker selected */
+.dp-selected {
+  background: #405189 !important;
+  color: #fff !important;
+  border-radius: 50% !important;
+  font-weight: 700;
+}
+
+/* Range start/end caps */
+.dp-range-end {
+  background: #405189 !important;
+  color: #fff !important;
+  border-radius: 50% !important;
+  font-weight: 700;
+}
+
+/* In-between range highlight */
+.dp-in-range {
+  background: #eef0fb !important;
+  color: #405189 !important;
+  border-radius: 0 !important;
+}
+
+/* ─── Month Year Grid ───────────────────────────────────────── */
+
+.dp-month-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  padding: 10px 12px 14px;
+  gap: 4px;
+}
+
+.dp-month-cell {
+  text-align: center;
+  padding: 10px 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #212529;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.dp-month-cell:hover {
+  background: #eef0fb;
+  color: #405189;
+}
+
+.dp-month-selected {
+  background: #405189 !important;
+  color: #fff !important;
+  border-radius: 4px !important;
+}
+
+/* ─── Range Picker Layout ───────────────────────────────────── */
+
+.dp-preset-panel {
+  width: 140px;
+  border-right: 1px solid #dee2e6;
+  padding: 10px 0;
+  flex-shrink: 0;
+}
+
+.dp-preset-item {
+  padding: 9px 18px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #212529;
+  cursor: pointer;
+  transition: background 0.1s;
+  white-space: nowrap;
+}
+
+.dp-preset-item:hover {
+  background: #f8f9fa;
+}
+
+.dp-preset-active {
+  background: #eef0fb;
+  color: #405189;
+  font-weight: 600;
+  border-left: 3px solid #405189;
+  padding-left: 15px;
+}
+
+.dp-cal-panel {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.dp-dual-row {
+  display: flex;
+  gap: 0;
+}
+
+.dp-single-cal {
+  flex: 1;
+  padding: 0 6px;
+  border-right: 1px solid #f0f0f0;
+}
+
+.dp-single-cal:last-child {
+  border-right: none;
+}
+
+/* ─── Range Footer ──────────────────────────────────────────── */
+
+.dp-range-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 10px 14px;
+  border-top: 1px solid #dee2e6;
+}
+
+.dp-cancel-btn {
+  padding: 6px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  background: #fff;
+  color: #212529;
+  cursor: pointer;
+}
+
+.dp-cancel-btn:hover {
+  background: #f8f9fa;
+}
+
+.dp-apply-btn {
+  padding: 6px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  border: 1px solid #405189;
+  border-radius: 4px;
+  background: #405189;
+  color: #fff;
+  cursor: pointer;
+}
+
+.dp-apply-btn:hover {
+  background: #364474;
+}
+

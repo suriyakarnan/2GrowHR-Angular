@@ -36,8 +36,7 @@ export class DateRangePickerDirective implements OnInit, OnDestroy {
 
   private activePreset = 'Last 30 Days';
 
-  // ✅ Holds references to ALL rendered date cells for live class updates
-  // This avoids full DOM re-render on hover — fixes flicker bug
+  // ✅ Cell map — avoids full DOM re-render on hover
   private cellMap: Map<string, { el: HTMLDivElement; date: Date }> = new Map();
 
   constructor(
@@ -55,7 +54,7 @@ export class DateRangePickerDirective implements OnInit, OnDestroy {
 
     this.applyPreset('Last 30 Days');
     this.buildUI();
-    this.updateInput(); // ✅ Show default range in input immediately
+    this.updateInput();
   }
 
   // ─────────────────────────────────────────────────────────────
@@ -110,96 +109,98 @@ export class DateRangePickerDirective implements OnInit, OnDestroy {
 
   // ─────────────────────────────────────────────────────────────
   // RENDER FULL DROPDOWN
-  // Called only when structure changes (month nav, preset click)
-  // NOT called on hover — hover uses refreshCellClasses() instead
   // ─────────────────────────────────────────────────────────────
 
   private renderDropdown(): void {
-  this.dropdown.innerHTML = '';
-  this.cellMap.clear();
+    this.dropdown.innerHTML = '';
+    this.cellMap.clear();
 
-  // ✅ Always visible — preset list on the left
-  const presetPanel: HTMLDivElement = this.renderer.createElement('div');
-  this.renderer.addClass(presetPanel, 'dp-preset-panel');
+    // ✅ Preset panel — always visible
+    const presetPanel: HTMLDivElement = this.renderer.createElement('div');
+    this.renderer.addClass(presetPanel, 'dp-preset-panel');
 
-  this.PRESETS.forEach(label => {
-    const item: HTMLDivElement = this.renderer.createElement('div');
-    this.renderer.addClass(item, 'dp-preset-item');
-    item.textContent = label;
+    this.PRESETS.forEach(label => {
+      const item: HTMLDivElement = this.renderer.createElement('div');
+      this.renderer.addClass(item, 'dp-preset-item');
+      item.textContent = label;
 
-    if (label === this.activePreset) {
-      this.renderer.addClass(item, 'dp-preset-active');
-    }
+      if (label === this.activePreset) {
+        this.renderer.addClass(item, 'dp-preset-active');
+      }
 
-    item.addEventListener('click', (e) => {
-      e.stopPropagation();
-      this.activePreset = label;
+      item.addEventListener('click', (e) => {
+        e.stopPropagation();
 
-      if (label === 'Custom Range') {
-        // ✅ Show calendar alongside preset list — don't close
+        if (label === 'Custom Range') {
+          // ✅ Show calendar — reset any previous custom selection
+          this.activePreset = 'Custom Range';
+          this.selecting    = 'none';
+          this.startDate    = null;
+          this.endDate      = null;
+          this.hoverDate    = null;
+          this.renderDropdown();
+        } else {
+          // ✅ Instant apply — update input and close
+          this.activePreset = label; // ✅ Set BEFORE close so next open is correct
+          this.applyPreset(label);
+          this.updateInput();
+          this.closeDropdown();
+        }
+      });
+
+      this.renderer.appendChild(presetPanel, item);
+    });
+
+    this.renderer.appendChild(this.dropdown, presetPanel);
+
+    // ✅ Calendar panel — only shown for Custom Range
+    if (this.activePreset === 'Custom Range') {
+      const calPanel: HTMLDivElement = this.renderer.createElement('div');
+      this.renderer.addClass(calPanel, 'dp-cal-panel');
+
+      const dualRow: HTMLDivElement = this.renderer.createElement('div');
+      this.renderer.addClass(dualRow, 'dp-dual-row');
+
+      dualRow.appendChild(
+        this.buildSingleCal(this.leftYear, this.leftMonth, 'left')
+      );
+      dualRow.appendChild(
+        this.buildSingleCal(this.rightYear, this.rightMonth, 'right')
+      );
+
+      // Footer
+      const footer: HTMLDivElement = this.renderer.createElement('div');
+      this.renderer.addClass(footer, 'dp-range-footer');
+
+      const cancelBtn: HTMLButtonElement = this.renderer.createElement('button');
+      cancelBtn.textContent = 'Cancel';
+      cancelBtn.type = 'button';
+      this.renderer.addClass(cancelBtn, 'dp-cancel-btn');
+      cancelBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
         this.selecting = 'none';
         this.startDate = null;
         this.endDate   = null;
         this.hoverDate = null;
-        this.renderDropdown(); // re-render — now shows preset + calendar together
-      } else {
-        // ✅ All other presets — apply instantly, close
-        this.applyPreset(label);
-        this.updateInput();
         this.closeDropdown();
-      }
-    });
+      });
 
-    this.renderer.appendChild(presetPanel, item);
-  });
+      const applyBtn: HTMLButtonElement = this.renderer.createElement('button');
+      applyBtn.textContent = 'Apply';
+      applyBtn.type = 'button';
+      this.renderer.addClass(applyBtn, 'dp-apply-btn');
+      applyBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.applyRange();
+      });
 
-  this.renderer.appendChild(this.dropdown, presetPanel);
-
-  // ✅ Calendar panel — only visible when Custom Range is selected
-  if (this.activePreset === 'Custom Range') {
-    const calPanel: HTMLDivElement = this.renderer.createElement('div');
-    this.renderer.addClass(calPanel, 'dp-cal-panel');
-
-    // Dual calendar row
-    const dualRow: HTMLDivElement = this.renderer.createElement('div');
-    this.renderer.addClass(dualRow, 'dp-dual-row');
-    dualRow.appendChild(this.buildSingleCal(this.leftYear, this.leftMonth, 'left'));
-    dualRow.appendChild(this.buildSingleCal(this.rightYear, this.rightMonth, 'right'));
-
-    // Footer with Cancel / Apply
-    const footer: HTMLDivElement = this.renderer.createElement('div');
-    this.renderer.addClass(footer, 'dp-range-footer');
-
-    const cancelBtn: HTMLButtonElement = this.renderer.createElement('button');
-    cancelBtn.textContent = 'Cancel';
-    cancelBtn.type = 'button';
-    this.renderer.addClass(cancelBtn, 'dp-cancel-btn');
-    cancelBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      this.selecting    = 'none';
-      this.startDate    = null;
-      this.endDate      = null;
-      this.hoverDate    = null;
-      this.activePreset = 'Custom Range'; // stay on custom range
-      this.closeDropdown();
-    });
-
-    const applyBtn: HTMLButtonElement = this.renderer.createElement('button');
-    applyBtn.textContent = 'Apply';
-    applyBtn.type = 'button';
-    this.renderer.addClass(applyBtn, 'dp-apply-btn');
-    applyBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      this.applyRange();
-    });
-
-    this.renderer.appendChild(footer, cancelBtn);
-    this.renderer.appendChild(footer, applyBtn);
-    this.renderer.appendChild(calPanel, dualRow);
-    this.renderer.appendChild(calPanel, footer);
-    this.renderer.appendChild(this.dropdown, calPanel); // ✅ appended AFTER preset panel
+      this.renderer.appendChild(footer, cancelBtn);
+      this.renderer.appendChild(footer, applyBtn);
+      this.renderer.appendChild(calPanel, dualRow);
+      this.renderer.appendChild(calPanel, footer);
+      this.renderer.appendChild(this.dropdown, calPanel);
+    }
   }
-}
 
   // ─────────────────────────────────────────────────────────────
   // BUILD ONE CALENDAR SIDE
@@ -213,7 +214,6 @@ export class DateRangePickerDirective implements OnInit, OnDestroy {
     const cal: HTMLDivElement = this.renderer.createElement('div');
     this.renderer.addClass(cal, 'dp-single-cal');
 
-    // Header
     const header: HTMLDivElement = this.renderer.createElement('div');
     this.renderer.addClass(header, 'dp-header');
 
@@ -257,7 +257,7 @@ export class DateRangePickerDirective implements OnInit, OnDestroy {
 
     cal.appendChild(header);
 
-    // Day names
+    // Day names row
     const dayRow: HTMLDivElement = this.renderer.createElement('div');
     this.renderer.addClass(dayRow, 'dp-day-row');
     this.DAYS.forEach(d => {
@@ -268,7 +268,6 @@ export class DateRangePickerDirective implements OnInit, OnDestroy {
     });
     cal.appendChild(dayRow);
 
-    // Date grid
     cal.appendChild(this.buildDateGrid(year, month));
 
     return cal;
@@ -282,46 +281,42 @@ export class DateRangePickerDirective implements OnInit, OnDestroy {
     const grid: HTMLDivElement = this.renderer.createElement('div');
     this.renderer.addClass(grid, 'dp-date-grid');
 
-    const firstDay     = new Date(year, month, 1).getDay();
-    const daysInMonth  = new Date(year, month + 1, 0).getDate();
-    const prevDays     = new Date(year, month, 0).getDate();
-    const today        = new Date();
+    const firstDay    = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const prevDays    = new Date(year, month, 0).getDate();
+    const today       = new Date();
     today.setHours(0, 0, 0, 0);
 
-    // Prev month muted trailing days
+    // Prev month trailing days — muted
     for (let i = firstDay - 1; i >= 0; i--) {
       grid.appendChild(this.makeCell(prevDays - i, true, false, false, false, false));
     }
 
-    // Current month active days
+    // Current month days
     for (let d = 1; d <= daysInMonth; d++) {
       const date = new Date(year, month, d);
       date.setHours(0, 0, 0, 0);
 
       const isToday   = date.getTime() === today.getTime();
-      const isStart   = this.startDate != null && date.getTime() === this.startDate.getTime();
-      const isEnd     = this.endDate   != null && date.getTime() === this.endDate.getTime();
+      const isStart   = this.startDate != null &&
+                        date.getTime() === this.startDate.getTime();
+      const isEnd     = this.endDate != null &&
+                        date.getTime() === this.endDate.getTime();
       const rangeEnd  = this.endDate ?? this.hoverDate;
       const isInRange = this.startDate != null && rangeEnd != null
                         && date > this.startDate && date < rangeEnd;
 
       const cell = this.makeCell(d, false, isToday, isStart, isEnd, isInRange);
 
-      // ✅ Store cell reference for hover updates without full re-render
+      // ✅ Store cell reference for class-only updates on hover
       const key = `${year}-${month}-${d}`;
       this.cellMap.set(key, { el: cell, date });
 
-      // ✅ Hover: update classes only — no DOM rebuild
+      // ✅ Hover — update classes only, no DOM rebuild
       cell.addEventListener('mouseenter', () => {
         if (this.selecting === 'start') {
           this.hoverDate = date;
-          this.refreshCellClasses(); // ✅ Only update CSS classes, no re-render
-        }
-      });
-
-      cell.addEventListener('mouseleave', () => {
-        if (this.selecting === 'start') {
-          // Keep hoverDate so range stays visible while moving between cells
+          this.refreshCellClasses();
         }
       });
 
@@ -335,24 +330,20 @@ export class DateRangePickerDirective implements OnInit, OnDestroy {
           this.endDate      = null;
           this.hoverDate    = null;
           this.selecting    = 'start';
-          this.activePreset = 'Custom Range';
           this.refreshCellClasses();
           this.refreshPresetPanel();
         } else {
           // Second click — set end
           if (date.getTime() === this.startDate!.getTime()) {
-            // ✅ Clicked same date — treat as single day range
             this.endDate = new Date(date);
           } else if (date < this.startDate!) {
-            // ✅ Clicked before start — swap
             this.endDate   = new Date(this.startDate!);
             this.startDate = new Date(date);
           } else {
             this.endDate = new Date(date);
           }
-          this.hoverDate    = null;
-          this.selecting    = 'none';
-          this.activePreset = 'Custom Range';
+          this.hoverDate = null;
+          this.selecting = 'none';
           this.refreshCellClasses();
           this.refreshPresetPanel();
         }
@@ -361,7 +352,7 @@ export class DateRangePickerDirective implements OnInit, OnDestroy {
       grid.appendChild(cell);
     }
 
-    // Next month muted leading days
+    // Next month leading days — muted
     const totalCells = firstDay + daysInMonth;
     const remaining  = totalCells % 7 === 0 ? 0 : 7 - (totalCells % 7);
     for (let i = 1; i <= remaining; i++) {
@@ -392,16 +383,15 @@ export class DateRangePickerDirective implements OnInit, OnDestroy {
       return cell;
     }
 
-    if (isStart || isEnd)  this.renderer.addClass(cell, 'dp-range-end');
-    else if (isToday)      this.renderer.addClass(cell, 'dp-today');
-    if (isInRange)         this.renderer.addClass(cell, 'dp-in-range');
+    if (isStart || isEnd) this.renderer.addClass(cell, 'dp-range-end');
+    else if (isToday)     this.renderer.addClass(cell, 'dp-today');
+    if (isInRange)        this.renderer.addClass(cell, 'dp-in-range');
 
     return cell;
   }
 
   // ─────────────────────────────────────────────────────────────
-  // ✅ REFRESH CELL CLASSES — Updates hover/range highlight
-  // WITHOUT rebuilding DOM — fixes the flicker bug completely
+  // REFRESH CELL CLASSES — No DOM rebuild, just CSS class updates
   // ─────────────────────────────────────────────────────────────
 
   private refreshCellClasses(): void {
@@ -411,23 +401,23 @@ export class DateRangePickerDirective implements OnInit, OnDestroy {
 
     this.cellMap.forEach(({ el, date }) => {
       const isToday   = date.getTime() === today.getTime();
-      const isStart   = this.startDate != null && date.getTime() === this.startDate.getTime();
-      const isEnd     = this.endDate   != null && date.getTime() === this.endDate.getTime();
+      const isStart   = this.startDate != null &&
+                        date.getTime() === this.startDate.getTime();
+      const isEnd     = this.endDate != null &&
+                        date.getTime() === this.endDate.getTime();
       const isInRange = this.startDate != null && rangeEnd != null
                         && date > this.startDate && date < rangeEnd;
 
-      // ✅ Clear all state classes first
-      el.classList.remove('dp-range-end', 'dp-today', 'dp-in-range', 'dp-selected');
+      el.classList.remove('dp-range-end', 'dp-today', 'dp-in-range');
 
-      // ✅ Re-apply correct classes
-      if (isStart || isEnd)  el.classList.add('dp-range-end');
-      else if (isToday)      el.classList.add('dp-today');
-      if (isInRange)         el.classList.add('dp-in-range');
+      if (isStart || isEnd) el.classList.add('dp-range-end');
+      else if (isToday)     el.classList.add('dp-today');
+      if (isInRange)        el.classList.add('dp-in-range');
     });
   }
 
   // ─────────────────────────────────────────────────────────────
-  // ✅ REFRESH PRESET PANEL — Updates active highlight only
+  // REFRESH PRESET PANEL — Updates active highlight only
   // ─────────────────────────────────────────────────────────────
 
   private refreshPresetPanel(): void {
@@ -495,27 +485,27 @@ export class DateRangePickerDirective implements OnInit, OnDestroy {
   }
 
   // ─────────────────────────────────────────────────────────────
-  // APPLY — writes DD/MM/YYYY - DD/MM/YYYY to input
+  // APPLY RANGE — Custom Range apply button
   // ─────────────────────────────────────────────────────────────
 
- private applyRange(): void {
+  private applyRange(): void {
     if (this.startDate && this.endDate) {
-      this.updateInput();   // ✅ Write to input
+      this.updateInput();
       this.selecting = 'none';
-      this.closeDropdown(); // ✅ Close after apply
+      this.closeDropdown();
     }
-    // ✅ If user clicks Apply without picking both dates — do nothing
+    // ✅ If both dates not picked yet — do nothing, keep calendar open
   }
 
-  // ✅ Writes formatted value directly to native input
-  // Works regardless of ngModel binding
+  // ─────────────────────────────────────────────────────────────
+  // UPDATE INPUT — Writes DD/MM/YYYY - DD/MM/YYYY to input box
+  // ─────────────────────────────────────────────────────────────
+
   private updateInput(): void {
     if (!this.startDate || !this.endDate) return;
     const fmt = (d: Date) =>
       `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
     const value = `${fmt(this.startDate)} - ${fmt(this.endDate)}`;
-
-    // ✅ Directly set DOM value — bypasses Angular readonly binding conflict
     this.el.nativeElement.value = value;
     this.el.nativeElement.dispatchEvent(new Event('input',  { bubbles: true }));
     this.el.nativeElement.dispatchEvent(new Event('change', { bubbles: true }));
@@ -539,12 +529,11 @@ export class DateRangePickerDirective implements OnInit, OnDestroy {
     this.hoverDate = null;
     this.renderer.removeClass(this.dropdown, 'dp-open');
 
-    // ✅ Reset incomplete custom range selection on close
+    // ✅ Reset incomplete custom range on close
     if (this.selecting === 'start') {
       this.selecting = 'none';
       this.startDate = null;
       this.endDate   = null;
-      this.renderDropdown();
     }
   }
 

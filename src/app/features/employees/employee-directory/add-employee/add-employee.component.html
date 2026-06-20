@@ -1,4 +1,3 @@
-<!-- Breadcrumb -->
 <div class="page-content">
   <div class="container-fluid">
 
@@ -16,7 +15,6 @@
         <div class="stepper-wrapper">
           <div class="stepper">
             <ng-container *ngFor="let step of steps; let i = index">
-              <!-- Step circle -->
               <div class="step-item">
                 <div class="step-circle"
                      [class.active]="currentStep === step.number"
@@ -29,7 +27,6 @@
                   {{ step.label }}
                 </div>
               </div>
-              <!-- Connector line (not after last step) -->
               <div class="step-line" *ngIf="i < steps.length - 1"
                    [class.completed]="currentStep > step.number">
               </div>
@@ -41,12 +38,15 @@
 
       <div class="card-body pt-2">
 
-        <!-- STEP 1: Basic Details -->
-        <form [formGroup]="basicForm" (ngSubmit)="onSubmit()" *ngIf="currentStep === 1">
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <!-- STEP 1: Basic Details + Personal Details + Salary Details -->
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <form [formGroup]="step1Form" (ngSubmit)="onSubmit()" *ngIf="currentStep === 1">
 
+          <!-- ── Basic Information ── -->
           <h6 class="section-title">Basic Information</h6>
 
-          <!-- Row 1: Employee CODE | Division | Sub Division | Job Type -->
+          <!-- Row 1: Employee Code | Division | Sub Division | Job Type -->
           <div class="row g-3 mb-3">
             <div class="col-12 col-sm-6 col-md-6 col-lg-3">
               <label class="form-label">Employee CODE</label>
@@ -73,7 +73,7 @@
             </div>
           </div>
 
-          <!-- Row 2: Employee Name (salutation + first) | Middle Name | Last Name | Father's Name -->
+          <!-- Row 2: Employee Name | Middle Name | Last Name | Father's Name -->
           <div class="row g-3 mb-3">
             <div class="col-12 col-sm-6 col-md-6 col-lg-3">
               <label class="form-label">Employee Name <span class="text-danger">*</span></label>
@@ -142,7 +142,7 @@
             <div class="col-12 col-sm-6 col-md-6 col-lg-3">
               <label class="form-label">Date of Joining <span class="text-danger">*</span></label>
               <div class="input-group">
-                <input type="date" class="form-control" formControlName="dateOfJoining">
+                <input class="form-control" formControlName="dateOfJoining">
                 <span class="input-group-text calendar-btn">
                   <i class="bi bi-calendar3"></i>
                 </span>
@@ -151,7 +151,7 @@
             <div class="col-12 col-sm-6 col-md-6 col-lg-3">
               <label class="form-label">Date of Confirmation <span class="text-danger">*</span></label>
               <div class="input-group">
-                <input type="date" class="form-control" formControlName="dateOfConfirmation">
+                <input class="form-control" formControlName="dateOfConfirmation">
                 <span class="input-group-text calendar-btn">
                   <i class="bi bi-calendar3"></i>
                 </span>
@@ -163,7 +163,354 @@
             </div>
           </div>
 
-          <!-- Action Buttons -->
+          <!-- ── Personal Details ── -->
+          <h6 class="section-title">Personal Details</h6>
+
+          <!-- Row 5: Office No | Emergency Contact No | Department | Designation -->
+          <div class="row g-3 mb-3">
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+              <label class="form-label">Office No</label>
+              <input type="text" class="form-control" formControlName="officeNo">
+            </div>
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+              <label class="form-label">Emergency Contact No</label>
+              <input type="text" class="form-control" formControlName="emergencyContactNo">
+            </div>
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+              <label class="form-label">Department <span class="text-danger">*</span></label>
+              <select class="form-select" formControlName="department">
+                <option value="">--Select--</option>
+              </select>
+            </div>
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+              <label class="form-label">Designation <span class="text-danger">*</span></label>
+              <select class="form-select" formControlName="designation">
+                <option value="">--Select--</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Row 6: Reporting To | Bonus Pay Term | City | Work Location -->
+          <div class="row g-3 mb-3">
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+              <label class="form-label">Reporting To</label>
+              <select class="form-select" formControlName="reportingTo">
+                <option value="Admin">Admin</option>
+              </select>
+            </div>
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+              <label class="form-label">Bonus Pay Term</label>
+              <select class="form-select" formControlName="bonusPayTerm">
+                <option value="">--SELECT--</option>
+              </select>
+            </div>
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+              <label class="form-label">City <span class="text-danger">*</span></label>
+              <select class="form-select" formControlName="city">
+                <option value="">--Select--</option>
+              </select>
+            </div>
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+              <label class="form-label">Work Location</label>
+              <input type="text" class="form-control" formControlName="workLocation">
+            </div>
+          </div>
+
+          <!-- Row 7: Headquarters | Employee Type | Category | Work State -->
+          <div class="row g-3 mb-3">
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+              <label class="form-label">Headquarters</label>
+              <select class="form-select" formControlName="headquarters">
+                <option value="">--Select--</option>
+              </select>
+            </div>
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+              <label class="form-label">Employee Type</label>
+              <select class="form-select" formControlName="employeeType">
+                <option value="">--SELECT--</option>
+              </select>
+            </div>
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+              <label class="form-label">Category</label>
+              <select class="form-select" formControlName="category">
+                <option value="">--Select--</option>
+              </select>
+            </div>
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+              <label class="form-label">Work State <span class="text-danger">*</span></label>
+              <select class="form-select" formControlName="workState">
+                <option value="">--Select--</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Row 8: Replace to whom | Biometric ID | Others 1 | Others 2 -->
+          <div class="row g-3 mb-3">
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+              <label class="form-label">Replace to whom</label>
+              <select class="form-select" formControlName="replaceToWhom">
+                <option value="">--Select--</option>
+              </select>
+            </div>
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+              <label class="form-label">Biometric ID</label>
+              <input type="text" class="form-control" formControlName="biometricId">
+            </div>
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+              <label class="form-label">Others 1</label>
+              <input type="text" class="form-control" formControlName="others1">
+            </div>
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+              <label class="form-label">Others 2</label>
+              <input type="text" class="form-control" formControlName="others2">
+            </div>
+          </div>
+
+          <!-- Row 9: Others 3 | Others 4 | Others 5 | Nationality -->
+          <div class="row g-3 mb-3">
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+              <label class="form-label">Others 3</label>
+              <input type="text" class="form-control" formControlName="others3">
+            </div>
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+              <label class="form-label">Others 4</label>
+              <input type="text" class="form-control" formControlName="others4">
+            </div>
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+              <label class="form-label">Others 5</label>
+              <input type="text" class="form-control" formControlName="others5">
+            </div>
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+              <label class="form-label">Nationality <span class="text-danger">*</span></label>
+              <select class="form-select" formControlName="nationality">
+                <option value="">--SELECT--</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Row 10: WeekOff Mapping | Shift Mapping | Previous Member Id | Are You Fresher? -->
+          <div class="row g-3 mb-3">
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+              <label class="form-label">WeekOff Mapping</label>
+              <select class="form-select" formControlName="weekOffMapping">
+                <option value="">--SELECT--</option>
+              </select>
+            </div>
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+              <label class="form-label">Shift Mapping</label>
+              <select class="form-select" formControlName="shiftMapping">
+                <option value="">--SELECT--</option>
+              </select>
+            </div>
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+              <label class="form-label">Previous Member Id</label>
+              <select class="form-select" formControlName="previousMemberId">
+                <option value="">--SELECT--</option>
+              </select>
+            </div>
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+              <label class="form-label">Are You Fresher?</label>
+              <select class="form-select" formControlName="isFresher">
+                <option value="">--SELECT--</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Row 11: Is Physical Handicap -->
+          <div class="row g-3 mb-4">
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+              <label class="form-label">Is Physical Handicap</label>
+              <select class="form-select" formControlName="isPhysicalHandicap">
+                <option value="">--SELECT--</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- ── Salary Details ── -->
+          <h6 class="section-title">Leave Reporting Level</h6>
+          <div class="row g-3 mb-4">
+            <div class="col-12 col-sm-6 col-md-3">
+              <label class="form-label">Level 1</label>
+              <select class="form-select" formControlName="leaveLevel1">
+                <option value="">--Select--</option>
+              </select>
+            </div>
+            <div class="col-12 col-sm-6 col-md-3">
+              <label class="form-label">Level 2</label>
+              <select class="form-select" formControlName="leaveLevel2">
+                <option value="">--Select--</option>
+              </select>
+            </div>
+          </div>
+
+          <h6 class="section-title">Reimbursement Approval Level</h6>
+          <div class="row g-3 mb-4">
+            <div class="col-12 col-sm-6 col-md-3">
+              <label class="form-label">Level 1</label>
+              <select class="form-select" formControlName="reimbLevel1">
+                <option value="">--Select--</option>
+              </select>
+            </div>
+            <div class="col-12 col-sm-6 col-md-3">
+              <label class="form-label">Level 2</label>
+              <select class="form-select" formControlName="reimbLevel2">
+                <option value="">--Select--</option>
+              </select>
+            </div>
+          </div>
+
+          <h6 class="section-title">Enable Access</h6>
+          <div class="info-banner mb-4">
+            <i class="bi bi-info-circle-fill info-icon"></i>
+            <span>Enable the necessary benefits and tax applicable for this employee.</span>
+          </div>
+
+          <!-- Portal Access -->
+          <div class="toggle-row">
+            <div class="form-check form-switch toggle-switch">
+              <input class="form-check-input" type="checkbox" id="portalAccess"
+                     formControlName="portalAccess"
+                     (change)="onToggleChange('portalAccess')">
+            </div>
+            <label class="toggle-label" for="portalAccess">Portal Access</label>
+          </div>
+          <div class="toggle-sub-fields" *ngIf="step1Form.get('portalAccess')?.value">
+            <div class="row g-3 mb-3">
+              <div class="col-12 col-sm-6 col-md-3">
+                <label class="form-label">User Name</label>
+                <input type="text" class="form-control" formControlName="portalUserName">
+              </div>
+              <div class="col-12 col-sm-6 col-md-3">
+                <label class="form-label">Password</label>
+                <input type="password" class="form-control" formControlName="portalPassword">
+              </div>
+            </div>
+          </div>
+
+          <!-- Employee's Provident Fund -->
+          <div class="toggle-row">
+            <div class="form-check form-switch toggle-switch">
+              <input class="form-check-input" type="checkbox" id="providentFund"
+                     formControlName="providentFund"
+                     (change)="onToggleChange('providentFund')">
+            </div>
+            <label class="toggle-label" for="providentFund">Employee's Provident Fund</label>
+          </div>
+          <div class="toggle-sub-fields" *ngIf="step1Form.get('providentFund')?.value">
+            <div class="row g-3 mb-3">
+              <div class="col-12 col-sm-6 col-md-3">
+                <label class="form-label">
+                  PF Account Number
+                  <span class="info-circle" title="Enter your PF account number">
+                    <i class="bi bi-info-circle-fill"></i>
+                  </span>
+                </label>
+                <input type="text" class="form-control" formControlName="pfAccountNumber">
+              </div>
+              <div class="col-12 col-sm-6 col-md-3">
+                <label class="form-label">
+                  UAN Number
+                  <span class="info-circle" title="Universal Account Number">
+                    <i class="bi bi-info-circle-fill"></i>
+                  </span>
+                </label>
+                <input type="text" class="form-control" formControlName="uanNumber">
+              </div>
+            </div>
+          </div>
+
+          <!-- Employee's State Insurance -->
+          <div class="toggle-row">
+            <div class="form-check form-switch toggle-switch">
+              <input class="form-check-input" type="checkbox" id="stateInsurance"
+                     formControlName="stateInsurance" (change)="onToggleChange('stateInsurance')">
+            </div>
+            <label class="toggle-label" for="stateInsurance">Employee's State Insurance</label>
+          </div>
+
+          <div class="toggle-sub-fields" *ngIf="step1Form.get('stateInsurance')?.value">
+            <div class="row g-3 mb-3">
+              <div class="col-12 col-sm-6 col-md-3">
+                <label class="form-label">ESI Number</label>
+                <span class="info-circle" title="Enter your PF account number">
+                    <i class="bi bi-info-circle-fill"></i>
+                  </span>
+                <input type="text" class="form-control" formControlName="stateInsurance">
+              </div>
+             
+            </div>
+          </div>
+
+          <!-- TDS -->
+          <div class="toggle-row">
+            <div class="form-check form-switch toggle-switch">
+              <input class="form-check-input" type="checkbox" id="tds"
+                     formControlName="tds"
+                     (change)="onToggleChange('tds')">
+            </div>
+            <label class="toggle-label" for="tds">TDS</label>
+          </div>
+          <div class="toggle-sub-fields" *ngIf="step1Form.get('tds')?.value">
+            <div class="regime-options mb-3">
+              <div class="regime-btn" [class.active]="step1Form.get('tdsRegime')?.value === 'old'"
+                   (click)="setRegime('old')">
+                <input type="radio" name="tdsRegime" value="old"
+                       [checked]="step1Form.get('tdsRegime')?.value === 'old'"
+                       (change)="setRegime('old')">
+                <span>Old Regime</span>
+              </div>
+              <div class="regime-btn" [class.active]="step1Form.get('tdsRegime')?.value === 'new'"
+                   (click)="setRegime('new')">
+                <input type="radio" name="tdsRegime" value="new"
+                       [checked]="step1Form.get('tdsRegime')?.value === 'new'"
+                       (change)="setRegime('new')">
+                <span>New Regime</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Professional Tax -->
+          <div class="toggle-row">
+            <div class="form-check form-switch toggle-switch">
+              <input class="form-check-input" type="checkbox" id="professionalTax"
+                     formControlName="professionalTax">
+            </div>
+            <label class="toggle-label" for="professionalTax">Professional Tax</label>
+          </div>
+
+          <!-- LWF -->
+          <div class="toggle-row">
+            <div class="form-check form-switch toggle-switch">
+              <input class="form-check-input" type="checkbox" id="lwf"
+                     formControlName="lwf" (change)="onToggleChange('lwf')">
+            </div>
+            <label class="toggle-label" for="lwf">LWF</label>
+          </div>
+
+          <div class="toggle-sub-fields" *ngIf="step1Form.get('lwf')?.value">
+            <div class="row g-3 mb-3">
+              <div class="col-12 col-sm-6 col-md-3">
+                <label class="form-label">LIN Number</label>
+                <input type="text" class="form-control" formControlName="stateInsurance">
+              </div>
+             
+            </div>
+          </div>
+
+          <!-- Higher Wages -->
+          <div class="toggle-row mb-4">
+            <div class="form-check form-switch toggle-switch">
+              <input class="form-check-input" type="checkbox" id="higherWages"
+                     formControlName="higherWages">
+            </div>
+            <label class="toggle-label" for="higherWages">Higher Wages</label>
+          </div>
+
+          <!-- Actions -->
           <div class="d-flex justify-content-end gap-2 mt-2">
             <button type="button" class="btn btn-outline-secondary" (click)="onCancel()">Cancel</button>
             <button type="button" class="btn btn-primary-custom" (click)="nextStep()">Next</button>
@@ -171,20 +518,20 @@
 
         </form>
 
-        <!-- STEP 2: Personal Details -->
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- STEP 2: Your new design goes here           -->
+        <!-- ═══════════════════════════════════════════ -->
         <div *ngIf="currentStep === 2">
-          <h6 class="section-title">Personal Details</h6>
-          <p class="text-muted">Personal details form fields go here...</p>
           <div class="d-flex justify-content-end gap-2 mt-4">
             <button type="button" class="btn btn-outline-secondary" (click)="prevStep()">Back</button>
             <button type="button" class="btn btn-primary-custom" (click)="nextStep()">Next</button>
           </div>
         </div>
 
-        <!-- STEP 3: Salary Details -->
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- STEP 3: Your new design goes here           -->
+        <!-- ═══════════════════════════════════════════ -->
         <div *ngIf="currentStep === 3">
-          <h6 class="section-title">Salary Details</h6>
-          <p class="text-muted">Salary details form fields go here...</p>
           <div class="d-flex justify-content-end gap-2 mt-4">
             <button type="button" class="btn btn-outline-secondary" (click)="prevStep()">Back</button>
             <button type="button" class="btn btn-primary-custom" (click)="onSubmit()">Save</button>

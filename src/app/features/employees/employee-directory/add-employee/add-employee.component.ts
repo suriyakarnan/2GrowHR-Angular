@@ -20,39 +20,77 @@ export class AddEmployeeComponent {
     { number: 3, label: 'Salary Details' }
   ];
 
-  basicForm: FormGroup;
-  personalForm: FormGroup;
-  salaryForm: FormGroup;
+  step1Form: FormGroup;
 
   constructor(private fb: FormBuilder, private router: Router) {
-    this.basicForm = this.fb.group({
-      employeeCode: [{ value: '', disabled: true }],
-      division: ['', Validators.required],
-      subDivision: [''],
-      jobType: ['', Validators.required],
-      salutation: [''],
-      firstName: ['', Validators.required],
-      middleName: [''],
-      lastName: [''],
-      fathersName: ['', Validators.required],
-      husbandsName: [''],
-      gender: ['', Validators.required],
-      maritalStatus: ['', Validators.required],
-      emailId: ['', [Validators.required, Validators.email]],
-      personalEmail: [''],
-      dateOfJoining: ['', Validators.required],
+    this.step1Form = this.fb.group({
+
+      // ── Basic Information ──────────────────────────────
+      employeeCode:       [{ value: '', disabled: true }],
+      division:           ['', Validators.required],
+      subDivision:        [''],
+      jobType:            ['', Validators.required],
+      salutation:         [''],
+      firstName:          ['', Validators.required],
+      middleName:         [''],
+      lastName:           [''],
+      fathersName:        ['', Validators.required],
+      husbandsName:       [''],
+      gender:             ['', Validators.required],
+      maritalStatus:      ['', Validators.required],
+      emailId:            ['', [Validators.required, Validators.email]],
+      personalEmail:      [''],
+      dateOfJoining:      ['', Validators.required],
       dateOfConfirmation: ['', Validators.required],
-      personalNo: ['', Validators.required]
+      personalNo:         ['', Validators.required],
+
+      // ── Personal Details ───────────────────────────────
+      officeNo:           [''],
+      emergencyContactNo: [''],
+      department:         ['', Validators.required],
+      designation:        ['', Validators.required],
+      reportingTo:        ['Admin'],
+      bonusPayTerm:       [''],
+      city:               ['', Validators.required],
+      workLocation:       [''],
+      headquarters:       [''],
+      employeeType:       [''],
+      category:           [''],
+      workState:          ['', Validators.required],
+      replaceToWhom:      [''],
+      biometricId:        [''],
+      others1:            [''],
+      others2:            [''],
+      others3:            [''],
+      others4:            [''],
+      others5:            [''],
+      nationality:        ['', Validators.required],
+      weekOffMapping:     [''],
+      shiftMapping:       [''],
+      previousMemberId:   [''],
+      isFresher:          [''],
+      isPhysicalHandicap: [''],
+
+      // ── Leave & Reimbursement Levels ───────────────────
+      leaveLevel1:        [''],
+      leaveLevel2:        [''],
+      reimbLevel1:        [''],
+      reimbLevel2:        [''],
+
+      // ── Enable Access toggles ──────────────────────────
+      portalAccess:       [false],
+      portalUserName:     [''],
+      portalPassword:     [''],
+      providentFund:      [false],
+      pfAccountNumber:    [''],
+      uanNumber:          [''],
+      stateInsurance:     [false],
+      tds:                [false],
+      tdsRegime:          ['old'],
+      professionalTax:    [false],
+      lwf:                [false],
+      higherWages:        [false]
     });
-
-    this.personalForm = this.fb.group({});
-    this.salaryForm = this.fb.group({});
-  }
-
-  get activeForm(): FormGroup {
-    if (this.currentStep === 1) return this.basicForm;
-    if (this.currentStep === 2) return this.personalForm;
-    return this.salaryForm;
   }
 
   nextStep(): void {
@@ -67,11 +105,31 @@ export class AddEmployeeComponent {
     }
   }
 
-  onSubmit(): void {
-    if (this.basicForm.valid) {
-      console.log('Employee data:', this.basicForm.value);
-      this.router.navigate(['/employees/employee-directory']);
+  onToggleChange(controlName: string): void {
+    const isOn = this.step1Form.get(controlName)?.value;
+    if (!isOn) {
+      if (controlName === 'portalAccess') {
+        this.step1Form.patchValue({ portalUserName: '', portalPassword: '' });
+      } else if (controlName === 'providentFund') {
+        this.step1Form.patchValue({ pfAccountNumber: '', uanNumber: '' });
+      } else if (controlName === 'tds') {
+        this.step1Form.patchValue({ tdsRegime: 'old' });
+      } else if (controlName === 'stateInsurance' ) {
+        this.step1Form.patchValue({ stateInsurance : ''})
+      } else if (controlName === 'lwf') {
+        this.step1Form.patchValue({ lwf : ''})
+      }
     }
+  }
+
+  setRegime(regime: 'old' | 'new'): void {
+    this.step1Form.patchValue({ tdsRegime: regime });
+  }
+
+  onSubmit(): void {
+    const payload = this.step1Form.getRawValue();
+    console.log('Employee data:', payload);
+    this.router.navigate(['/employees/employee-directory']);
   }
 
   onCancel(): void {

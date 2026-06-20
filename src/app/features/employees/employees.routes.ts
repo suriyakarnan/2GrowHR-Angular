@@ -12,11 +12,7 @@ export const EMPLOYEES_ROUTES: Routes = [
         loadComponent: () =>
           import('./employee-directory/employee-directory.component').then(m => m.EmployeeDirectoryComponent)
       },
-      {
-        path: 'directory/add',
-        loadComponent: () =>
-          import('./employee-directory/add-employee/add-employee.component').then(m => m.AddEmployeeComponent)
-      },
+      
       {
         path: 'resigned-deactivated',
         loadComponent: () =>
@@ -50,5 +46,10 @@ export const EMPLOYEES_ROUTES: Routes = [
           import('./full-final-settlement/full-final-settlement.component').then(m => m.FullFinalSettlementComponent)
       }
     ]
-  }
+  }, 
+  {
+        path: 'directory/add',
+        loadComponent: () =>
+          import('./employee-directory/add-employee/add-employee.component').then(m => m.AddEmployeeComponent)
+      }
 ];

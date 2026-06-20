@@ -6,6 +6,8 @@
 .employee-tabs{
     border-bottom: 1px thin #a3acd1;
     margin-bottom: 20px;
+    background: #e1e3ee;
+    border-radius: 6px;
 }
 
 /* Remove Bootstrap default */

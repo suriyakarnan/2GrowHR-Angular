@@ -1,91 +1,53 @@
-
 import { Routes } from '@angular/router';
-
-import { LoginComponent } from './features/auth/login/login.component';
-
-import { DashboardComponent } from './features/dashboard/dashboard/dashboard.component';
-
-import { AttendanceComponent } from './features/attendance/attendance/attendance.component';
-
-import { PayrunComponent } from './features/payrun/payrun/payrun.component';
-
-import { LoanComponent } from './features/loan/loan/loan.component';
-
-import { ReportsComponent } from './features/reports/reports/reports.component';
-
-import { SetupComponent } from './features/setup/setup/setup.component';
-
-import { HrmsPortalComponent } from './features/hrms-portal/hrms-portal/hrms-portal.component';
-
-import { LayoutComponent } from './shared/components/layout/layout.component';
-
 import { AuthGuard } from './core/guards/auth.guard';
 
-
-
 export const routes: Routes = [
-
   {
-    path:'',
-    component:LoginComponent, pathMatch: 'full' 
+    path: '',
+    loadComponent: () => import('./features/auth/login/login.component').then(m => m.LoginComponent),
+    pathMatch: 'full'
   },
-
   {
-    path:'',
-    component:LayoutComponent,
-
-    canActivate:[AuthGuard],
-
-    children:[
-
+    path: '',
+    loadComponent: () => import('./shared/components/layout/layout.component').then(m => m.LayoutComponent),
+    canActivate: [AuthGuard],
+    children: [
       {
-        path:'dashboard',
-        component:DashboardComponent
+        path: 'dashboard',
+        loadComponent: () => import('./features/dashboard/dashboard/dashboard.component').then(m => m.DashboardComponent)
       },
-      
       {
         path: 'employees',
         loadChildren: () => import('./features/employees/employees.routes').then(m => m.EMPLOYEES_ROUTES)
       },
-      
-
       {
-        path:'attendance',
-        component:AttendanceComponent
+        path: 'attendance',
+        loadComponent: () => import('./features/attendance/attendance/attendance.component').then(m => m.AttendanceComponent)
       },
-
       {
-        path:'payrun',
-        component:PayrunComponent
+        path: 'payrun',
+        loadComponent: () => import('./features/payrun/payrun/payrun.component').then(m => m.PayrunComponent)
       },
-
       {
-        path:'loan',
-        component:LoanComponent
+        path: 'loan',
+        loadComponent: () => import('./features/loan/loan/loan.component').then(m => m.LoanComponent)
       },
-
       {
-        path:'reports',
-        component:ReportsComponent
+        path: 'reports',
+        loadComponent: () => import('./features/reports/reports/reports.component').then(m => m.ReportsComponent)
       },
-
       {
-        path:'setup',
-        component:SetupComponent
+        path: 'setup',
+        loadComponent: () => import('./features/setup/setup/setup.component').then(m => m.SetupComponent)
       },
-
       {
-        path:'hrms-portal',
-        component:HrmsPortalComponent
+        path: 'hrms-portal',
+        loadComponent: () => import('./features/hrms-portal/hrms-portal/hrms-portal.component').then(m => m.HrmsPortalComponent)
       }
-
     ]
-
   },
-
   {
-    path:'**',
-    redirectTo:''
+    path: '**',
+    redirectTo: ''
   }
-
 ];

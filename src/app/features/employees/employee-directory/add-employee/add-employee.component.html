@@ -1,35 +1,198 @@
+<!-- Breadcrumb -->
 <div class="page-content">
-    <div class="container-fluid">
-        <div class="card">
-            <div class="card-header">
-                <h5>Add Employee</h5>
-            </div>
-            <div class="card-body">
-                <form [formGroup]="form" (ngSubmit)="onSubmit()">
-                    <div class="row mb-3">
-                        <div class="col-12 col-md-6">
-                            <label class="form-label">Employee ID</label>
-                            <input type="text" class="form-control" formControlName="employeeId"> 
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <label class="form-label">Employee Name</label>
-                            <input type="text" class="form-control" formControlName="name">
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-12 col-md-6">
-                            <label class="form-label">Division</label>
-                            <select class="form-select" formControlName="division">
-                                <option value="">-- Select Division --</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="d-flex gap-2">
-                        <button type="submit" class="btn btn-teal" [disabled]="form.invalid">Save</button>
-                        <button type="button" class="btn btn-light" (click)="onCancel()">Cancel</button>
-                    </div>
-                </form>
-            </div>
+  <div class="container-fluid">
+
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb-nav mb-3">
+      <span class="breadcrumb-link" (click)="onCancel()">Employee Directory</span>
+      <span class="breadcrumb-sep">›</span>
+      <span class="breadcrumb-current">Add Employee</span>
+    </nav>
+
+    <div class="card">
+      <div class="card-header p-0 border-0 bg-white">
+
+        <!-- Stepper -->
+        <div class="stepper-wrapper">
+          <div class="stepper">
+            <ng-container *ngFor="let step of steps; let i = index">
+              <!-- Step circle -->
+              <div class="step-item">
+                <div class="step-circle"
+                     [class.active]="currentStep === step.number"
+                     [class.completed]="currentStep > step.number">
+                  <span>{{ step.number }}</span>
+                </div>
+                <div class="step-label"
+                     [class.active]="currentStep === step.number"
+                     [class.completed]="currentStep > step.number">
+                  {{ step.label }}
+                </div>
+              </div>
+              <!-- Connector line (not after last step) -->
+              <div class="step-line" *ngIf="i < steps.length - 1"
+                   [class.completed]="currentStep > step.number">
+              </div>
+            </ng-container>
+          </div>
         </div>
+
+      </div>
+
+      <div class="card-body pt-2">
+
+        <!-- STEP 1: Basic Details -->
+        <form [formGroup]="basicForm" (ngSubmit)="onSubmit()" *ngIf="currentStep === 1">
+
+          <h6 class="section-title">Basic Information</h6>
+
+          <!-- Row 1: Employee CODE | Division | Sub Division | Job Type -->
+          <div class="row g-3 mb-3">
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+              <label class="form-label">Employee CODE</label>
+              <input type="text" class="form-control bg-light" formControlName="employeeCode" readonly>
+              <small class="text-teal">Auto Generated Employee ID</small>
+            </div>
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+              <label class="form-label">Division <span class="text-danger">*</span></label>
+              <select class="form-select" formControlName="division">
+                <option value="">SAN MEDIA PRIVATE LIMITED & Co Asxcvbnm</option>
+              </select>
+            </div>
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+              <label class="form-label">Sub Division</label>
+              <select class="form-select" formControlName="subDivision">
+                <option value="">--Select--</option>
+              </select>
+            </div>
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+              <label class="form-label">Job Type <span class="text-danger">*</span></label>
+              <select class="form-select" formControlName="jobType">
+                <option value="">--Select--</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Row 2: Employee Name (salutation + first) | Middle Name | Last Name | Father's Name -->
+          <div class="row g-3 mb-3">
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+              <label class="form-label">Employee Name <span class="text-danger">*</span></label>
+              <div class="input-group">
+                <select class="form-select salutation-select" formControlName="salutation">
+                  <option value="">--</option>
+                  <option value="Mr">Mr</option>
+                  <option value="Ms">Ms</option>
+                  <option value="Mrs">Mrs</option>
+                  <option value="Dr">Dr</option>
+                </select>
+                <input type="text" class="form-control" placeholder="First Name" formControlName="firstName">
+              </div>
+            </div>
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+              <label class="form-label">Middle Name</label>
+              <input type="text" class="form-control" formControlName="middleName">
+            </div>
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+              <label class="form-label">Last Name</label>
+              <input type="text" class="form-control" formControlName="lastName">
+            </div>
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+              <label class="form-label">Father's Name <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" formControlName="fathersName">
+            </div>
+          </div>
+
+          <!-- Row 3: Husband's Name | Gender | Marital Status | Email ID -->
+          <div class="row g-3 mb-3">
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+              <label class="form-label">Husband's Name</label>
+              <input type="text" class="form-control" formControlName="husbandsName">
+            </div>
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+              <label class="form-label">Gender <span class="text-danger">*</span></label>
+              <select class="form-select" formControlName="gender">
+                <option value="">--SELECT--</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+              <label class="form-label">Marital Status <span class="text-danger">*</span></label>
+              <select class="form-select" formControlName="maritalStatus">
+                <option value="">--SELECT--</option>
+                <option value="Single">Single</option>
+                <option value="Married">Married</option>
+                <option value="Divorced">Divorced</option>
+                <option value="Widowed">Widowed</option>
+              </select>
+            </div>
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+              <label class="form-label">Email ID <span class="text-danger">*</span></label>
+              <input type="email" class="form-control" formControlName="emailId">
+            </div>
+          </div>
+
+          <!-- Row 4: Personal Email | Date of Joining | Date of Confirmation | Personal No -->
+          <div class="row g-3 mb-4">
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+              <label class="form-label">Personal Email ID</label>
+              <input type="email" class="form-control" formControlName="personalEmail">
+            </div>
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+              <label class="form-label">Date of Joining <span class="text-danger">*</span></label>
+              <div class="input-group">
+                <input type="date" class="form-control" formControlName="dateOfJoining">
+                <span class="input-group-text calendar-btn">
+                  <i class="bi bi-calendar3"></i>
+                </span>
+              </div>
+            </div>
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+              <label class="form-label">Date of Confirmation <span class="text-danger">*</span></label>
+              <div class="input-group">
+                <input type="date" class="form-control" formControlName="dateOfConfirmation">
+                <span class="input-group-text calendar-btn">
+                  <i class="bi bi-calendar3"></i>
+                </span>
+              </div>
+            </div>
+            <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+              <label class="form-label">Personal No <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" formControlName="personalNo">
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="d-flex justify-content-end gap-2 mt-2">
+            <button type="button" class="btn btn-outline-secondary" (click)="onCancel()">Cancel</button>
+            <button type="button" class="btn btn-primary-custom" (click)="nextStep()">Next</button>
+          </div>
+
+        </form>
+
+        <!-- STEP 2: Personal Details -->
+        <div *ngIf="currentStep === 2">
+          <h6 class="section-title">Personal Details</h6>
+          <p class="text-muted">Personal details form fields go here...</p>
+          <div class="d-flex justify-content-end gap-2 mt-4">
+            <button type="button" class="btn btn-outline-secondary" (click)="prevStep()">Back</button>
+            <button type="button" class="btn btn-primary-custom" (click)="nextStep()">Next</button>
+          </div>
+        </div>
+
+        <!-- STEP 3: Salary Details -->
+        <div *ngIf="currentStep === 3">
+          <h6 class="section-title">Salary Details</h6>
+          <p class="text-muted">Salary details form fields go here...</p>
+          <div class="d-flex justify-content-end gap-2 mt-4">
+            <button type="button" class="btn btn-outline-secondary" (click)="prevStep()">Back</button>
+            <button type="button" class="btn btn-primary-custom" (click)="onSubmit()">Save</button>
+          </div>
+        </div>
+
+      </div>
     </div>
+
+  </div>
 </div>

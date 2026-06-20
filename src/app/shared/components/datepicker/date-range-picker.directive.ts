@@ -128,11 +128,10 @@ export class DateRangePickerDirective implements OnInit, OnDestroy {
         this.renderer.addClass(item, 'dp-preset-active');
       }
 
-      item.addEventListener('click', (e) => {
+            item.addEventListener('click', (e) => {
         e.stopPropagation();
 
         if (label === 'Custom Range') {
-          // ✅ Show calendar — reset any previous custom selection
           this.activePreset = 'Custom Range';
           this.selecting    = 'none';
           this.startDate    = null;
@@ -141,11 +140,14 @@ export class DateRangePickerDirective implements OnInit, OnDestroy {
           this.renderDropdown();
         } else {
           // ✅ Instant apply — update input and close
-          this.activePreset = label; // ✅ Set BEFORE close so next open is correct
+          this.activePreset = label;
           this.applyPreset(label);
           this.updateInput();
+          this.renderDropdown();   // ✅ NEW: rebuild DOM so highlight moves + stale calendar is removed
           this.closeDropdown();
         }
+
+        this.renderer.appendChild(presetPanel, item);
       });
 
       this.renderer.appendChild(presetPanel, item);

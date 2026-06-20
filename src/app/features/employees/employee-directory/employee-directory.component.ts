@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { TableDatatableDirective } from '../../../shared/components/data-table/table-datatable.directive';
 import { SelectpickerDirective } from '../../../shared/components/selectpicker/selectpicker.directive'; 
-import { DateRangePickerDirective } from '../../../shared/components/datepicker/date-range-picker.directive'; // ✅
+
 
 interface Employee {
   id: string;
@@ -15,14 +15,14 @@ interface Employee {
 @Component({
   selector: 'app-employee-directory',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, TableDatatableDirective, SelectpickerDirective, DateRangePickerDirective],
+  imports: [CommonModule, RouterLink, FormsModule, TableDatatableDirective, SelectpickerDirective],
   templateUrl: './employee-directory.component.html',
   styleUrls: ['./employee-directory.component.css']
 })
 export class EmployeeDirectoryComponent implements OnInit {
   employees: Employee[] = [];
   selectedDivision: string[] = []; 
-  selectedDateRange: string = '';
+
 
  
 

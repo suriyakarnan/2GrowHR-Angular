@@ -19,6 +19,9 @@ export class MonthYearPickerDirective implements OnInit, OnDestroy {
   private selectedYear!: number;
   private isOpen = false;
 
+  private view: 'month' | 'year' = 'month';
+  private yearPageStart!: number;
+
   private readonly MONTHS = [
     'Jan.', 'Feb.', 'Mar.',
     'Apr.', 'May',  'June',
@@ -36,6 +39,7 @@ export class MonthYearPickerDirective implements OnInit, OnDestroy {
     this.currentYear   = now.getFullYear();
     this.selectedMonth = now.getMonth();
     this.selectedYear  = now.getFullYear();
+    this.yearPageStart = this.currentYear - 4;
     this.buildUI();
   }
 
@@ -62,7 +66,6 @@ export class MonthYearPickerDirective implements OnInit, OnDestroy {
     this.dropdown = this.renderer.createElement('div');
     this.renderer.addClass(this.dropdown, 'dp-dropdown');
 
-    // ✅ Safe DOM insertion
     const parent = input.parentNode as HTMLElement;
     parent.replaceChild(this.wrapper, input);
     this.renderer.appendChild(inputRow, input);
@@ -86,14 +89,21 @@ export class MonthYearPickerDirective implements OnInit, OnDestroy {
     );
   }
 
-  // ─── RENDER DROPDOWN ────────────────────────────────────────
+  // ─── RENDER DROPDOWN (router) ────────────────────────────────
 
   private renderDropdown(): void {
     this.dropdown.innerHTML = '';
+    if (this.view === 'year') {
+      this.renderYearView();
+    } else {
+      this.renderMonthView();
+    }
+  }
 
-    // Header row
-    const header: HTMLDivElement = this.renderer.createElement('div');
-    this.renderer.addClass(header, 'dp-header');
+  // ─── MONTH VIEW ─────────────────────────────────────────────
+
+  private renderMonthView(): void {
+    const header = this.makeHeader();
 
     const prevBtn = this.navBtn('&#8249;', () => {
       this.currentYear--;
@@ -102,7 +112,14 @@ export class MonthYearPickerDirective implements OnInit, OnDestroy {
 
     const yearLabel: HTMLSpanElement = this.renderer.createElement('span');
     this.renderer.addClass(yearLabel, 'dp-header-label');
+    this.renderer.addClass(yearLabel, 'dp-header-label--clickable');
     yearLabel.textContent = `Year ${this.currentYear}`;
+    yearLabel.addEventListener('click', (e) => {
+      e.stopPropagation();
+      this.yearPageStart = this.currentYear - 4; // always center on current year
+      this.view = 'year';
+      this.renderDropdown();
+    });
 
     const nextBtn = this.navBtn('&#8250;', () => {
       this.currentYear++;
@@ -114,7 +131,6 @@ export class MonthYearPickerDirective implements OnInit, OnDestroy {
     this.renderer.appendChild(header, nextBtn);
     this.renderer.appendChild(this.dropdown, header);
 
-    // Month grid
     const grid: HTMLDivElement = this.renderer.createElement('div');
     this.renderer.addClass(grid, 'dp-month-grid');
 
@@ -123,10 +139,7 @@ export class MonthYearPickerDirective implements OnInit, OnDestroy {
       this.renderer.addClass(cell, 'dp-month-cell');
       cell.textContent = month;
 
-      if (
-        index === this.selectedMonth &&
-        this.currentYear === this.selectedYear
-      ) {
+      if (index === this.selectedMonth && this.currentYear === this.selectedYear) {
         this.renderer.addClass(cell, 'dp-month-selected');
       }
 
@@ -146,7 +159,72 @@ export class MonthYearPickerDirective implements OnInit, OnDestroy {
     this.renderer.appendChild(this.dropdown, grid);
   }
 
+  // ─── YEAR VIEW ──────────────────────────────────────────────
+
+  private renderYearView(): void {
+    const PAGE = 12;
+
+    const header = this.makeHeader();
+
+    const prevBtn = this.navBtn('&#8249;', () => {
+      this.yearPageStart -= PAGE;
+      this.renderDropdown();
+    });
+
+    const backLabel: HTMLSpanElement = this.renderer.createElement('span');
+    this.renderer.addClass(backLabel, 'dp-header-label');
+    this.renderer.addClass(backLabel, 'dp-header-label--clickable');
+    backLabel.textContent = `Back to ${this.currentYear}`;
+    backLabel.addEventListener('click', (e) => {
+      e.stopPropagation();
+      this.view = 'month';
+      this.renderDropdown();
+    });
+
+    const nextBtn = this.navBtn('&#8250;', () => {
+      this.yearPageStart += PAGE;
+      this.renderDropdown();
+    });
+
+    this.renderer.appendChild(header, prevBtn);
+    this.renderer.appendChild(header, backLabel);
+    this.renderer.appendChild(header, nextBtn);
+    this.renderer.appendChild(this.dropdown, header);
+
+    const grid: HTMLDivElement = this.renderer.createElement('div');
+    this.renderer.addClass(grid, 'dp-month-grid');
+
+    for (let i = 0; i < PAGE; i++) {
+      const year = this.yearPageStart + i;
+      const cell: HTMLDivElement = this.renderer.createElement('div');
+      this.renderer.addClass(cell, 'dp-month-cell');
+      cell.textContent = String(year);
+
+      if (year === this.currentYear) {
+        this.renderer.addClass(cell, 'dp-month-selected');
+      }
+
+      cell.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.currentYear   = year;
+        this.yearPageStart = year - 4; // re-center for next time year view opens
+        this.view          = 'month';
+        this.renderDropdown();
+      });
+
+      this.renderer.appendChild(grid, cell);
+    }
+
+    this.renderer.appendChild(this.dropdown, grid);
+  }
+
   // ─── HELPERS ────────────────────────────────────────────────
+
+  private makeHeader(): HTMLDivElement {
+    const header: HTMLDivElement = this.renderer.createElement('div');
+    this.renderer.addClass(header, 'dp-header');
+    return header;
+  }
 
   private navBtn(html: string, cb: () => void): HTMLButtonElement {
     const btn: HTMLButtonElement = this.renderer.createElement('button');

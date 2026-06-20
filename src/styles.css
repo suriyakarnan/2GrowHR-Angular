@@ -498,7 +498,7 @@ table.app-datatable .link-deactivate:hover {
 }
 
 .dp-icon-btn {
-  padding: 7px 10px;
+  padding: 9px 10px;
   background: #405189;
   border: 1px solid #405189;
   border-radius: 0 4px 4px 0;
@@ -526,6 +526,7 @@ table.app-datatable .link-deactivate:hover {
   border-radius: 6px;
   box-shadow: 0 4px 16px rgba(0,0,0,0.10);
   overflow: hidden;
+  width: 300px;
 }
 
 .dp-dropdown.dp-open {
@@ -574,13 +575,15 @@ table.app-datatable .link-deactivate:hover {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 12px;
+  padding: 0px 5px;
   border-bottom: 1px solid #f0f0f0;
+  background: #e2e5ed;
+  
 }
 
 .dp-header-label {
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 15px !important;
+  font-weight: 500;
   color: #405189;
   flex: 1;
   text-align: center;
@@ -589,10 +592,10 @@ table.app-datatable .link-deactivate:hover {
 .dp-nav-btn {
   background: none;
   border: none;
-  font-size: 20px;
+  font-size: 30px;
   color: #6c757d;
   cursor: pointer;
-  padding: 0 4px;
+  padding: 2px 4px;
   line-height: 1;
   display: flex;
   align-items: center;
@@ -649,13 +652,7 @@ table.app-datatable .link-deactivate:hover {
   pointer-events: none;
 }
 
-/* Today highlighted — dark navy blue circle */
-.dp-today {
-  background: #405189 !important;
-  color: #fff !important;
-  border-radius: 50% !important;
-  font-weight: 700;
-}
+
 
 /* Single picker selected */
 .dp-selected {
@@ -680,45 +677,79 @@ table.app-datatable .link-deactivate:hover {
   border-radius: 0 !important;
 }
 
-/* ─── Month Year Grid ───────────────────────────────────────── */
+/* ============================================================
+   MONTH-YEAR PICKER — pixel-matched to reference
+   ============================================================ */
+
+.dp-year-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #e2e5ed;
+  padding: 13px 16px;
+  border-bottom: 1px solid #e9ebec;
+}
+
+.dp-year-header .dp-nav-btn {
+  color: #405189;
+  font-size: 20px;
+}
+
+.dp-year-header .dp-nav-btn:hover {
+  color: #2c3868;
+}
+
+.dp-year-label {
+  flex: 1;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 700;
+  color: #405189;
+}
 
 .dp-month-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  padding: 10px 12px 14px;
-  gap: 4px;
+  gap: 0;            /* flush cells — divider lines do the separating, not spacing */
 }
 
 .dp-month-cell {
+  padding: 8px 4px;
   text-align: center;
-  padding: 10px 6px;
-  font-size: 13px;
-  font-weight: 600;
-  color: #212529;
-  border-radius: 4px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #1a1a1a;
+  border-right: 1px solid #e9ebec;
+  border-bottom: 1px solid #e9ebec;
+  border-radius: 0;   /* no rounded pills — flush table look */
   cursor: pointer;
   transition: background 0.15s;
 }
 
+
+
+/* Drop the right border on the last column of each row */
+.dp-month-cell:nth-child(3n) {
+  border-right: none;
+}
+
+/* Drop the bottom border on the final row */
+.dp-month-cell:nth-last-child(-n+3) {
+  border-bottom: none;
+}
+
 .dp-month-cell:hover {
-  background: #eef0fb;
-  color: #405189;
+  background: #f6f6f6;
 }
 
 .dp-month-selected {
-  background: #405189 !important;
-  color: #fff !important;
-  border-radius: 4px !important;
+  background: #eeeeee !important;
+  color: #1a1a1a !important;   /* text stays dark — NOT inverted to white/navy */
+  border-radius: 0 !important;
 }
 
 /* ─── Range Picker Layout ───────────────────────────────────── */
 
-.dp-preset-panel {
-  width: 140px;
-  border-right: 1px solid #dee2e6;
-  padding: 10px 0;
-  flex-shrink: 0;
-}
 
 .dp-preset-item {
   padding: 9px 18px;
@@ -803,3 +834,9 @@ table.app-datatable .link-deactivate:hover {
   background: #364474;
 }
 
+.dp-header-label--clickable {
+  cursor: pointer;
+}
+.dp-header-label--clickable:hover {
+  text-decoration: underline;
+}

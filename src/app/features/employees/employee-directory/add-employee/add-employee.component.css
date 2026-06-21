@@ -7,8 +7,10 @@
 }
 
 .breadcrumb-link {
-  color: #6c757d;
-  cursor: pointer;
+    color: #000;
+    font-weight: 600;
+    cursor: pointer;
+    padding-left: 10px;
 }
 
 .breadcrumb-link:hover {
@@ -22,8 +24,8 @@
 }
 
 .breadcrumb-current {
-  color: #2979d4;
-  font-weight: 500;
+   color: #405189;
+   font-weight: 600;
 }
 
 /* ══════════════════════════════════════════════════════════

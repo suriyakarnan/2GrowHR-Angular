@@ -72,14 +72,15 @@ table.app-datatable thead th i.fa-sort {
 table.app-datatable tbody td {
   padding: 12px 8px;
   font-size: 15px;
-  color: #2e3236;
+  color: #191a1a;
   border-bottom: 1px solid #e1e2e4;
   vertical-align: middle;
   font-weight: 400;
+  gap: 15px;
 }
 
 table.app-datatable tbody td:first-child {
-
+  font-size: 15px;
   font-weight: 600;
 }
 
@@ -96,12 +97,13 @@ table.app-datatable tbody td.text-danger * {
 
 /* === View / Deactivate action links === */
 table.app-datatable .link-view {
-  color: #2f7ed8;
-  text-decoration: none;
-  font-size: 13px;
-  white-space: nowrap;
-  display: flex;
-  align-items: center;
+    color: #299CDB;
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 14px;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;  
 }
 
 table.app-datatable .link-view i {
@@ -115,11 +117,13 @@ table.app-datatable .link-view:hover {
 }
 
 table.app-datatable .link-deactivate {
-  color: #e85656;
-  text-decoration: none;
-  font-size: 13px;
-  white-space: nowrap;
-  margin-left: 12px;
+    color: #e85656;
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 14px;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;  
 }
 
 table.app-datatable .link-deactivate i {

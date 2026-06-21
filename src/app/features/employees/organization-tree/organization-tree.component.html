@@ -1,1 +1,66 @@
-<p>organization-tree works!</p>
+<div class="page-content">
+  <div class="container-fluid">
+    <div class="card org-chart-card">
+
+      <div class="card-header org-chart-header ">
+        <h5 class="org-chart-title mb-0">Organization Chart</h5>
+        <div class="org-chart-actions">
+          <button type="button" class="btn btn-top-org" (click)="onTopOfOrg()">Top of the Org</button>
+          <button type="button" class="btn btn-more-options" (click)="onMoreOptions()">
+            <i class="bi bi-three-dots"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="card-body org-chart-body">
+        <div class="row">
+          <div class="col-12 col-sm-6 col-md-6 col-lg-12 col-xl-12 col-xxl-12">
+
+            <!-- Root node -->
+            <div class="org-root-wrapper" *ngIf="rootMember">
+              <div class="org-card org-root-card">
+                <div class="org-avatar org-avatar-lg">
+                  <i class="bi bi-person"></i>
+                </div>
+                <span class="org-root-name">{{ rootMember.name }}</span>
+              </div>
+              <div class="org-root-connector">
+                <span class="org-count-badge">{{ totalCount }}</span>
+              </div>
+            </div>
+
+            <!-- Direct reports row -->
+            <div class="org-children-wrapper" *ngIf="directReports.length">
+              <div class="org-children-scroll">
+                <div class="org-children-track">
+                  <div class="org-card org-child-card"
+                       *ngFor="let member of directReports; trackBy: trackByMemberId">
+                    <div class="org-card-header-row">
+                      <div class="org-avatar">
+                        <i class="bi bi-person"></i>
+                      </div>
+                      <span class="org-name" [title]="member.name + ' (' + member.code + ')'">
+                        {{ member.name }} ({{ member.code }})
+                      </span>
+                    </div>
+                    <div class="org-card-meta">
+                      <span class="org-role">{{ member.role }}</span>
+                      <span class="org-reports-to">{{ member.reportsTo }}</span>
+                      <span class="org-department">{{ member.department }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="org-empty" *ngIf="!directReports.length">
+              No reportees found.
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

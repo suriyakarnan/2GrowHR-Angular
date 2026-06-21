@@ -1,0 +1,252 @@
+/* ── Card shell ── */
+.org-chart-card {
+  width: 100%;
+  max-width: 100%;
+  border-radius: 0.75rem;
+  border: 1px solid #eef0f5;
+  overflow: hidden; /* hard backstop — the scroll row can never push this wider than the screen */
+  box-sizing: border-box;
+}
+
+.org-chart-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  background: #fff;
+  border-bottom: 1px solid #eef0f5;
+  padding: 1rem 1.5rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.org-chart-title {
+  color: var(--vz-primary, #405189);
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.org-chart-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-top-org {
+  background: #fff;
+  border: 1px solid var(--vz-primary, #405189);
+  color: var(--vz-primary, #405189);
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 0.45rem 1rem;
+  border-radius: 0.4rem;
+}
+
+.btn-more-options {
+  background: #eef1fb;
+  border: 1px solid var(--vz-primary, #405189);
+  color: var(--vz-primary, #405189);
+  padding: 0.45rem 0.75rem;
+  border-radius: 0.4rem;
+  line-height: 1;
+}
+
+.org-chart-body {
+  background: #fff;
+  padding: 2rem 1.5rem 1.5rem;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* ── Shared card look ── */
+.org-card {
+  background: #fff;
+  border: 1px solid #eef0f5;
+  border-radius: 0.65rem;
+  box-shadow: 0 2px 6px rgba(28, 28, 52, 0.06);
+}
+
+/* ── Root node ── */
+.org-root-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.org-root-card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.25rem 1.75rem;
+  min-width: 260px;
+}
+
+.org-root-name {
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 0.03em;
+  color: #1c1c34;
+}
+
+.org-root-connector {
+  position: relative;
+  width: 1px;
+  height: 32px;
+  background: #d8d8e3;
+}
+
+.org-count-badge {
+  position: absolute;
+  bottom: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--vz-primary, #405189);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+/* ── Children row + connector ── */
+.org-children-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  margin-top: 24px;
+}
+
+.org-children-scroll {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+
+.org-children-track {
+  display: flex;
+  gap: 1.25rem;
+  width: max-content;            /* sizes to exactly the cards' total width — this is the actual fix */
+  border-top: 1px solid #d8d8e3; /* the bus line now starts at the first card, ends at the last */
+  padding: 18px 0.25rem 0.75rem; /* top space for each card's tick connector, bottom space for shadows */
+}
+
+.org-children-scroll {
+  display: flex;
+  gap: 1.25rem;             /* spacing between cards instead of shared borders */
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;              /* lets the flex item actually shrink to fit, instead of forcing its parent wider */
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  padding: 1.25rem 0.25rem 0.75rem; /* vertical room so each card's shadow isn't clipped */
+}
+
+.org-child-card {
+  position: relative;
+  flex: 0 0 270px;
+  min-width: 270px;
+  padding: 1.1rem 1.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.org-child-card::before {
+  content: '';
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  width: 1px;
+  height: 18px;
+  background: #d8d8e3;
+}
+
+/* ── Avatar ── */
+.org-avatar {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #ecedf6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #b6bac8;
+  font-size: 1.2rem;
+}
+
+.org-avatar-lg {
+  width: 56px;
+  height: 56px;
+  font-size: 1.5rem;
+}
+
+/* ── Child card content ── */
+.org-card-header-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.org-name {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: #1c1c34;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 170px;
+}
+
+.org-card-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.org-role {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: #1c1c34;
+}
+
+.org-reports-to,
+.org-department {
+  font-size: 0.85rem;
+  color: #8c8ca3;
+}
+
+.org-empty {
+  padding: 2rem;
+  text-align: center;
+  color: #8c8ca3;
+}
+
+/* ── Responsive ── */
+@media (max-width: 575.98px) {
+  .org-chart-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .org-chart-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+  .org-child-card {
+    flex-basis: 230px;
+    min-width: 230px;
+    padding: 1rem;
+  }
+}

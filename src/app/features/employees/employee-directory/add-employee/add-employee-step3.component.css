@@ -1,0 +1,75 @@
+/* ── Step 3: Salary Details ── */
+
+.step3-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 420px; /* gives the button row room to sit low, like the screenshot */
+}
+
+.step3-wrapper .section-title {
+  color: var(--vz-primary, #405189);
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.step3-wrapper .form-label {
+  font-weight: 500;
+  color: #495057;
+  margin-bottom: 0.5rem;
+}
+
+.step3-wrapper .form-select,
+.step3-wrapper .form-control {
+  border-radius: 0.25rem;
+  border: 1px solid #ced4da;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.9rem;
+}
+
+.step3-wrapper .form-select:focus,
+.step3-wrapper .form-control:focus {
+  border-color: var(--vz-primary, #405189);
+  box-shadow: 0 0 0 0.15rem rgba(64, 81, 137, 0.15);
+  outline: none;
+}
+
+/* ── Action buttons ── */
+.step3-actions {
+  margin-top: auto;   /* pins the row to the bottom of step3-wrapper */
+  padding-top: 2rem;
+}
+
+.btn-update-later {
+  background-color: #fff;
+  border: 1px solid var(--vz-primary, #405189);
+  color: var(--vz-primary, #405189);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  font-size: 0.8125rem;
+  padding: 0.5rem 1.25rem;
+  border-radius: 0.25rem;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.btn-update-later:hover {
+  background-color: var(--vz-primary, #405189);
+  color: #fff;
+}
+
+/* ── Responsive ── */
+@media (max-width: 991.98px) {
+  .step3-wrapper {
+    min-height: 320px;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .step3-actions {
+    flex-direction: column-reverse;
+  }
+  .step3-actions .btn {
+    width: 100%;
+  }
+}

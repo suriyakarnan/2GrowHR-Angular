@@ -53,19 +53,19 @@
             </div>
             <div class="col-12 col-sm-6 col-md-6 col-lg-3">
               <label class="form-label">Division <span class="text-danger">*</span></label>
-              <select class="form-select" formControlName="division">
+              <select class="form-select" formControlName="division" selectpicker pickerLabel="SAN MEDIA PRIVATE LIMITED & Co Asxcvbnm">
                 <option value="">SAN MEDIA PRIVATE LIMITED & Co Asxcvbnm</option>
               </select>
             </div>
             <div class="col-12 col-sm-6 col-md-6 col-lg-3">
               <label class="form-label">Sub Division</label>
-              <select class="form-select" formControlName="subDivision">
+              <select class="form-select" formControlName="subDivision" selectpicker pickerLabel="--Select--">
                 <option value="">--Select--</option>
               </select>
             </div>
             <div class="col-12 col-sm-6 col-md-6 col-lg-3">
               <label class="form-label">Job Type <span class="text-danger">*</span></label>
-              <select class="form-select" formControlName="jobType">
+              <select class="form-select" formControlName="jobType" selectpicker pickerLabel="--Select--">
                 <option value="">--Select--</option>
               </select>
             </div>
@@ -75,7 +75,7 @@
             <div class="col-12 col-sm-6 col-md-6 col-lg-3">
               <label class="form-label">Employee Name <span class="text-danger">*</span></label>
               <div class="input-group">
-                <select class="form-select salutation-select" formControlName="salutation">
+                <select class="form-select salutation-select" formControlName="salutation" selectpicker pickerLabel="--">
                   <option value="">--</option>
                   <option value="Mr">Mr</option>
                   <option value="Ms">Ms</option>
@@ -106,7 +106,7 @@
             </div>
             <div class="col-12 col-sm-6 col-md-6 col-lg-3">
               <label class="form-label">Gender <span class="text-danger">*</span></label>
-              <select class="form-select" formControlName="gender">
+              <select class="form-select" formControlName="gender" selectpicker pickerLabel="--SELECT--">
                 <option value="">--SELECT--</option>
                 <option value="Male">Male</option>
                 <option value="Female">Female</option>
@@ -115,7 +115,7 @@
             </div>
             <div class="col-12 col-sm-6 col-md-6 col-lg-3">
               <label class="form-label">Marital Status <span class="text-danger">*</span></label>
-              <select class="form-select" formControlName="maritalStatus">
+              <select class="form-select" formControlName="maritalStatus" selectpicker pickerLabel="--SELECT--">
                 <option value="">--SELECT--</option>
                 <option value="Single">Single</option>
                 <option value="Married">Married</option>
@@ -136,17 +136,11 @@
             </div>
             <div class="col-12 col-sm-6 col-md-6 col-lg-3">
               <label class="form-label">Date of Joining <span class="text-danger">*</span></label>
-              <div class="input-group">
-                <input class="form-control" formControlName="dateOfJoining">
-                <span class="input-group-text calendar-btn"><i class="bi bi-calendar3"></i></span>
-              </div>
+              <input class="form-control" formControlName="dateOfJoining" datePicker>
             </div>
             <div class="col-12 col-sm-6 col-md-6 col-lg-3">
               <label class="form-label">Date of Confirmation <span class="text-danger">*</span></label>
-              <div class="input-group">
-                <input class="form-control" formControlName="dateOfConfirmation">
-                <span class="input-group-text calendar-btn"><i class="bi bi-calendar3"></i></span>
-              </div>
+              <input class="form-control" formControlName="dateOfConfirmation" datePicker>
             </div>
             <div class="col-12 col-sm-6 col-md-6 col-lg-3">
               <label class="form-label">Personal No <span class="text-danger">*</span></label>
@@ -167,13 +161,13 @@
             </div>
             <div class="col-12 col-sm-6 col-md-6 col-lg-3">
               <label class="form-label">Department <span class="text-danger">*</span></label>
-              <select class="form-select" formControlName="department">
+              <select class="form-select" formControlName="department" selectpicker pickerLabel="--Select--">
                 <option value="">--Select--</option>
               </select>
             </div>
             <div class="col-12 col-sm-6 col-md-6 col-lg-3">
               <label class="form-label">Designation <span class="text-danger">*</span></label>
-              <select class="form-select" formControlName="designation">
+              <select class="form-select" formControlName="designation" selectpicker pickerLabel="--Select--">
                 <option value="">--Select--</option>
               </select>
             </div>
@@ -182,19 +176,19 @@
           <div class="row g-3 mb-3">
             <div class="col-12 col-sm-6 col-md-6 col-lg-3">
               <label class="form-label">Reporting To</label>
-              <select class="form-select" formControlName="reportingTo">
+              <select class="form-select" formControlName="reportingTo" selectpicker pickerLabel="Admin">
                 <option value="Admin">Admin</option>
               </select>
             </div>
             <div class="col-12 col-sm-6 col-md-6 col-lg-3">
               <label class="form-label">Bonus Pay Term</label>
-              <select class="form-select" formControlName="bonusPayTerm">
+              <select class="form-select" formControlName="bonusPayTerm" selectpicker pickerLabel="--SELECT--">
                 <option value="">--SELECT--</option>
               </select>
             </div>
             <div class="col-12 col-sm-6 col-md-6 col-lg-3">
               <label class="form-label">City <span class="text-danger">*</span></label>
-              <select class="form-select" formControlName="city">
+              <select class="form-select" formControlName="city" selectpicker pickerLabel="--Select--">
                 <option value="">--Select--</option>
               </select>
             </div>
@@ -207,25 +201,25 @@
           <div class="row g-3 mb-3">
             <div class="col-12 col-sm-6 col-md-6 col-lg-3">
               <label class="form-label">Headquarters</label>
-              <select class="form-select" formControlName="headquarters">
+              <select class="form-select" formControlName="headquarters" selectpicker pickerLabel="--Select--">
                 <option value="">--Select--</option>
               </select>
             </div>
             <div class="col-12 col-sm-6 col-md-6 col-lg-3">
               <label class="form-label">Employee Type</label>
-              <select class="form-select" formControlName="employeeType">
+              <select class="form-select" formControlName="employeeType" selectpicker pickerLabel="--SELECT--">
                 <option value="">--SELECT--</option>
               </select>
             </div>
             <div class="col-12 col-sm-6 col-md-6 col-lg-3">
               <label class="form-label">Category</label>
-              <select class="form-select" formControlName="category">
+              <select class="form-select" formControlName="category" selectpicker pickerLabel="--Select--">
                 <option value="">--Select--</option>
               </select>
             </div>
             <div class="col-12 col-sm-6 col-md-6 col-lg-3">
               <label class="form-label">Work State <span class="text-danger">*</span></label>
-              <select class="form-select" formControlName="workState">
+              <select class="form-select" formControlName="workState" selectpicker pickerLabel="--Select--">
                 <option value="">--Select--</option>
               </select>
             </div>
@@ -234,7 +228,7 @@
           <div class="row g-3 mb-3">
             <div class="col-12 col-sm-6 col-md-6 col-lg-3">
               <label class="form-label">Replace to whom</label>
-              <select class="form-select" formControlName="replaceToWhom">
+              <select class="form-select" formControlName="replaceToWhom" selectpicker pickerLabel="--Select--">
                 <option value="">--Select--</option>
               </select>
             </div>
@@ -267,7 +261,7 @@
             </div>
             <div class="col-12 col-sm-6 col-md-6 col-lg-3">
               <label class="form-label">Nationality <span class="text-danger">*</span></label>
-              <select class="form-select" formControlName="nationality">
+              <select class="form-select" formControlName="nationality" selectpicker pickerLabel="--SELECT--">
                 <option value="">--SELECT--</option>
               </select>
             </div>
@@ -276,25 +270,25 @@
           <div class="row g-3 mb-3">
             <div class="col-12 col-sm-6 col-md-6 col-lg-3">
               <label class="form-label">WeekOff Mapping</label>
-              <select class="form-select" formControlName="weekOffMapping">
+              <select class="form-select" formControlName="weekOffMapping" selectpicker pickerLabel="--SELECT--">
                 <option value="">--SELECT--</option>
               </select>
             </div>
             <div class="col-12 col-sm-6 col-md-6 col-lg-3">
               <label class="form-label">Shift Mapping</label>
-              <select class="form-select" formControlName="shiftMapping">
+              <select class="form-select" formControlName="shiftMapping" selectpicker pickerLabel="--SELECT--">
                 <option value="">--SELECT--</option>
               </select>
             </div>
             <div class="col-12 col-sm-6 col-md-6 col-lg-3">
               <label class="form-label">Previous Member Id</label>
-              <select class="form-select" formControlName="previousMemberId">
+              <select class="form-select" formControlName="previousMemberId" selectpicker pickerLabel="--SELECT--">
                 <option value="">--SELECT--</option>
               </select>
             </div>
             <div class="col-12 col-sm-6 col-md-6 col-lg-3">
               <label class="form-label">Are You Fresher?</label>
-              <select class="form-select" formControlName="isFresher">
+              <select class="form-select" formControlName="isFresher" selectpicker pickerLabel="--SELECT--">
                 <option value="">--SELECT--</option>
                 <option value="Yes">Yes</option>
                 <option value="No">No</option>
@@ -305,7 +299,7 @@
           <div class="row g-3 mb-4">
             <div class="col-12 col-sm-6 col-md-6 col-lg-3">
               <label class="form-label">Is Physical Handicap</label>
-              <select class="form-select" formControlName="isPhysicalHandicap">
+              <select class="form-select" formControlName="isPhysicalHandicap" selectpicker pickerLabel="--SELECT--">
                 <option value="">--SELECT--</option>
                 <option value="Yes">Yes</option>
                 <option value="No">No</option>
@@ -317,13 +311,13 @@
           <div class="row g-3 mb-4">
             <div class="col-12 col-sm-6 col-md-3">
               <label class="form-label">Level 1</label>
-              <select class="form-select" formControlName="leaveLevel1">
+              <select class="form-select" formControlName="leaveLevel1" selectpicker pickerLabel="--Select--">
                 <option value="">--Select--</option>
               </select>
             </div>
             <div class="col-12 col-sm-6 col-md-3">
               <label class="form-label">Level 2</label>
-              <select class="form-select" formControlName="leaveLevel2">
+              <select class="form-select" formControlName="leaveLevel2" selectpicker pickerLabel="--Select--">
                 <option value="">--Select--</option>
               </select>
             </div>
@@ -333,13 +327,13 @@
           <div class="row g-3 mb-4">
             <div class="col-12 col-sm-6 col-md-3">
               <label class="form-label">Level 1</label>
-              <select class="form-select" formControlName="reimbLevel1">
+              <select class="form-select" formControlName="reimbLevel1" selectpicker pickerLabel="--Select--">
                 <option value="">--Select--</option>
               </select>
             </div>
             <div class="col-12 col-sm-6 col-md-3">
               <label class="form-label">Level 2</label>
-              <select class="form-select" formControlName="reimbLevel2">
+              <select class="form-select" formControlName="reimbLevel2" selectpicker pickerLabel="--Select--">
                 <option value="">--Select--</option>
               </select>
             </div>
@@ -458,7 +452,7 @@
           <div class="row g-3 mb-5">
             <div class="col-12 col-sm-6 col-md-6 col-lg-3">
               <label class="form-label">Blood Group</label>
-              <select class="form-select" formControlName="bloodGroup">
+              <select class="form-select" formControlName="bloodGroup" selectpicker pickerLabel="--SELECT--">
                 <option value="">--SELECT--</option>
                 <option value="A+">A+</option>
                 <option value="A-">A-</option>
@@ -472,24 +466,15 @@
             </div>
             <div class="col-12 col-sm-6 col-md-6 col-lg-3">
               <label class="form-label">Date of Anniversary</label>
-              <div class="input-group">
-                <input type="text" class="form-control doa-input" formControlName="dateOfAnniversary" placeholder="">
-                <span class="input-group-text calendar-btn"><i class="bi bi-calendar3"></i></span>
-              </div>
+              <input type="text" class="form-control doa-input" formControlName="dateOfAnniversary" datePicker>
             </div>
             <div class="col-12 col-sm-6 col-md-6 col-lg-3">
               <label class="form-label">Date of Birth (As per Document)</label>
-              <div class="input-group">
-                <input type="text" class="form-control" formControlName="dobDocument" placeholder="">
-                <span class="input-group-text calendar-btn"><i class="bi bi-calendar3"></i></span>
-              </div>
+              <input type="text" class="form-control" formControlName="dobDocument" datePicker>
             </div>
             <div class="col-12 col-sm-6 col-md-6 col-lg-3">
               <label class="form-label">Date of Birth (Actual)</label>
-              <div class="input-group">
-                <input type="text" class="form-control" formControlName="dobActual" placeholder="">
-                <span class="input-group-text calendar-btn"><i class="bi bi-calendar3"></i></span>
-              </div>
+              <input type="text" class="form-control" formControlName="dobActual" datePicker>
             </div>
           </div>
 
@@ -514,10 +499,7 @@
                   <td><input type="text" class="family-input" [(ngModel)]="row.relationship" [ngModelOptions]="{standalone: true}"></td>
                   <td><input type="text" class="family-input" [(ngModel)]="row.mobileNumber" [ngModelOptions]="{standalone: true}"></td>
                   <td>
-                    <div class="family-date-group">
-                      <input type="text" class="family-input" [(ngModel)]="row.dob" [ngModelOptions]="{standalone: true}" placeholder="">
-                      <button type="button" class="family-cal-btn"><i class="bi bi-calendar3"></i></button>
-                    </div>
+                    <input type="text" class="family-input" [(ngModel)]="row.dob" [ngModelOptions]="{standalone: true}" datePicker>
                   </td>
                   <td><input type="text" class="family-input" [(ngModel)]="row.aadhaar" [ngModelOptions]="{standalone: true}"></td>
                   <td>
@@ -561,19 +543,13 @@
                   </div>
                   <div class="col-12 col-sm-6 col-md-6 col-lg-3">
                     <label class="form-label">Date of Joining</label>
-                    <div class="input-group">
-                      <input type="text" class="form-control" [(ngModel)]="exp.dateOfJoining" [ngModelOptions]="{standalone: true}" placeholder="">
-                      <span class="input-group-text calendar-btn"><i class="bi bi-calendar3"></i></span>
-                    </div>
+                    <input type="text" class="form-control" [(ngModel)]="exp.dateOfJoining" [ngModelOptions]="{standalone: true}" datePicker>
                   </div>
                 </div>
                 <div class="row g-3">
                   <div class="col-12 col-sm-6 col-md-6 col-lg-3">
                     <label class="form-label">Date of relieving</label>
-                    <div class="input-group">
-                      <input type="text" class="form-control" [(ngModel)]="exp.dateOfRelieving" [ngModelOptions]="{standalone: true}" placeholder="">
-                      <span class="input-group-text calendar-btn"><i class="bi bi-calendar3"></i></span>
-                    </div>
+                    <input type="text" class="form-control" [(ngModel)]="exp.dateOfRelieving" [ngModelOptions]="{standalone: true}" datePicker>
                   </div>
                   <div class="col-12 col-sm-6 col-md-6 col-lg-3">
                     <label class="form-label">Location</label>
@@ -606,7 +582,7 @@
                 <div class="row g-3 mb-3">
                   <div class="col-12 col-sm-6 col-md-6 col-lg-3">
                     <label class="form-label">Degree</label>
-                    <select class="form-select" [(ngModel)]="edu.degree" [ngModelOptions]="{standalone: true}">
+                    <select class="form-select" [(ngModel)]="edu.degree" [ngModelOptions]="{standalone: true}" selectpicker pickerLabel="---SELECT---">
                       <option value="">---SELECT---</option>
                       <option value="BE">BE</option>
                       <option value="BTech">BTech</option>
@@ -628,19 +604,13 @@
                   </div>
                   <div class="col-12 col-sm-6 col-md-6 col-lg-3">
                     <label class="form-label">Date of Joining</label>
-                    <div class="input-group">
-                      <input type="text" class="form-control" [(ngModel)]="edu.dateOfJoining" [ngModelOptions]="{standalone: true}" placeholder="">
-                      <span class="input-group-text calendar-btn"><i class="bi bi-calendar3"></i></span>
-                    </div>
+                    <input type="text" class="form-control" [(ngModel)]="edu.dateOfJoining" [ngModelOptions]="{standalone: true}" datePicker>
                   </div>
                 </div>
                 <div class="row g-3">
                   <div class="col-12 col-sm-6 col-md-6 col-lg-3">
                     <label class="form-label">Date of Completion</label>
-                    <div class="input-group">
-                      <input type="text" class="form-control" [(ngModel)]="edu.dateOfCompletion" [ngModelOptions]="{standalone: true}" placeholder="">
-                      <span class="input-group-text calendar-btn"><i class="bi bi-calendar3"></i></span>
-                    </div>
+                    <input type="text" class="form-control" [(ngModel)]="edu.dateOfCompletion" [ngModelOptions]="{standalone: true}" datePicker>
                   </div>
                   <div class="col-12 col-sm-6 col-md-6 col-lg-3">
                     <label class="form-label">Location</label>
@@ -678,19 +648,19 @@
             </div>
             <div class="extra-field-item">
               <label class="extra-field-label">field 5</label>
-              <select class="extra-field-input extra-field-select" formControlName="field5">
+              <select class="extra-field-input extra-field-select" formControlName="field5" selectpicker pickerLabel="---SELECT---">
                 <option value="">---SELECT---</option>
               </select>
             </div>
             <div class="extra-field-item">
               <label class="extra-field-label">CBM</label>
-              <select class="extra-field-input extra-field-select" formControlName="cbm">
+              <select class="extra-field-input extra-field-select" formControlName="cbm" selectpicker pickerLabel="Nothing selected">
                 <option value="">Nothing selected</option>
               </select>
             </div>
             <div class="extra-field-item">
               <label class="extra-field-label">field 6 <span class="text-danger">*</span></label>
-              <select class="extra-field-input extra-field-select" formControlName="field6">
+              <select class="extra-field-input extra-field-select" formControlName="field6" selectpicker pickerLabel="Nothing selected">
                 <option value="">Nothing selected</option>
               </select>
             </div>
@@ -704,7 +674,7 @@
             </div>
             <div class="extra-field-item">
               <label class="extra-field-label">Section <span class="text-danger">*</span></label>
-              <select class="extra-field-input extra-field-select" formControlName="section">
+              <select class="extra-field-input extra-field-select" formControlName="section" selectpicker pickerLabel="---SELECT---">
                  <option value="">---SELECT---</option>
               </select>
             </div>
@@ -720,12 +690,37 @@
         </ng-container>
 
         <!-- ═══════════════════════════════════════════ -->
-        <!-- STEP 3: Your new design goes here           -->
+        <!-- STEP 3: Salary Details                      -->
         <!-- ═══════════════════════════════════════════ -->
-        <div *ngIf="currentStep === 3">
-          <div class="d-flex justify-content-end gap-2 mt-4">
-            <button type="button" class="btn btn-outline-secondary" (click)="prevStep()">Back</button>
-            <button type="button" class="btn btn-primary-custom" (click)="onSubmit()">Save</button>
+        <div *ngIf="currentStep === 3" class="step3-wrapper">
+          <form [formGroup]="step3Form">
+
+            <h6 class="section-title">Salary Information</h6>
+
+            <div class="row g-3 mb-3">
+              <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+                <label class="form-label">Template Name</label>
+                <select class="form-select" formControlName="templateName" selectpicker pickerLabel="Nothing selected">
+                  <option value="">Nothing selected</option>
+                </select>
+              </div>
+              <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+                <label class="form-label">Yearly Monthly</label>
+                <select class="form-select" formControlName="yearlyMonthly" selectpicker pickerLabel="Nothing selected">
+                  <option value="">Nothing selected</option>
+                </select>
+              </div>
+              <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+                <label class="form-label">CTC Yearly</label>
+                <input type="text" class="form-control" formControlName="ctcYearly">
+              </div>
+            </div>
+
+          </form>
+
+          <div class="d-flex justify-content-end gap-2 step3-actions">
+            <button type="button" class="btn btn-update-later" (click)="onUpdateLater()">Update Later</button>
+            <button type="button" class="btn btn-primary-custom" (click)="onSubmit()">Finish</button>
           </div>
         </div>
 

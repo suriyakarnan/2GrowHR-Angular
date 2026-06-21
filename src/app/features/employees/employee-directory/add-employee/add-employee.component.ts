@@ -3,14 +3,18 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+// TODO: update these two paths to wherever the directives actually live in your project
+import { SelectpickerDirective } from '../../../../shared/components/selectpicker/selectpicker.directive';
+import { DatePickerDirective } from '../../../../shared/components/datepicker/date-picker.directive';
 
 @Component({
   selector: 'app-add-employee',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, SelectpickerDirective, DatePickerDirective],
   templateUrl: './add-employee.component.html',
   styleUrls: ['./add-employee.component.css',
-              './add-employee-step2.component.css']
+              './add-employee-step2.component.css',
+              './add-employee-step3.component.css']
 })
 export class AddEmployeeComponent {
   currentStep = 1;
@@ -24,6 +28,7 @@ export class AddEmployeeComponent {
 
   step1Form: FormGroup;
   step2Form: FormGroup;
+  step3Form: FormGroup;
 
   familyRows: Array<{
     name: string; relationship: string;
@@ -119,6 +124,12 @@ export class AddEmployeeComponent {
       nothing123:        [''],
       section:           [''],
     });
+
+    this.step3Form = this.fb.group({
+      templateName:  [''],
+      yearlyMonthly: [''],
+      ctcYearly:     ['']
+    });
   }
 
   nextStep(): void {
@@ -174,6 +185,7 @@ export class AddEmployeeComponent {
     const payload = {
       ...this.step1Form.getRawValue(),
       ...this.step2Form.value,
+      ...this.step3Form.value,
       familyDetails:     this.familyRows,
       experienceDetails: this.experienceList,
       educationDetails:  this.educationList
@@ -181,6 +193,21 @@ export class AddEmployeeComponent {
     console.log('Employee data:', payload);
     this.router.navigate(['/employees/employee-directory']);
   }
+
+  onUpdateLater(): void {
+   // Persists progress so far without finalizing — wire this to your
+   // draft/save-progress API endpoint when it's ready.
+   const payload = {
+     ...this.step1Form.getRawValue(),
+     ...this.step2Form.value,
+     ...this.step3Form.value,
+     familyDetails:     this.familyRows,
+     experienceDetails: this.experienceList,
+     educationDetails:  this.educationList
+   };
+   console.log('Saved for later:', payload);
+   this.router.navigate(['/employees/employee-directory']);
+ }
 
   onCancel(): void {
     this.router.navigate(['/employees/employee-directory']);

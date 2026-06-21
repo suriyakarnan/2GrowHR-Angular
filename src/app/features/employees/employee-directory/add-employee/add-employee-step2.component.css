@@ -1,0 +1,257 @@
+/* ══════════════════════════════════════════════════════════
+   STEP 2 — Personal Information
+══════════════════════════════════════════════════════════ */
+.doa-input {
+  background-color: #dde0ea !important;
+}
+
+/* ══════════════════════════════════════════════════════════
+   STEP 2 — Family Details Table
+══════════════════════════════════════════════════════════ */
+.family-table-wrapper {
+  width: 100%;
+  border: 1px solid #e4e6ef;
+  border-radius: 6px;
+  overflow-x: auto;          /* horizontal scroll on small screens */
+  -webkit-overflow-scrolling: touch;
+}
+
+.family-table {
+  width: 100%;
+  min-width: 640px;          /* prevent columns from collapsing */
+  border-collapse: collapse;
+  table-layout: auto;
+}
+
+.family-table thead tr {
+  background-color: #f1f3f7;
+}
+
+.family-table thead th {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #444;
+  padding: 11px 14px;
+  border-bottom: 1px solid #e4e6ef;
+  white-space: nowrap;
+  text-align: left;
+}
+
+.family-table tbody td {
+  padding: 8px 10px;
+  vertical-align: middle;
+  border-bottom: 1px solid #f0f2f5;
+}
+
+.family-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Bare input inside table cells */
+.family-input {
+  width: 100%;
+  height: 36px;
+  border: 1px solid #dee2e6;
+  border-radius: 5px;
+  padding: 0 10px;
+  font-size: 12.5px;
+  color: #333;
+  outline: none;
+  background: #fff;
+}
+
+.family-input:focus {
+  border-color: #2c3e6b;
+  box-shadow: 0 0 0 0.1rem rgba(44, 62, 107, 0.15);
+}
+
+/* DOB cell group */
+.family-date-group {
+  display: flex;
+  align-items: center;
+}
+
+.family-date-group .family-input {
+  border-radius: 5px 0 0 5px;
+  border-right: none;
+}
+
+.family-cal-btn {
+  height: 36px;
+  padding: 0 9px;
+  background-color: #2c3e6b;
+  border: 1px solid #2c3e6b;
+  border-radius: 0 5px 5px 0;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  font-size: 0.8rem;
+  flex-shrink: 0;
+}
+
+.btn-family-delete {
+  background: none;
+  border: none;
+  color: #dc3545;
+  font-size: 0.95rem;
+  cursor: pointer;
+  padding: 2px 6px;
+}
+
+.btn-family-delete:hover {
+  color: #a71d2a;
+}
+
+/* ══════════════════════════════════════════════════════════
+   STEP 2 — Teal ADD ROW / ADD EXPERIENCE / ADD EDUCATION
+══════════════════════════════════════════════════════════ */
+.btn-add-green {
+  background-color: #17a589;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.42rem 1.1rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.btn-add-green:hover {
+  background-color: #138d75;
+  color: #fff;
+}
+
+/* ══════════════════════════════════════════════════════════
+   STEP 2 — Experience / Education dynamic section wrapper
+══════════════════════════════════════════════════════════ */
+.dynamic-section-wrapper {
+  background-color: #f0f2f7;
+  border-radius: 10px;
+  padding: 16px 16px 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.dynamic-card {
+  background-color: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #e4e6ef;
+  border-left: 3px solid #2c3e6b;
+  margin-bottom: 12px;
+  overflow: hidden;
+}
+
+.dynamic-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 13px 18px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.dynamic-card-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #2c3e6b;
+}
+
+.btn-circle-minus {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: #e74c3c;
+  font-size: 1.25rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+}
+
+.btn-circle-minus:hover {
+  color: #c0392b;
+}
+
+.dynamic-card-body {
+  padding: 16px 18px;
+}
+
+/* ══════════════════════════════════════════════════════════
+   STEP 2 — Extra Fields — stacked single column
+══════════════════════════════════════════════════════════ */
+.extra-fields-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  max-width: 420px;
+}
+
+.extra-field-item {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 14px;
+}
+
+.extra-field-label {
+  font-size: 0.78rem;
+  color: #6d7a8a;
+  font-weight: 500;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.extra-field-input {
+  height: 42px;
+  border: 1.5px solid #d5d8e0;
+  border-radius: 6px;
+  padding: 0 12px;
+  font-size: 13px;
+  color: #333;
+  background: #fff;
+  outline: none;
+  width: 100%;
+}
+
+.extra-field-input:focus {
+  border-color: #2c3e6b;
+  box-shadow: 0 0 0 0.1rem rgba(44, 62, 107, 0.12);
+}
+
+.extra-field-select {
+  appearance: auto;
+  cursor: pointer;
+}
+
+/* ══════════════════════════════════════════════════════════
+   Responsive
+══════════════════════════════════════════════════════════ */
+@media (max-width: 767.98px) {
+  .extra-fields-stack {
+    max-width: 100%;
+  }
+
+  /* Table scrolls horizontally — no padding squeeze needed */
+  .family-table-wrapper {
+    border-radius: 4px;
+  }
+
+  .dynamic-card-body {
+    padding: 12px;
+  }
+
+  .dynamic-card-header {
+    padding: 10px 12px;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .btn-add-green {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
+}

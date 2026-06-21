@@ -1,14 +1,16 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-add-employee',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule],
   templateUrl: './add-employee.component.html',
-  styleUrls: ['./add-employee.component.css']
+  styleUrls: ['./add-employee.component.css',
+              './add-employee-step2.component.css']
 })
 export class AddEmployeeComponent {
   currentStep = 1;
@@ -21,11 +23,26 @@ export class AddEmployeeComponent {
   ];
 
   step1Form: FormGroup;
+  step2Form: FormGroup;
+
+  familyRows: Array<{
+    name: string; relationship: string;
+    mobileNumber: string; dob: string; aadhaar: string;
+  }> = [{ name: '', relationship: '', mobileNumber: '', dob: '', aadhaar: '' }];
+
+  experienceList: Array<{
+    experienceYears: string; companyName: string; jobTitle: string;
+    dateOfJoining: string; dateOfRelieving: string; location: string;
+  }> = [{ experienceYears: '', companyName: '', jobTitle: '', dateOfJoining: '', dateOfRelieving: '', location: '' }];
+
+  educationList: Array<{
+    degree: string; branch: string; university: string;
+    dateOfJoining: string; dateOfCompletion: string; location: string;
+  }> = [{ degree: '', branch: '', university: '', dateOfJoining: '', dateOfCompletion: '', location: '' }];
 
   constructor(private fb: FormBuilder, private router: Router) {
-    this.step1Form = this.fb.group({
 
-      // ── Basic Information ──────────────────────────────
+    this.step1Form = this.fb.group({
       employeeCode:       [{ value: '', disabled: true }],
       division:           ['', Validators.required],
       subDivision:        [''],
@@ -43,8 +60,6 @@ export class AddEmployeeComponent {
       dateOfJoining:      ['', Validators.required],
       dateOfConfirmation: ['', Validators.required],
       personalNo:         ['', Validators.required],
-
-      // ── Personal Details ───────────────────────────────
       officeNo:           [''],
       emergencyContactNo: [''],
       department:         ['', Validators.required],
@@ -70,14 +85,10 @@ export class AddEmployeeComponent {
       previousMemberId:   [''],
       isFresher:          [''],
       isPhysicalHandicap: [''],
-
-      // ── Leave & Reimbursement Levels ───────────────────
       leaveLevel1:        [''],
       leaveLevel2:        [''],
       reimbLevel1:        [''],
       reimbLevel2:        [''],
-
-      // ── Enable Access toggles ──────────────────────────
       portalAccess:       [false],
       portalUserName:     [''],
       portalPassword:     [''],
@@ -91,18 +102,31 @@ export class AddEmployeeComponent {
       lwf:                [false],
       higherWages:        [false]
     });
+
+    this.step2Form = this.fb.group({
+      bloodGroup:        [''],
+      dateOfAnniversary: [''],
+      dobDocument:       [''],
+      dobActual:         [''],
+      micr:              [''],
+      field1:            [''],
+      field2:            [''],
+      field3:            [''],
+      field5:            [''],
+      cbm:               [''],
+      field6:            [''],
+      nothing:           [''],
+      nothing123:        [''],
+      section:           [''],
+    });
   }
 
   nextStep(): void {
-    if (this.currentStep < this.totalSteps) {
-      this.currentStep++;
-    }
+    if (this.currentStep < this.totalSteps) this.currentStep++;
   }
 
   prevStep(): void {
-    if (this.currentStep > 1) {
-      this.currentStep--;
-    }
+    if (this.currentStep > 1) this.currentStep--;
   }
 
   onToggleChange(controlName: string): void {
@@ -114,10 +138,6 @@ export class AddEmployeeComponent {
         this.step1Form.patchValue({ pfAccountNumber: '', uanNumber: '' });
       } else if (controlName === 'tds') {
         this.step1Form.patchValue({ tdsRegime: 'old' });
-      } else if (controlName === 'stateInsurance' ) {
-        this.step1Form.patchValue({ stateInsurance : ''})
-      } else if (controlName === 'lwf') {
-        this.step1Form.patchValue({ lwf : ''})
       }
     }
   }
@@ -126,8 +146,38 @@ export class AddEmployeeComponent {
     this.step1Form.patchValue({ tdsRegime: regime });
   }
 
+  addFamilyRow(): void {
+    this.familyRows.push({ name: '', relationship: '', mobileNumber: '', dob: '', aadhaar: '' });
+  }
+
+  removeFamilyRow(index: number): void {
+    this.familyRows.splice(index, 1);
+  }
+
+  addExperience(): void {
+    this.experienceList.push({ experienceYears: '', companyName: '', jobTitle: '', dateOfJoining: '', dateOfRelieving: '', location: '' });
+  }
+
+  removeExperience(index: number): void {
+    this.experienceList.splice(index, 1);
+  }
+
+  addEducation(): void {
+    this.educationList.push({ degree: '', branch: '', university: '', dateOfJoining: '', dateOfCompletion: '', location: '' });
+  }
+
+  removeEducation(index: number): void {
+    this.educationList.splice(index, 1);
+  }
+
   onSubmit(): void {
-    const payload = this.step1Form.getRawValue();
+    const payload = {
+      ...this.step1Form.getRawValue(),
+      ...this.step2Form.value,
+      familyDetails:     this.familyRows,
+      experienceDetails: this.experienceList,
+      educationDetails:  this.educationList
+    };
     console.log('Employee data:', payload);
     this.router.navigate(['/employees/employee-directory']);
   }

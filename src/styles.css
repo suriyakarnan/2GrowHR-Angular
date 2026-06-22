@@ -484,17 +484,18 @@ table.app-datatable .link-deactivate:hover {
 }
 
 .dp-input {
-  flex: 1;
-  padding: 7px 12px;
-  border: 1px solid #dee2e6;
-  border-right: none;
-  border-radius: 4px 0 0 4px;
-  font-size: 13px;
-  font-weight: 500;
-  color: #0d0d0e;
-  outline: none;
-  background: #fff;
-  cursor: pointer;
+    flex: 1;
+    padding: 7px 12px;
+    border: 1px solid #dee2e6;
+    border-right: none;
+    border-radius: 4px 0 0 4px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #405189;
+    outline: none;
+    background: #EFF1F9;
+    cursor: pointer;
+
 }
 
 .dp-input:focus {

@@ -120,9 +120,6 @@
     border-radius: 4px;
 }
 
-
-
-
 .employee-table tbody td.text-danger,
 .employee-table tbody td.text-danger * {
     color: #e85656 !important;

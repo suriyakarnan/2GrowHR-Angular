@@ -53,7 +53,7 @@ export class DatePickerDirective implements OnInit, OnDestroy {
 
     this.iconBtn = this.renderer.createElement('button');
     this.renderer.addClass(this.iconBtn, 'dp-icon-btn');
-    this.iconBtn.innerHTML = this.calendarSvg();
+    this.iconBtn.innerHTML = this.calendarIcon();
     this.iconBtn.type = 'button';
 
     this.dropdown = this.renderer.createElement('div');
@@ -217,13 +217,14 @@ export class DatePickerDirective implements OnInit, OnDestroy {
     this.renderer.removeClass(this.dropdown, 'dp-open');
   }
 
-  private calendarSvg(): string {
-    return `<svg width="16" height="16" viewBox="0 0 16 16" fill="none"
-      xmlns="http://www.w3.org/2000/svg">
-      <rect x="1" y="3" width="14" height="12" rx="2" stroke="white" stroke-width="1.4"/>
-      <path d="M1 7H15" stroke="white" stroke-width="1.4"/>
-      <path d="M5 1V4M11 1V4" stroke="white" stroke-width="1.4" stroke-linecap="round"/>
-    </svg>`;
+  private calendarIcon(): string {
+    return `<img 
+      src="/Assets/NewLoginPage/img/calender_icon.svg" 
+      width="16" 
+      height="16" 
+      alt="calendar"
+      style="pointer-events: none;"
+    />`;
   }
 
   ngOnDestroy(): void {

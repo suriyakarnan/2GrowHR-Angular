@@ -1,1 +1,126 @@
-<p>full-final-settlement works!</p>
+<div class="page-content">
+  <div class="container-fluid">
+
+    <!-- ✅ Tab Navigation -->
+    <ul class="nav nav-tabs employee-tabs">
+      <li class="nav-item">
+        <a class="nav-link" routerLink="full-final-settlement" routerLinkActive="active">
+          Full & Final Settlement
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="history" routerLinkActive="active">
+          History
+        </a>
+      </li>
+    </ul>
+
+    <!-- ✅ Overview UI — visible only when NOT on /history -->
+    <div *ngIf="!historyComponent">
+      <div class="card">
+
+        <!-- Card Header -->
+        <div class="card-header">
+          <div class="row align-items-center">
+
+            <!-- Division Filter -->
+            <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4 col-xxl-4">
+              <div class="d-flex align-items-center gap-2">
+                <select
+                  selectpicker
+                  pickerPlaceholder="Search division..."
+                  [multiple]="true"
+                  [(ngModel)]="selectedDivision">
+                  <option value="">--- All Division ---</option>
+                  <option value="saneforce">Saneforce</option>
+                  <option value="san-media">San Media</option>
+                  <option value="2growhr">2GrowHr</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Empty Middle Column -->
+            <div class="col-12 col-sm-6 col-md-6 col-lg-2 col-xl-2 col-xxl-2">
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xxl-6 text-end">
+              <div class="d-flex align-items-center justify-content-end gap-2">
+                <button type="button" class="btn btn-light btn-icon">
+                  <i class="fa fa-ellipsis-h"></i>
+                </button>
+                <button type="button" class="btn btn-light btn-filter">
+                  <span class="filter-badge">0</span>
+                  <img src="/Assets/NewLoginPage/img/filter_icon.svg" alt=""> Filter
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <!-- End Card Header -->
+
+        <!-- Divider -->
+        <div class="py-1" style="background: #F0F0F8;"></div>
+
+        <!-- Card Body -->
+        <div class="card-body">
+          <div class="row">
+            <div class="col-12">
+              <div class="table-responsive">
+                <table class="table employee-table" appDatatable [rowsPerPage]="10">
+
+                  <thead>
+                    <tr>
+                      <th>Employee ID <i class="fa fa-sort"></i></th>
+                      <th>Employee Name <i class="fa fa-sort"></i></th>
+                      <th>Designation <i class="fa fa-sort"></i></th>
+                      <th>Department <i class="fa fa-sort"></i></th>
+                      <th>Exit Type <i class="fa fa-sort"></i></th>
+                      <th>Initiated Date <i class="fa fa-sort"></i></th>
+                      <th>Last Working Day <i class="fa fa-sort"></i></th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    <!-- ✅ Data Rows -->
+                    <tr *ngFor="let emp of employees">
+                      <td>{{ emp.id }}</td>
+                      <td>{{ emp.name }}</td>
+                      <td>{{ emp.designation }}</td>
+                      <td>{{ emp.department }}</td>
+                      <td>{{ emp.exittype }}</td>
+                      <td>{{ emp.initiateDate }}</td>
+                      <td>{{ emp.lastWorkingDate }}</td>
+                      <td>
+                        <button class="btn btn-sm btn-light">
+                          <i class="fa fa-ellipsis-h"></i>
+                        </button>
+                      </td>
+                    </tr>
+
+                    <!-- ✅ Empty State Row — fixed colspan to 8 -->
+                    <tr *ngIf="employees.length === 0">
+                      <td colspan="8" class="text-center no-data">
+                        No data available
+                      </td>
+                    </tr>
+                  </tbody>
+
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- End Card Body -->
+
+      </div>
+    </div>
+    <!-- End Overview UI -->
+
+    <!-- ✅ Router Outlet — renders HistoryComponent when on /history -->
+    <router-outlet></router-outlet>
+
+  </div>
+</div>

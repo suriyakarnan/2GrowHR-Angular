@@ -1,0 +1,39 @@
+<div class="card">
+  <div class="card-body">
+    <div class="row align-items-center">
+      <div class="col-12 col-sm-6 col-md-6 col-lg-3 col-xl-3 col-xxl-3">
+            <label style="font-family: 'Poppins';
+                font-style: normal;
+                font-weight: 500;
+                font-size: 12px;
+                line-height: 18px;
+                color: #767679; margin-bottom: 7px;">Select Division</label>
+            <select class="pt-2" selectpicker pickerPlaceholder="Search division..." [(ngModel)]="selectedDivision" >
+               <option value="">---All Division----</option>       <!-- ✅ value="" for default -->
+               <option>Saneforce</option>
+               <option>San Media</option>
+               <option>2GrowHr</option>                                                                                          
+            </select>
+      </div>
+      <div class="col-12 col-sm-6 col-md-6 col-lg-3 col-xl-3 col-xxl-3 mt-4" >
+                <input
+            type="text"
+            dateRangePicker
+            [(ngModel)]="selectedDateRange"
+            class="form-control"
+          />
+      </div>
+      <div class="col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xxl-6 text-end">
+        <div class="d-flex align-items-center justify-content-end gap-2">
+                <button type="button" class="btn btn-light btn-filter">
+                    <span class="filter-badge">0</span>
+                      <img src="/Assets/NewLoginPage/img/filter_icon.svg" alt=""> Filter
+                </button>                                                 
+        </div>
+      </div>
+    </div>
+    <div style="margin-bottom: 420px;">
+
+    </div>
+  </div>
+</div>

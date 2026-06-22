@@ -43,7 +43,9 @@ export const EMPLOYEES_ROUTES: Routes = [
       {
         path: 'full-final-settlement',
         loadComponent: () =>
-          import('./full-final-settlement/full-final-settlement.component').then(m => m.FullFinalSettlementComponent)
+          import('./full-final-settlement/full-final-settlement.component').then(m => m.FullFinalSettlementComponent),
+        loadChildren: () =>
+          import('./full-final-settlement/full-final-settlement.routes').then(m => m.Full_Final_Settlement_ROUTES)
       }
     ]
   }, 

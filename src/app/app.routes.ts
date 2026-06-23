@@ -14,7 +14,7 @@ export const routes: Routes = [
     children: [
       {
         path: 'dashboard',
-        loadComponent: () => import('./features/dashboard/dashboard/dashboard.component').then(m => m.DashboardComponent)
+        loadComponent: () => import('./features/dashboard/dashboard.component').then(m => m.DashboardComponent)
       },
       {
         path: 'employees',
@@ -22,27 +22,27 @@ export const routes: Routes = [
       },
       {
         path: 'attendance',
-        loadComponent: () => import('./features/attendance/attendance/attendance.component').then(m => m.AttendanceComponent)
+        loadComponent: () => import('./features/attendance/attendance.component').then(m => m.AttendanceComponent)
       },
       {
         path: 'payrun',
-        loadComponent: () => import('./features/payrun/payrun/payrun.component').then(m => m.PayrunComponent)
+        loadComponent: () => import('./features/payrun/payrun.component').then(m => m.PayrunComponent)
       },
       {
         path: 'loan',
-        loadComponent: () => import('./features/loan/loan/loan.component').then(m => m.LoanComponent)
+        loadComponent: () => import('./features/loan/loan.component').then(m => m.LoanComponent)
       },
       {
         path: 'reports',
-        loadComponent: () => import('./features/reports/reports/reports.component').then(m => m.ReportsComponent)
+        loadComponent: () => import('./features/reports/reports.component').then(m => m.ReportsComponent)
       },
       {
         path: 'setup',
-        loadComponent: () => import('./features/setup/setup/setup.component').then(m => m.SetupComponent)
+        loadComponent: () => import('./features/setup/setup.component').then(m => m.SetupComponent)
       },
       {
         path: 'hrms-portal',
-        loadComponent: () => import('./features/hrms-portal/hrms-portal/hrms-portal.component').then(m => m.HrmsPortalComponent)
+        loadComponent: () => import('./features/hrms-portal/hrms-portal.component').then(m => m.HrmsPortalComponent)
       }
     ]
   },

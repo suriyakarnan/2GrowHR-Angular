@@ -5,7 +5,6 @@ import { RouterLink } from '@angular/router';
 import { TableDatatableDirective } from '../../../shared/components/data-table/table-datatable.directive';
 import { SelectpickerDirective } from '../../../shared/components/selectpicker/selectpicker.directive'; 
 
-
 interface Employee {
   id: string;
   name: string;
@@ -22,10 +21,6 @@ interface Employee {
 export class EmployeeDirectoryComponent implements OnInit {
   employees: Employee[] = [];
   selectedDivision: string[] = []; 
-
-
- 
-
 
   ngOnInit(): void {
     this.employees = [

@@ -14,7 +14,7 @@ import {
 export class SelectpickerDirective implements OnInit, OnDestroy {
   @Input() pickerPlaceholder: string = 'Search...';
   @Input() pickerLabel: string = 'Nothing selected';
-  @Input() multiple: boolean = false; // ✅ NEW — enables multi-select mode
+  @Input() multiple: boolean = false;
 
   private wrapper!: HTMLDivElement;
   private trigger!: HTMLDivElement;
@@ -24,7 +24,6 @@ export class SelectpickerDirective implements OnInit, OnDestroy {
   private isOpen = false;
   private outsideClickListener!: () => void;
 
-  // ✅ Tracks selected values for multi-select
   private selectedValues: Set<string> = new Set();
   private selectedTexts: Map<string, string> = new Map();
 
@@ -72,7 +71,7 @@ export class SelectpickerDirective implements OnInit, OnDestroy {
     this.renderer.setAttribute(this.searchInput, 'placeholder', this.pickerPlaceholder);
     this.renderer.addClass(this.searchInput, 'sp-search');
 
-    // ✅ Select All / Deselect All row (only for multi-select)
+    // Select All / Deselect All row (only for multi-select)
     if (this.multiple) {
       const actionRow = this.renderer.createElement('div') as HTMLDivElement;
       this.renderer.addClass(actionRow, 'sp-action-row');
@@ -149,7 +148,6 @@ export class SelectpickerDirective implements OnInit, OnDestroy {
       li.dataset['value'] = opt.value;
 
       if (this.multiple) {
-        // ✅ Multi-select: text on left, checkmark on right
         li.innerHTML = `
           <span class="sp-option-text">${opt.text}</span>
           <span class="sp-check" style="display:none;">
@@ -158,6 +156,14 @@ export class SelectpickerDirective implements OnInit, OnDestroy {
             </svg>
           </span>
         `;
+
+        // ✅ Restore selected state if already in selectedValues
+        if (this.selectedValues.has(opt.value)) {
+          this.renderer.addClass(li, 'sp-selected');
+          const check = li.querySelector('.sp-check') as HTMLElement;
+          if (check) check.style.display = 'flex';
+        }
+
         li.addEventListener('click', () =>
           this.toggleMultiOption(li, opt.value, opt.text)
         );
@@ -186,7 +192,7 @@ export class SelectpickerDirective implements OnInit, OnDestroy {
   }
 
   // ─────────────────────────────────────────────────────────────
-  // SINGLE SELECT — SELECT OPTION
+  // SINGLE SELECT
   // ─────────────────────────────────────────────────────────────
 
   private selectOption(li: HTMLLIElement, value: string, text: string): void {
@@ -211,13 +217,11 @@ export class SelectpickerDirective implements OnInit, OnDestroy {
     const check = li.querySelector('.sp-check') as HTMLElement;
 
     if (this.selectedValues.has(value)) {
-      // ✅ Deselect
       this.selectedValues.delete(value);
       this.selectedTexts.delete(value);
       this.renderer.removeClass(li, 'sp-selected');
       if (check) check.style.display = 'none';
     } else {
-      // ✅ Select
       this.selectedValues.add(value);
       this.selectedTexts.set(value, text);
       this.renderer.addClass(li, 'sp-selected');
@@ -239,7 +243,6 @@ export class SelectpickerDirective implements OnInit, OnDestroy {
       const text = htmlLi.querySelector('.sp-option-text')?.textContent || '';
       const check = htmlLi.querySelector('.sp-check') as HTMLElement;
 
-      // ✅ Only select visible (not filtered out) items
       if (htmlLi.style.display !== 'none') {
         this.selectedValues.add(value);
         this.selectedTexts.set(value, text);
@@ -348,6 +351,14 @@ export class SelectpickerDirective implements OnInit, OnDestroy {
 
   private hideOriginalSelect(): void {
     this.renderer.setStyle(this.el.nativeElement, 'display', 'none');
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  // ✅ PUBLIC REFRESH — called from component after *ngFor renders
+  // ─────────────────────────────────────────────────────────────
+
+  public refresh(): void {
+    this.syncOptions();
   }
 
   // ─────────────────────────────────────────────────────────────

@@ -279,7 +279,7 @@ table.app-datatable .link-deactivate:hover {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 7px 12px;
+  padding: 9px 12px;
   border: 1px solid #dee2e6;
   border-radius: 4px;
   background: #fff;
@@ -485,7 +485,7 @@ table.app-datatable .link-deactivate:hover {
 
 .dp-input {
     flex: 1;
-    padding: 7px 12px;
+    padding: 9px 12px;
     border: 1px solid #dee2e6;
     border-right: none;
     border-radius: 4px 0 0 4px;
@@ -503,7 +503,7 @@ table.app-datatable .link-deactivate:hover {
 }
 
 .dp-icon-btn {
-  padding: 9px 10px;
+  padding: 11px 10px;
   background: #405189;
   border: 1px solid #405189;
   border-radius: 0 4px 4px 0;

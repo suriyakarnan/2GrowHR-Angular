@@ -26,7 +26,7 @@ export const routes: Routes = [
       },
       {
         path: 'payrun',
-        loadComponent: () => import('./features/payrun/payrun.component').then(m => m.PayrunComponent)
+        loadChildren: () => import('./features/payrun/payrun.routes').then(m => m.Payrun_ROUTES)
       },
       {
         path: 'loan',

@@ -1,0 +1,105 @@
+<div class="page-content">
+  <div class="row">
+    <div class="col-12 col-md-12 col-lg-11 col-xl-9 col-xxl-9">
+      <div class="card payrun-card">
+
+        <div class="card-header"></div>
+
+        <div class="card-body">
+          <div class="row">
+            <div class="col-12">
+
+              <!-- ══ INITIATE BANNER ══ -->
+              <div class="payrun-initiate-banner d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+                <div class="banner-info d-flex align-items-center gap-2 p-2">
+                  <span class="banner-icon">
+                    <i class="bi bi-info-circle-fill"></i>
+                  </span>
+                  <span class="banner-text">Select division to initiate payrun</span>
+                </div>
+                <button class="btn btn-qa d-flex align-items-center gap-2" (click)="onOpenQA()">
+                  <img src="assets/NewLoginPage/img/comments-question-check_icon.svg" alt="" width="20" height="20">
+                  <span>Payrun Q &amp; A</span>
+                </button>
+              </div>
+
+              <!-- ══ FILTERS ROW ══ -->
+              <div class="row align-items-end g-3 mb-3">
+
+                <!-- ✅ Division selectpicker -->
+                <div class="col-12 col-sm-6 col-md-5 col-lg-4">
+                  <label class="form-label filter-label">Select Division</label>
+                  <select
+                    selectpicker
+                    pickerPlaceholder="Search division..."
+                    pickerLabel="Select Division"
+                    [multiple]="true"
+                    [(ngModel)]="selectedDivision">
+                    <option *ngFor="let div of divisions" [value]="div.name">
+                      {{ div.name }}
+                    </option>
+                  </select>
+                </div>
+
+                <!-- ✅ Month selectpicker -->
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                  <label class="form-label filter-label">Month</label>
+                  <select
+                    selectpicker
+                    pickerPlaceholder="Search month..."
+                    pickerLabel="Select Month"
+                    [(ngModel)]="selectedMonth">
+                    <option *ngFor="let m of monthOptions" [value]="m">
+                      {{ m }}
+                    </option>
+                  </select>
+                </div>
+
+                <!-- Initiate Button -->
+                
+                <div class="col-12 col-sm-auto">
+                  <button
+                    class="btn btn-initiate w-100"
+                    [disabled]="!allCompleted || isInitiating"
+                    routerLink="/payrun/payrun-process/payrun-attendance">  <!-- ✅ absolute -->
+                    <span>INITIATE PAYRUN</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- ══ WARNING BANNER ══ -->
+              <div class="row mb-3">
+                <div class="col-12 col-sm-8 col-md-6 col-lg-5 col-xl-4">
+                  <div class="payrun-warning-banner d-flex align-items-center gap-2">
+                    <span class="warning-icon">
+                      <i class="bi bi-info-circle-fill"></i>
+                    </span>
+                    <span class="warning-text">Complete below process to initiate payrun</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ══ APPROVAL STEPS LIST ══ -->
+              <div class="approval-list">
+                <div
+                  class="approval-item d-flex align-items-center gap-3"
+                  *ngFor="let step of approvalSteps; trackBy: trackByStep">
+                  <span class="approval-label">{{ step.label }}</span>
+                  <span class="badge-status" [ngClass]="{
+                    'status-completed':   step.status === 'Completed',
+                    'status-pending':     step.status === 'Pending',
+                    'status-not-started': step.status === 'Not Started'
+                  }">
+                    {{ step.status }}
+                  </span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

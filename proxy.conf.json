@@ -1,0 +1,7 @@
+{
+  "/api": {
+    "target": "http://development.2growhr.io",
+    "changeOrigin": true,
+    "secure": false
+  }
+}

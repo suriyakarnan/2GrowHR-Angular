@@ -1,0 +1,240 @@
+<!-- src/app/dashboard/wall-activity/wall-activity.component.html -->
+
+<div class="page-content">
+  <div class="container-fluid">
+
+    <div class="wa-layout">
+
+      <!-- ═══════════════════════════════════════════════════ -->
+      <!-- LEFT COLUMN: Create Post / Poll                     -->
+      <!-- ═══════════════════════════════════════════════════ -->
+      <div class="wa-main">
+
+        <!-- Page Title -->
+        <h4 class="wa-page-title">Wallposts</h4>
+
+        <!-- Create Card -->
+        <div class="wa-create-card">
+
+          <!-- Tab Switcher -->
+          <div class="wa-tabs">
+            <button
+              class="wa-tab"
+              [class.active]="activeTab === 'post'"
+              (click)="setTab('post')">
+              <i class="ti ti-pencil"></i> Post
+            </button>
+            <button
+              class="wa-tab"
+              [class.active]="activeTab === 'poll'"
+              (click)="setTab('poll')">
+              <i class="ti ti-chart-bar"></i> Poll
+            </button>
+          </div>
+
+          <!-- ── POST FORM ─────────────────────────────────── -->
+          <div *ngIf="activeTab === 'post'" class="wa-form">
+
+            <label class="wa-label">Select Division</label>
+            <select class="wa-select" [(ngModel)]="selectedDivisionId">
+              <option value="">Nothing selected</option>
+              <option *ngFor="let div of divisions" [value]="div.id">
+                {{ div.name }}
+              </option>
+            </select>
+
+            <textarea
+              class="wa-textarea"
+              [(ngModel)]="postContent"
+              placeholder="What do you want to share today?">
+            </textarea>
+
+            <!-- Image Preview -->
+            <div *ngIf="imagePreviewUrl" class="wa-image-preview">
+              <img [src]="imagePreviewUrl" alt="Preview" />
+              <button class="wa-remove-img" (click)="imagePreviewUrl = null; selectedImage = null">
+                <i class="ti ti-x"></i>
+              </button>
+            </div>
+
+            <div class="wa-form-footer">
+              <label class="wa-upload-btn">
+                <i class="ti ti-photo"></i>
+                <span>Upload Images</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  hidden
+                  (change)="onImageSelected($event)" />
+              </label>
+              <button
+                class="wa-submit-btn"
+                [disabled]="!postContent.trim() || isSubmitting"
+                (click)="submitPost()">
+                {{ isSubmitting ? 'Posting...' : 'POST' }}
+              </button>
+            </div>
+
+          </div>
+
+          <!-- ── POLL FORM ─────────────────────────────────── -->
+          <div *ngIf="activeTab === 'poll'" class="wa-form">
+
+            <label class="wa-label">Select Division</label>
+            <select class="wa-select" [(ngModel)]="pollDivisionId">
+              <option value="">Nothing selected</option>
+              <option *ngFor="let div of divisions" [value]="div.id">
+                {{ div.name }}
+              </option>
+            </select>
+
+            <input
+              type="text"
+              class="wa-input"
+              [(ngModel)]="pollQuestion"
+              placeholder="What is the Poll about?" />
+
+            <!-- Dynamic Poll Options -->
+            <div *ngFor="let opt of pollOptions; let i = index; trackBy: trackByIndex"
+                 class="wa-poll-option-row">
+              <input
+                type="text"
+                class="wa-input"
+                [(ngModel)]="pollOptions[i]"
+                [placeholder]="'Add Option'" />
+              <button
+                *ngIf="pollOptions.length > 2"
+                class="wa-remove-option"
+                (click)="removePollOption(i)">
+                <i class="ti ti-x"></i>
+              </button>
+            </div>
+
+            <!-- Add Option -->
+            <button
+              *ngIf="pollOptions.length < 5"
+              class="wa-add-option-btn"
+              (click)="addPollOption()">
+              + Add Option
+            </button>
+
+            <!-- Expires & Submit -->
+            <div class="wa-poll-footer">
+              <div class="wa-expires-group">
+                <label class="wa-label">Poll Expires on <span class="required">*</span></label>
+                <div class="wa-date-wrapper">
+                  <input
+                    type="date"
+                    class="wa-input wa-date-input"
+                    [(ngModel)]="pollExpiresOn" />
+                </div>
+              </div>
+              <button
+                class="wa-submit-btn"
+                [disabled]="!pollQuestion.trim() || isSubmitting"
+                (click)="submitPoll()">
+                {{ isSubmitting ? 'Creating...' : 'CREATE POLL' }}
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════════ -->
+        <!-- FEED: Wall Posts & Polls                        -->
+        <!-- ═══════════════════════════════════════════════ -->
+        <div class="wa-feed">
+
+          <div *ngFor="let post of wallPosts" class="wa-feed-card">
+
+            <!-- Post Header -->
+            <div class="wa-post-header">
+              <div class="wa-avatar" [style.background]="post.authorColor">
+                {{ post.authorInitial }}
+              </div>
+              <div class="wa-author-info">
+                <span class="wa-author-name">{{ post.authorName }}</span>
+                <span class="wa-time-ago">{{ post.timeAgo }}</span>
+              </div>
+              <button class="wa-more-btn">
+                <i class="ti ti-dots-vertical"></i>
+              </button>
+            </div>
+
+            <!-- ── TEXT POST ──────────────────────────────── -->
+            <ng-container *ngIf="post.type === 'post'">
+              <p class="wa-post-content">{{ post.content }}</p>
+              <img
+                *ngIf="post.imageUrl"
+                [src]="post.imageUrl"
+                class="wa-post-image"
+                alt="Post image" />
+            </ng-container>
+
+            <!-- ── POLL POST ──────────────────────────────── -->
+            <ng-container *ngIf="post.type === 'poll'">
+              <p class="wa-poll-question">{{ post.pollQuestion }}</p>
+
+              <div class="wa-poll-options">
+                <div
+                  *ngFor="let opt of post.pollOptions"
+                  class="wa-poll-option"
+                  (click)="votePoll(post, opt.id)">
+                  <div class="wa-poll-option-header">
+                    <span class="wa-option-label">{{ opt.label }}</span>
+                    <span class="wa-option-percent">{{ opt.percentage }}%({{ opt.votes }} votes)</span>
+                  </div>
+                  <div class="wa-poll-bar-track">
+                    <div
+                      class="wa-poll-bar-fill"
+                      [style.width.%]="opt.percentage">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="wa-poll-meta">
+                <span>{{ post.totalVotes }} are voted</span>
+                <span>{{ post.pollExpiresOn }}</span>
+              </div>
+            </ng-container>
+
+            <!-- Post Footer: Like & Comment -->
+            <div class="wa-post-footer">
+              <div class="wa-footer-actions">
+                <button
+                  class="wa-action-btn"
+                  [class.liked]="post.isLiked"
+                  (click)="toggleLike(post)">
+                  <i class="ti ti-thumb-up"></i>
+                  <span>Like</span>
+                </button>
+                <button class="wa-action-btn">
+                  <i class="ti ti-message"></i>
+                  <span>Comment</span>
+                </button>
+              </div>
+              <span class="wa-comment-count">{{ post.commentsCount }} Comments</span>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════ -->
+      <!-- RIGHT COLUMN: Announcements                         -->
+      <!-- ═══════════════════════════════════════════════════ -->
+      <div class="wa-sidebar">
+        <div class="wa-announcement-card">
+          <h6 class="wa-announcement-title">Announcements</h6>
+          <p class="wa-announcement-org">Organization</p>
+          <p class="wa-announcement-text">
+            Welcome to the new Wall Activity space. Share updates, run polls, and recognize teammates! 🎯
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

@@ -1,137 +1,143 @@
 // src/app/core/services/wall-activity.service.ts
-// ─────────────────────────────────────────────────────────────
-// ALL API calls for Wall Activity are here.
-// Component never touches ApiService directly.
-// When real API arrives → update ONLY this file.
-// ─────────────────────────────────────────────────────────────
 
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { ApiService } from './api.service';
 import {
   WallPost,
   Division,
   CreatePostPayload,
-  CreatePollPayload
+  CreatePollPayload,
+  CommentItem,
+  CreateCommentPayload,
+  WallActivitySetup
 } from '../models/wall-activity.model';
 
-// ── MOCK DATA (remove when real API is ready) ────────────────
-const MOCK_DIVISIONS: Division[] = [
-  { id: '1', name: 'HR Department' },
-  { id: '2', name: 'Engineering' },
-  { id: '3', name: 'Finance' },
-  { id: '4', name: 'Marketing' },
-];
-
-const MOCK_POSTS: WallPost[] = [
-  {
-    id: '1',
-    type: 'post',
-    authorName: 'Admin',
-    authorInitial: 'A',
-    authorColor: '#405189',
-    timeAgo: '21 Hours ago',
-    content: 'Welcome to the new Wall Activity space!',
-    // imageUrl: null,
-    likesCount: 3,
-    commentsCount: 1,
-    isLiked: false,
-  },
-  {
-    id: '2',
-    type: 'poll',
-    authorName: 'Venky vv',
-    authorInitial: 'V',
-    authorColor: '#405189',
-    timeAgo: '5 Days ago',
-    pollQuestion: 'sdsdvwedf',
-    pollOptions: [
-      { id: 'o1', label: '1', votes: 0, percentage: 0 },
-      { id: 'o2', label: '2', votes: 0, percentage: 0 },
-    ],
-    pollExpiresOn: '23-06-2026',
-    totalVotes: 0,
-    likesCount: 0,
-    commentsCount: 0,
-    isLiked: false,
-  },
-];
+const BASE_URL = '/api/wallposts';
 
 @Injectable({ providedIn: 'root' })
 export class WallActivityService {
 
-  constructor(private apiService: ApiService) {}
+  constructor(private http: HttpClient) {}
 
-  // ── GET: Divisions ────────────────────────────────────────
-  // TODO (Real API): return this.apiService.get<Division[]>('GetDivisionList');
-  getDivisions(): Observable<Division[]> {
-    return of(MOCK_DIVISIONS);
+  private getEmployeeId(): string {
+    const userStr = localStorage.getItem('user');
+    if (!userStr) return '';
+    try {
+      return JSON.parse(userStr).Sf_code || '';
+    } catch {
+      return '';
+    }
   }
 
-  // ── GET: All Wall Posts ───────────────────────────────────
-  // TODO (Real API): return this.apiService.get<WallPost[]>('GetWallPosts');
-  getWallPosts(): Observable<WallPost[]> {
-    return of(MOCK_POSTS);
+  getWallPosts(employeeId: string, loadByDivision: boolean = false): Observable<WallPost[]> {
+    const formData = new FormData();
+    formData.append('EmployeeId', employeeId);
+    formData.append('LoadByDivision', loadByDivision.toString());
+    return this.http.post<WallPost[]>(`${BASE_URL}/get`, formData);
   }
 
-  // ── POST: Create a Text Post ──────────────────────────────
-  // TODO (Real API):
-  // const formData = new FormData();
-  // formData.append('content', payload.content);
-  // if (payload.imageFile) formData.append('image', payload.imageFile);
-  // return this.apiService.postForm<any>('CreateWallPost', formData, { divisionId: payload.divisionId });
-  createPost(payload: CreatePostPayload): Observable<any> {
-    const newPost: WallPost = {
-      id: Date.now().toString(),
-      type: 'post',
-      authorName: 'Admin',
-      authorInitial: 'A',
-      authorColor: '#405189',
-      timeAgo: 'Just now',
-      content: payload.content,
-      likesCount: 0,
-      commentsCount: 0,
-      isLiked: false,
-    };
-    return of({ success: true, data: newPost });
+  getEmployeeMentions(search?: string): Observable<{ success: boolean; data: string[] }> {
+    const params: Record<string, string> = search ? { search } : {};
+    return this.http.get<{ success: boolean; data: string[] }>(
+      `${BASE_URL}/employee-mentions`,
+      { params }
+    );
   }
 
-  // ── POST: Create a Poll ───────────────────────────────────
-  // TODO (Real API):
-  // return this.apiService.post<any>('CreatePoll', { divisionId: payload.divisionId }, payload);
+  createPost(payload: CreatePostPayload): Observable<{ success: boolean; message: string }> {
+    const formData = new FormData();
+    formData.append('Orgid',           payload.orgId);
+    formData.append('EmployeeId',      payload.employeeId);
+    formData.append('DivisionId',      payload.divisionId);
+    formData.append('SubDivisionId',   payload.subDivisionId);
+    formData.append('DepartmnetId',    payload.departmentId);
+    formData.append('WallDescription', payload.content);
+    formData.append('UserRole',        'Employee');
+    if (payload.imageFile) {
+      formData.append('file', payload.imageFile);
+    }
+    if (payload.mentionedEmpIds?.length) {
+      formData.append('mentionedEmpIds', JSON.stringify(payload.mentionedEmpIds));
+    }
+    return this.http.post<{ success: boolean; message: string }>(`${BASE_URL}/create`, formData);
+  }
+
+  deletePost(wallPostId: number): Observable<{ success: boolean }> {
+    const formData = new FormData();
+    formData.append('PostId', wallPostId.toString());
+    formData.append('EmployeeId', this.getEmployeeId());
+    formData.append('IsAdmin', 'false');
+    return this.http.post<{ success: boolean }>(`${BASE_URL}/delete`, formData);
+  }
+
+  getComments(wallPostId: number): Observable<CommentItem[]> {
+    const formData = new FormData();
+    formData.append('WallPostId', wallPostId.toString());
+    formData.append('EmployeeId', this.getEmployeeId());
+    return this.http.post<CommentItem[]>(`${BASE_URL}/getcomments`, formData);
+  }
+
+  addComment(payload: CreateCommentPayload): Observable<{ success: boolean; message: string; data: CommentItem }> {
+    const formData = new FormData();
+    formData.append('WallPostId', payload.wallPostId.toString());
+    formData.append('CommentedEmployeeId', this.getEmployeeId());
+    formData.append('CommentDescription', payload.commentDescription);
+    return this.http.post<{ success: boolean; message: string; data: CommentItem }>(
+      `${BASE_URL}/comment`,
+      formData
+    );
+  }
+
+  deleteComment(commentId: number, wallPostId: number): Observable<{ success: boolean; message?: string }> {
+    const formData = new FormData();
+    formData.append('CommentId', commentId.toString());
+    formData.append('WallPostId', wallPostId.toString());
+    formData.append('CommentedEmployeeId', this.getEmployeeId());
+    return this.http.post<{ success: boolean; message?: string }>(
+      `${BASE_URL}/deletecomment`,
+      formData
+    );
+  }
+
+  likePost(wallPostId: number): Observable<{ success: boolean; message?: string }> {
+    const formData = new FormData();
+    formData.append('WallPostId', wallPostId.toString());
+    formData.append('LikedEmployeeId', this.getEmployeeId());
+    return this.http.post<{ success: boolean; message?: string }>(`${BASE_URL}/like`, formData);
+  }
+
+  removeLike(wallPostId: number): Observable<{ success: boolean; message?: string }> {
+    const formData = new FormData();
+    formData.append('WallPostId', wallPostId.toString());
+    formData.append('LikedEmployeeId', this.getEmployeeId());
+    return this.http.post<{ success: boolean; message?: string }>(`${BASE_URL}/removelike`, formData);
+  }
+
+  getPostLikes(wallPostId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${BASE_URL}/posts/likes`, {
+      params: { wallPostId: wallPostId.toString() }
+    });
+  }
+
+  getDivisions(divisionCode: string, divisionName: string): Observable<Division[]> {
+    if (!divisionCode || divisionCode === '0') return of([]);
+    return of([{ id: divisionCode, name: divisionName }]);
+  }
+
   createPoll(payload: CreatePollPayload): Observable<any> {
-    const newPoll: WallPost = {
-      id: Date.now().toString(),
-      type: 'poll',
-      authorName: 'Admin',
-      authorInitial: 'A',
-      authorColor: '#405189',
-      timeAgo: 'Just now',
-      pollQuestion: payload.question,
-      pollOptions: payload.options.map((opt, i) => ({
-        id: `o${i}`,
-        label: opt,
-        votes: 0,
-        percentage: 0,
-      })),
-      pollExpiresOn: payload.expiresOn,
-      totalVotes: 0,
-      likesCount: 0,
-      commentsCount: 0,
-      isLiked: false,
-    };
-    return of({ success: true, data: newPoll });
-  }
-
-  // ── POST: Toggle Like ─────────────────────────────────────
-  // TODO (Real API): return this.apiService.post<any>('ToggleLike', { postId });
-  toggleLike(postId: string): Observable<any> {
     return of({ success: true });
   }
 
-  // ── POST: Vote on Poll ────────────────────────────────────
-  // TODO (Real API): return this.apiService.post<any>('VotePoll', { postId, optionId });
   votePoll(postId: string, optionId: string): Observable<any> {
     return of({ success: true });
+  }
+
+  // NOTE: verify in Postman whether this endpoint expects "UserId" with the
+  // employee code (EMP26063) or the org id (36) — currently using employeeId.
+  getWallActivitySetup(employeeId: string): Observable<WallActivitySetup> {
+    const formData = new FormData();
+    formData.append('UserId', employeeId);
+    return this.http.post<WallActivitySetup>(`${BASE_URL}/getwallactivitysetup`, formData);
   }
 }

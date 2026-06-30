@@ -2,54 +2,50 @@
 
 <div class="page-content">
   <div class="container-fluid">
-
     <div class="wa-layout">
 
-      <!-- ═══════════════════════════════════════════════════ -->
-      <!-- LEFT COLUMN: Create Post / Poll                     -->
-      <!-- ═══════════════════════════════════════════════════ -->
+      <!-- ══════════════════════════════════════════════════ -->
+      <!-- LEFT: Create Post / Poll + Feed                    -->
+      <!-- ══════════════════════════════════════════════════ -->
       <div class="wa-main">
 
-        <!-- Page Title -->
         <h4 class="wa-page-title">Wallposts</h4>
 
-        <!-- Create Card -->
         <div class="wa-create-card">
 
           <!-- Tab Switcher -->
           <div class="wa-tabs">
-            <button
-              class="wa-tab"
-              [class.active]="activeTab === 'post'"
-              (click)="setTab('post')">
+            <button class="wa-tab" [class.active]="activeTab === 'post'" (click)="setTab('post')">
               <i class="ti ti-pencil"></i> Post
             </button>
-            <button
-              class="wa-tab"
-              [class.active]="activeTab === 'poll'"
-              (click)="setTab('poll')">
+            <button class="wa-tab" [class.active]="activeTab === 'poll'" (click)="setTab('poll')">
               <i class="ti ti-chart-bar"></i> Poll
             </button>
           </div>
 
-          <!-- ── POST FORM ─────────────────────────────────── -->
+          <!-- ── POST FORM ───────────────────────────────── -->
           <div *ngIf="activeTab === 'post'" class="wa-form">
 
             <label class="wa-label">Select Division</label>
-            <select class="wa-select" [(ngModel)]="selectedDivisionId">
-              <option value="">Nothing selected</option>
-              <option *ngFor="let div of divisions" [value]="div.id">
-                {{ div.name }}
-              </option>
+            <select class="wa-select" [(ngModel)]="postScope">
+              <option *ngIf="canPostOrganization" value="Organization">Organization</option>
+              <option *ngIf="canPostDepartment" value="Department">Department</option>
             </select>
 
-            <textarea
-              class="wa-textarea"
-              [(ngModel)]="postContent"
-              placeholder="What do you want to share today?">
-            </textarea>
+            <div class="wa-mention-wrapper">
+              <textarea
+                class="wa-textarea"
+                [(ngModel)]="postContent"
+                (ngModelChange)="onContentInput()"
+                placeholder="What do you want to share today? Use @ to mention someone">
+              </textarea>
+              <div *ngIf="showMentionDropdown" class="wa-mention-dropdown">
+                <div *ngFor="let m of mentionSuggestions" class="wa-mention-item" (click)="pickMention(m)">
+                  {{ m }}
+                </div>
+              </div>
+            </div>
 
-            <!-- Image Preview -->
             <div *ngIf="imagePreviewUrl" class="wa-image-preview">
               <img [src]="imagePreviewUrl" alt="Preview" />
               <button class="wa-remove-img" (click)="imagePreviewUrl = null; selectedImage = null">
@@ -61,15 +57,11 @@
               <label class="wa-upload-btn">
                 <i class="ti ti-photo"></i>
                 <span>Upload Images</span>
-                <input
-                  type="file"
-                  accept="image/*"
-                  hidden
-                  (change)="onImageSelected($event)" />
+                <input type="file" accept="image/*" hidden (change)="onImageSelected($event)" />
               </label>
               <button
                 class="wa-submit-btn"
-                [disabled]="!postContent.trim() || isSubmitting"
+                [disabled]="!postContent.trim() || isSubmitting || (!canPostOrganization && !canPostDepartment)"
                 (click)="submitPost()">
                 {{ isSubmitting ? 'Posting...' : 'POST' }}
               </button>
@@ -77,154 +69,158 @@
 
           </div>
 
-          <!-- ── POLL FORM ─────────────────────────────────── -->
+          <!-- ── POLL FORM ───────────────────────────────── -->
           <div *ngIf="activeTab === 'poll'" class="wa-form">
 
             <label class="wa-label">Select Division</label>
             <select class="wa-select" [(ngModel)]="pollDivisionId">
               <option value="">Nothing selected</option>
-              <option *ngFor="let div of divisions" [value]="div.id">
-                {{ div.name }}
-              </option>
+              <option *ngFor="let div of divisions" [value]="div.id">{{ div.name }}</option>
             </select>
 
-            <input
-              type="text"
-              class="wa-input"
-              [(ngModel)]="pollQuestion"
-              placeholder="What is the Poll about?" />
+            <input type="text" class="wa-input" [(ngModel)]="pollQuestion" placeholder="What is the Poll about?" />
 
-            <!-- Dynamic Poll Options -->
-            <div *ngFor="let opt of pollOptions; let i = index; trackBy: trackByIndex"
-                 class="wa-poll-option-row">
-              <input
-                type="text"
-                class="wa-input"
-                [(ngModel)]="pollOptions[i]"
-                [placeholder]="'Add Option'" />
-              <button
-                *ngIf="pollOptions.length > 2"
-                class="wa-remove-option"
-                (click)="removePollOption(i)">
+            <div *ngFor="let opt of pollOptions; let i = index; trackBy: trackByIndex" class="wa-poll-option-row">
+              <input type="text" class="wa-input" [(ngModel)]="pollOptions[i]" placeholder="Add Option" />
+              <button *ngIf="pollOptions.length > 2" class="wa-remove-option" (click)="removePollOption(i)">
                 <i class="ti ti-x"></i>
               </button>
             </div>
 
-            <!-- Add Option -->
-            <button
-              *ngIf="pollOptions.length < 5"
-              class="wa-add-option-btn"
-              (click)="addPollOption()">
+            <button *ngIf="pollOptions.length < 5" class="wa-add-option-btn" (click)="addPollOption()">
               + Add Option
             </button>
 
-            <!-- Expires & Submit -->
             <div class="wa-poll-footer">
               <div class="wa-expires-group">
                 <label class="wa-label">Poll Expires on <span class="required">*</span></label>
-                <div class="wa-date-wrapper">
-                  <input
-                    type="date"
-                    class="wa-input wa-date-input"
-                    [(ngModel)]="pollExpiresOn" />
-                </div>
+                <input type="date" class="wa-input wa-date-input" [(ngModel)]="pollExpiresOn" />
               </div>
-              <button
-                class="wa-submit-btn"
-                [disabled]="!pollQuestion.trim() || isSubmitting"
-                (click)="submitPoll()">
+              <button class="wa-submit-btn" [disabled]="!pollQuestion.trim() || isSubmitting" (click)="submitPoll()">
                 {{ isSubmitting ? 'Creating...' : 'CREATE POLL' }}
               </button>
             </div>
 
           </div>
+
         </div>
 
-        <!-- ═══════════════════════════════════════════════ -->
-        <!-- FEED: Wall Posts & Polls                        -->
-        <!-- ═══════════════════════════════════════════════ -->
+        <!-- Feed Scope Toggle -->
+        <!-- Organization → loadByDivision=false (departmnetId-set posts) -->
+        <!-- Department   → loadByDivision=true  (divisionId-set posts)   -->
+        <div class="wa-feed-toggle">
+          <button [class.active]="!loadByDivision" (click)="setFeedScope(false)">
+            <i class="ti ti-building"></i> Organization
+          </button>
+          <button [class.active]="loadByDivision" (click)="setFeedScope(true)">
+            <i class="ti ti-sitemap"></i> Department
+          </button>
+        </div>
+
+        <!-- ══════════════════════════════════════════════ -->
+        <!-- FEED                                           -->
+        <!-- ══════════════════════════════════════════════ -->
         <div class="wa-feed">
 
           <div *ngFor="let post of wallPosts" class="wa-feed-card">
 
             <!-- Post Header -->
             <div class="wa-post-header">
-              <div class="wa-avatar" [style.background]="post.authorColor">
-                {{ post.authorInitial }}
+              <div class="wa-avatar">
+                <img
+                  *ngIf="post.profilePicturePath"
+                  [src]="getProfilePicUrl(post.profilePicturePath)"
+                  alt=""
+                  (error)="$any($event.target).style.display='none'" />
+                <span *ngIf="!post.profilePicturePath">{{ post.employeeName.charAt(0) }}</span>
               </div>
               <div class="wa-author-info">
-                <span class="wa-author-name">{{ post.authorName }}</span>
-                <span class="wa-time-ago">{{ post.timeAgo }}</span>
+                <span class="wa-author-name">{{ post.employeeName }}</span>
+                <span class="wa-post-designation">{{ post.designationName }}</span>
+                <span class="wa-time-ago">{{ post.createdAt | date:'medium' }}</span>
               </div>
-              <button class="wa-more-btn">
-                <i class="ti ti-dots-vertical"></i>
+              <button class="wa-more-btn" (click)="deletePost(post)" title="Delete post">
+                <i class="ti ti-trash"></i>
               </button>
             </div>
 
-            <!-- ── TEXT POST ──────────────────────────────── -->
-            <ng-container *ngIf="post.type === 'post'">
-              <p class="wa-post-content">{{ post.content }}</p>
+            <!-- Post Content -->
+            <p class="wa-post-content">{{ post.wallDescription }}</p>
+
+            <!-- Post Images — imagePath is comma-separated, handle multiple -->
+            <div *ngIf="post.imagePath" class="wa-post-images">
               <img
-                *ngIf="post.imageUrl"
-                [src]="post.imageUrl"
+                *ngFor="let imgUrl of getPostImageUrls(post.imagePath)"
+                [src]="imgUrl"
                 class="wa-post-image"
-                alt="Post image" />
-            </ng-container>
+                alt="Post image"
+                (error)="$any($event.target).style.display='none'" />
+            </div>
 
-            <!-- ── POLL POST ──────────────────────────────── -->
-            <ng-container *ngIf="post.type === 'poll'">
-              <p class="wa-poll-question">{{ post.pollQuestion }}</p>
-
-              <div class="wa-poll-options">
-                <div
-                  *ngFor="let opt of post.pollOptions"
-                  class="wa-poll-option"
-                  (click)="votePoll(post, opt.id)">
-                  <div class="wa-poll-option-header">
-                    <span class="wa-option-label">{{ opt.label }}</span>
-                    <span class="wa-option-percent">{{ opt.percentage }}%({{ opt.votes }} votes)</span>
-                  </div>
-                  <div class="wa-poll-bar-track">
-                    <div
-                      class="wa-poll-bar-fill"
-                      [style.width.%]="opt.percentage">
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="wa-poll-meta">
-                <span>{{ post.totalVotes }} are voted</span>
-                <span>{{ post.pollExpiresOn }}</span>
-              </div>
-            </ng-container>
-
-            <!-- Post Footer: Like & Comment -->
+            <!-- Like & Comment -->
             <div class="wa-post-footer">
               <div class="wa-footer-actions">
                 <button
                   class="wa-action-btn"
-                  [class.liked]="post.isLiked"
+                  [class.liked]="post.hasLiked === 'Liked'"
                   (click)="toggleLike(post)">
                   <i class="ti ti-thumb-up"></i>
-                  <span>Like</span>
+                  <span>{{ post.likeCount }} Like</span>
                 </button>
-                <button class="wa-action-btn">
+                <button class="wa-action-btn" (click)="toggleComments(post)">
                   <i class="ti ti-message"></i>
-                  <span>Comment</span>
+                  <span>{{ post.commentCount }} Comments</span>
                 </button>
               </div>
-              <span class="wa-comment-count">{{ post.commentsCount }} Comments</span>
             </div>
 
+            <!-- Comments Thread -->
+            <div *ngIf="openCommentsPostId === post.wallPostId" class="wa-comments-block">
+
+              <div *ngFor="let c of commentsByPost[post.wallPostId]" class="wa-comment-item">
+                <div class="wa-comment-avatar">
+                  <img
+                    *ngIf="c.employeeProfilePic"
+                    [src]="getProfilePicUrl(c.employeeProfilePic)"
+                    alt=""
+                    (error)="$any($event.target).style.display='none'" />
+                  <span *ngIf="!c.employeeProfilePic">{{ c.employeeName.charAt(0) }}</span>
+                </div>
+                <div class="wa-comment-body">
+                  <strong>{{ c.employeeName }}</strong>
+                  <span class="wa-comment-text">{{ c.commentDescription }}</span>
+                </div>
+                <button class="wa-comment-delete" (click)="deleteComment(post, c)">
+                  <i class="ti ti-x"></i>
+                </button>
+              </div>
+
+              <div class="wa-comment-input-row">
+                <input
+                  type="text"
+                  class="wa-input"
+                  [(ngModel)]="newCommentText"
+                  placeholder="Write a comment..."
+                  (keyup.enter)="submitComment(post)" />
+                <button class="wa-submit-btn" (click)="submitComment(post)">Send</button>
+              </div>
+
+            </div>
+
+          </div>
+
+          <!-- Empty State -->
+          <div *ngIf="wallPosts.length === 0" class="wa-empty">
+            <i class="ti ti-mood-empty"></i>
+            <p>No posts yet. Be the first to share something!</p>
           </div>
 
         </div>
       </div>
 
-      <!-- ═══════════════════════════════════════════════════ -->
-      <!-- RIGHT COLUMN: Announcements                         -->
-      <!-- ═══════════════════════════════════════════════════ -->
+      <!-- ══════════════════════════════════════════════════ -->
+      <!-- RIGHT: Announcements                               -->
+      <!-- ══════════════════════════════════════════════════ -->
       <div class="wa-sidebar">
         <div class="wa-announcement-card">
           <h6 class="wa-announcement-title">Announcements</h6>

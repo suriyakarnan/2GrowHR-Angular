@@ -63,6 +63,45 @@
   margin-bottom: 6px;
 }
 
+.wa-feed-toggle {
+  display: inline-flex;
+  align-items: center;
+  background-color: #ffffff;
+  border-radius: 999px;
+  padding: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  gap: 4px;
+}
+
+.wa-feed-toggle button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  background: transparent;
+  padding: 8px 18px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #6b7280;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.wa-feed-toggle button i {
+  font-size: 16px;
+}
+
+.wa-feed-toggle button:hover {
+  color: #1e3a8a;
+}
+
+.wa-feed-toggle button.active {
+  background-color: #eef2ff;
+  color: #1e3a8a;
+  font-weight: 600;
+}
+
 .wa-select,
 .wa-input {
   width: 100%;
@@ -224,6 +263,7 @@
   box-shadow: 0 1px 6px rgba(0,0,0,0.07);
   padding: 20px 24px;
   margin-bottom: 16px;
+  margin-top: 16px;
 }
 
 /* ── Post Header ─────────────────────────────────────────── */

@@ -1,6 +1,4 @@
-// ============================================================
-// FILE: src/app/core/services/auth.service.ts
-// ============================================================
+// src/app/core/services/auth.service.ts
 
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
@@ -13,8 +11,6 @@ import { LoginResponse, UserData } from '../models/user.model';
 })
 export class AuthService {
 
-  
-
   private apiBase = '/api/app/apipayroll/';
 
   constructor(
@@ -22,10 +18,7 @@ export class AuthService {
     private router: Router
   ) {}
 
-  // ──────────────────────────────────────────────────────────
-  // LOGIN
-  // POST /apipayroll/?axn=Login&username=xx&password=xx
-  // ──────────────────────────────────────────────────────────
+  // ── LOGIN ─────────────────────────────────────────────────
   login(username: string, password: string): Observable<LoginResponse> {
 
     const params = new HttpParams()
@@ -35,30 +28,26 @@ export class AuthService {
 
     return this.http.post<LoginResponse>(
       this.apiBase,
-      null,       // no body — params are in the URL
+      null,
       { params }
     ).pipe(
 
       tap((response: LoginResponse) => {
-
         if (response.success && response.Data?.length > 0) {
 
           const userData: UserData = response.Data[0];
 
-          // Store user object
+          // Store full user object — components read from this
           localStorage.setItem('user', JSON.stringify(userData));
 
-          // Store JWT access token  ← used by interceptor
-          localStorage.setItem('accessToken', response.accessToken);
-
-          // Store refresh token
+          // Tokens
+          localStorage.setItem('accessToken',  response.accessToken);
           localStorage.setItem('refreshToken', response.refreshToken);
 
-          // Store org id for future API calls
-          localStorage.setItem('org', String(userData.org));
-
+          // Shortcut keys used across the app
+          localStorage.setItem('org',        String(userData.org));
+          localStorage.setItem('employeeId', userData.Sf_code);  // "EMP26063" — use this everywhere
         }
-
       }),
 
       catchError((error) => {
@@ -67,53 +56,41 @@ export class AuthService {
       })
 
     );
-
   }
 
-  // ──────────────────────────────────────────────────────────
-  // LOGOUT — clears everything and redirects to login
-  // ──────────────────────────────────────────────────────────
+  // ── LOGOUT ────────────────────────────────────────────────
   logout(): void {
     localStorage.removeItem('user');
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('org');
+    localStorage.removeItem('employeeId');
     this.router.navigate(['']);
   }
 
-  // ──────────────────────────────────────────────────────────
-  // IS LOGGED IN — checks accessToken in localStorage
-  // ──────────────────────────────────────────────────────────
+  // ── HELPERS ───────────────────────────────────────────────
   isLoggedIn(): boolean {
     return !!localStorage.getItem('accessToken');
   }
 
-  // ──────────────────────────────────────────────────────────
-  // GET ACCESS TOKEN — used by interceptor
-  // ──────────────────────────────────────────────────────────
   getToken(): string | null {
     return localStorage.getItem('accessToken');
   }
 
-  // ──────────────────────────────────────────────────────────
-  // GET REFRESH TOKEN
-  // ──────────────────────────────────────────────────────────
   getRefreshToken(): string | null {
     return localStorage.getItem('refreshToken');
   }
 
-  // ──────────────────────────────────────────────────────────
-  // GET USER DATA
-  // ──────────────────────────────────────────────────────────
   getUser(): UserData {
     return JSON.parse(localStorage.getItem('user') || '{}');
   }
 
-  // ──────────────────────────────────────────────────────────
-  // GET ORG ID — use this in API calls that need org
-  // ──────────────────────────────────────────────────────────
   getOrg(): string {
     return localStorage.getItem('org') || '';
   }
 
+  // Returns "EMP26063" — the real employee code used in API calls
+  getEmployeeId(): string {
+    return localStorage.getItem('employeeId') || '';
+  }
 }

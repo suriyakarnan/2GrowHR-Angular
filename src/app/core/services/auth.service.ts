@@ -5,13 +5,15 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, tap, catchError, throwError } from 'rxjs';
 import { LoginResponse, UserData } from '../models/user.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  private apiBase = '/api/app/apipayroll/';
+  // Built from environment instead of a hardcoded relative path
+  private apiBase = `${environment.apiBaseUrl}api/app/apipayroll/`;
 
   constructor(
     private http: HttpClient,
@@ -37,16 +39,11 @@ export class AuthService {
 
           const userData: UserData = response.Data[0];
 
-          // Store full user object — components read from this
           localStorage.setItem('user', JSON.stringify(userData));
-
-          // Tokens
           localStorage.setItem('accessToken',  response.accessToken);
           localStorage.setItem('refreshToken', response.refreshToken);
-
-          // Shortcut keys used across the app
           localStorage.setItem('org',        String(userData.org));
-          localStorage.setItem('employeeId', userData.Sf_code);  // "EMP26063" — use this everywhere
+          localStorage.setItem('employeeId', userData.Sf_code);
         }
       }),
 
@@ -65,6 +62,8 @@ export class AuthService {
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('org');
     localStorage.removeItem('employeeId');
+    // Use loginAppUrl if logout should send them to a separate login app,
+    // otherwise keep the internal route navigate as-is.
     this.router.navigate(['']);
   }
 
@@ -89,7 +88,6 @@ export class AuthService {
     return localStorage.getItem('org') || '';
   }
 
-  // Returns "EMP26063" — the real employee code used in API calls
   getEmployeeId(): string {
     return localStorage.getItem('employeeId') || '';
   }

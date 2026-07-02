@@ -123,11 +123,11 @@ export class LoginComponent {
 
     this.isLoading    = true;
     this.errorMessage = '';
-
+console.log("checking1 ${this.username} ${this.password}");
     this.authService.login(this.username, this.password).subscribe({
 
       next: (response) => {
-
+console.log("checking2 ${this.username} password ${this.password}");
         this.isLoading = false;
 
          console.log('API RESPONSE:', response); // ← add this
@@ -143,6 +143,7 @@ export class LoginComponent {
       },
 
       error: (err) => {
+        console.log("checking3 ${err}");
         this.isLoading    = false;
         this.errorMessage = err?.message || 'Something went wrong. Please try again.';
       }

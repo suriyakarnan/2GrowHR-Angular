@@ -1,3 +1,16 @@
+export interface WallActivitySetup {
+  orgId: number;
+  divisionId: number;
+  subdivisionId: number;
+  department: number;
+  enableDepartmentWall: number;
+  employeePostContent: number;
+  employeePollContent: number;
+  employeePostAnnouncement: number;
+  hide_birthday: number;
+}
+
+
 // src/app/core/models/wall-activity.model.ts
 
 export interface WallPost {
@@ -69,14 +82,3 @@ export interface CreatePollPayload {
   expiresOn: string;
 }
 
-export interface WallActivitySetup {
-  orgId: number;
-  divisionId: number;
-  subdivisionId: number;
-  department: number;
-  enableDepartmentWall: number;
-  employeePostContent: number;
-  employeePollContent: number;
-  employeePostAnnouncement: number;
-  hide_birthday: number;
-}

@@ -1,7 +1,6 @@
 // src/app/core/services/wall-activity.service.ts
 
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Injectable, inject } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import {
   WallPost,
@@ -12,13 +11,15 @@ import {
   CreateCommentPayload,
   WallActivitySetup
 } from '../models/wall-activity.model';
+import { ApiService } from './api.service';
 
-const BASE_URL = '/api/wallposts';
+// 🔑 Only the relative path segment lives here — domain comes from ApiService/environment
+const URL = 'api/wallposts/';
 
 @Injectable({ providedIn: 'root' })
 export class WallActivityService {
 
-  constructor(private http: HttpClient) {}
+  private readonly apiService: ApiService = inject(ApiService);
 
   private getEmployeeId(): string {
     const userStr = localStorage.getItem('user');
@@ -31,17 +32,16 @@ export class WallActivityService {
   }
 
   getWallPosts(employeeId: string, loadByDivision: boolean = false): Observable<WallPost[]> {
-    const formData = new FormData();
-    formData.append('EmployeeId', employeeId);
-    formData.append('LoadByDivision', loadByDivision.toString());
-    return this.http.post<WallPost[]>(`${BASE_URL}/get`, formData);
+    return this.apiService.get<WallPost[]>(`${URL}get`, {
+      EmployeeId: employeeId,
+      LoadByDivision: loadByDivision.toString()
+    });
   }
 
   getEmployeeMentions(search?: string): Observable<{ success: boolean; data: string[] }> {
-    const params: Record<string, string> = search ? { search } : {};
-    return this.http.get<{ success: boolean; data: string[] }>(
-      `${BASE_URL}/employee-mentions`,
-      { params }
+    return this.apiService.get<{ success: boolean; data: string[] }>(
+      `${URL}employee-mentions`,
+      search ? { search } : {}
     );
   }
 
@@ -51,7 +51,7 @@ export class WallActivityService {
     formData.append('EmployeeId',      payload.employeeId);
     formData.append('DivisionId',      payload.divisionId);
     formData.append('SubDivisionId',   payload.subDivisionId);
-    formData.append('DepartmnetId',    payload.departmentId);
+    formData.append('DepartmentId',    payload.departmentId); // ✅ typo fixed (was 'DepartmnetId')
     formData.append('WallDescription', payload.content);
     formData.append('UserRole',        'Employee');
     if (payload.imageFile) {
@@ -60,63 +60,57 @@ export class WallActivityService {
     if (payload.mentionedEmpIds?.length) {
       formData.append('mentionedEmpIds', JSON.stringify(payload.mentionedEmpIds));
     }
-    return this.http.post<{ success: boolean; message: string }>(`${BASE_URL}/create`, formData);
+    return this.apiService.postForm<{ success: boolean; message: string }>(`${URL}create`, formData);
   }
 
   deletePost(wallPostId: number): Observable<{ success: boolean }> {
-    const formData = new FormData();
-    formData.append('PostId', wallPostId.toString());
-    formData.append('EmployeeId', this.getEmployeeId());
-    formData.append('IsAdmin', 'false');
-    return this.http.post<{ success: boolean }>(`${BASE_URL}/delete`, formData);
+    return this.apiService.post<{ success: boolean }>(`${URL}delete`, {
+      PostId: wallPostId.toString(),
+      EmployeeId: this.getEmployeeId(),
+      IsAdmin: 'false'
+    });
   }
 
   getComments(wallPostId: number): Observable<CommentItem[]> {
-    const formData = new FormData();
-    formData.append('WallPostId', wallPostId.toString());
-    formData.append('EmployeeId', this.getEmployeeId());
-    return this.http.post<CommentItem[]>(`${BASE_URL}/getcomments`, formData);
+    return this.apiService.get<CommentItem[]>(`${URL}getcomments`, {
+      WallPostId: wallPostId.toString(),
+      EmployeeId: this.getEmployeeId()
+    });
   }
 
   addComment(payload: CreateCommentPayload): Observable<{ success: boolean; message: string; data: CommentItem }> {
-    const formData = new FormData();
-    formData.append('WallPostId', payload.wallPostId.toString());
-    formData.append('CommentedEmployeeId', this.getEmployeeId());
-    formData.append('CommentDescription', payload.commentDescription);
-    return this.http.post<{ success: boolean; message: string; data: CommentItem }>(
-      `${BASE_URL}/comment`,
-      formData
-    );
+    return this.apiService.post<{ success: boolean; message: string; data: CommentItem }>(`${URL}comment`, {
+      WallPostId: payload.wallPostId.toString(),
+      CommentedEmployeeId: this.getEmployeeId(),
+      CommentDescription: payload.commentDescription
+    });
   }
 
   deleteComment(commentId: number, wallPostId: number): Observable<{ success: boolean; message?: string }> {
-    const formData = new FormData();
-    formData.append('CommentId', commentId.toString());
-    formData.append('WallPostId', wallPostId.toString());
-    formData.append('CommentedEmployeeId', this.getEmployeeId());
-    return this.http.post<{ success: boolean; message?: string }>(
-      `${BASE_URL}/deletecomment`,
-      formData
-    );
+    return this.apiService.post<{ success: boolean; message?: string }>(`${URL}deletecomment`, {
+      CommentId: commentId.toString(),
+      WallPostId: wallPostId.toString(),
+      CommentedEmployeeId: this.getEmployeeId()
+    });
   }
 
   likePost(wallPostId: number): Observable<{ success: boolean; message?: string }> {
-    const formData = new FormData();
-    formData.append('WallPostId', wallPostId.toString());
-    formData.append('LikedEmployeeId', this.getEmployeeId());
-    return this.http.post<{ success: boolean; message?: string }>(`${BASE_URL}/like`, formData);
+    return this.apiService.post<{ success: boolean; message?: string }>(`${URL}like`, {
+      WallPostId: wallPostId.toString(),
+      LikedEmployeeId: this.getEmployeeId()
+    });
   }
 
   removeLike(wallPostId: number): Observable<{ success: boolean; message?: string }> {
-    const formData = new FormData();
-    formData.append('WallPostId', wallPostId.toString());
-    formData.append('LikedEmployeeId', this.getEmployeeId());
-    return this.http.post<{ success: boolean; message?: string }>(`${BASE_URL}/removelike`, formData);
+    return this.apiService.post<{ success: boolean; message?: string }>(`${URL}removelike`, {
+      WallPostId: wallPostId.toString(),
+      LikedEmployeeId: this.getEmployeeId()
+    });
   }
 
   getPostLikes(wallPostId: number): Observable<any[]> {
-    return this.http.get<any[]>(`${BASE_URL}/posts/likes`, {
-      params: { wallPostId: wallPostId.toString() }
+    return this.apiService.get<any[]>(`${URL}posts/likes`, {
+      wallPostId: wallPostId.toString()
     });
   }
 
@@ -136,8 +130,8 @@ export class WallActivityService {
   // NOTE: verify in Postman whether this endpoint expects "UserId" with the
   // employee code (EMP26063) or the org id (36) — currently using employeeId.
   getWallActivitySetup(employeeId: string): Observable<WallActivitySetup> {
-    const formData = new FormData();
-    formData.append('UserId', employeeId);
-    return this.http.post<WallActivitySetup>(`${BASE_URL}/getwallactivitysetup`, formData);
+    return this.apiService.post<WallActivitySetup>(`${URL}getwallactivitysetup`, {
+      UserId: employeeId
+    });
   }
 }

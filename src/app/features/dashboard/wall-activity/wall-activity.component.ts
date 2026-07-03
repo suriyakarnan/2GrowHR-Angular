@@ -1,9 +1,10 @@
 // src/app/dashboard/wall-activity/wall-activity.component.ts
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { WallActivityService } from '../../../core/services/wall-activity.service';
+import { SelectpickerDirective } from '../../../shared/components/selectpicker/selectpicker.directive';
 import {
   WallPost,
   Division,
@@ -13,17 +14,22 @@ import {
   WallActivitySetup
 } from '../../../core/models/wall-activity.model';
 
+
 const IMAGE_BASE = 'http://development.2growhr.io';
 const PROF_PIC_BASE = 'http://2growhr.io/Images/EmpUpload/';
 
 @Component({
   selector: 'app-wall-activity',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, SelectpickerDirective],
   templateUrl: './wall-activity.component.html',
   styleUrls: ['./wall-activity.component.css']
 })
+
 export class WallActivityComponent implements OnInit {
+
+  @ViewChild('postScopePicker') postScopePicker!: SelectpickerDirective;
+  @ViewChild('divisionPicker') divisionPicker!: SelectpickerDirective;
 
   // ── Tab ───────────────────────────────────────────────────
   activeTab: 'post' | 'poll' = 'post';
@@ -108,23 +114,22 @@ export class WallActivityComponent implements OnInit {
   }
 
   loadWallActivitySetup(): void {
-    if (!this.employeeId) return;
-    this.wallService.getWallActivitySetup(this.employeeId).subscribe({
-      next: (setup) => {
-        this.activitySetup = setup;
-        this.canPostDepartment   = setup.enableDepartmentWall === 1;
-        this.canPostOrganization = setup.employeePostContent === 1;
-
-        if (!this.canPostOrganization && this.canPostDepartment) {
-          this.postScope = 'Department';
-        } else if (this.canPostOrganization) {
-          this.postScope = 'Organization';
-        }
-      },
-      error: (err) => console.error('Failed to load wall activity setup:', err)
-    });
-  }
-
+  if (!this.orgId) return;
+  this.wallService.getWallActivitySetup(this.orgId).subscribe({ // 👈 employeeId illa, employeeNumericId anுப்பணும்
+    next: (setup) => {
+      this.activitySetup = setup;
+      this.canPostDepartment   = setup.enableDepartmentWall === 1;
+      this.canPostOrganization = setup.employeePostContent === 1;
+      if (!this.canPostOrganization && this.canPostDepartment) {
+        this.postScope = 'Department';
+      } else if (this.canPostOrganization) {
+        this.postScope = 'Organization';
+      }
+      setTimeout(() => this.postScopePicker?.refresh());
+    },
+    error: (err) => console.error('Failed to load wall activity setup:', err)
+  });
+}
   // ── Image URL helpers ─────────────────────────────────────
 
   getProfilePicUrl(filename: string): string {
@@ -212,7 +217,7 @@ export class WallActivityComponent implements OnInit {
       orgId:           this.orgId,
       employeeId:      this.employeeId,
       divisionId:      this.postScope === 'Department'   ? this.divisionId   : '',
-      subDivisionId:   '0',
+      subDivisionId:   this.postScope === 'Department'   ? '0'               : '',
       departmentId:    this.postScope === 'Organization' ? this.departmentId : '',
       content:         this.postContent,
       imageFile:       this.selectedImage,

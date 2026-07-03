@@ -42,7 +42,13 @@ export class LayoutComponent {
 
   private setTitle(url: string): void {
 
-    if (url.includes('/dashboard')) {
+    // ✅ Specific route (wall-activity) MUDHAL-LA check pannunga
+    if (url.includes('/dashboard/wall-activity')) {
+      this.pageTitle = "Wallposts";
+    }
+
+    // General route apparam check pannunga
+    else if (url.includes('/dashboard')) {
       this.pageTitle = 'Dashboard';
     }
 
@@ -66,8 +72,6 @@ export class LayoutComponent {
       this.pageTitle = 'Reports';
     }
 
-    
-
     else if (url.includes('/setup')) {
       this.pageTitle = 'Setup';
     }
@@ -75,7 +79,5 @@ export class LayoutComponent {
     else if (url.includes('/hrms-portal')) {
       this.pageTitle = 'Dashboard';
     }
-
-    
-  }
+}
 }

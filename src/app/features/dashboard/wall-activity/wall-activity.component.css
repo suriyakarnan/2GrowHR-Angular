@@ -1,14 +1,16 @@
 /* src/app/dashboard/wall-activity/wall-activity.component.css */
+.sp-trigger {
 
-/* ── Layout ──────────────────────────────────────────────── */
-.wa-layout {
-  display: grid;
-  grid-template-columns: 1fr 320px;
-  gap: 24px;
-  align-items: start;
-  padding-top: 16px;
+  background: #f3f3f9 !important;
 }
 
+.sp-wrapper {
+   
+    width: 30% !important; 
+    margin-bottom: 10px !important;
+    background: f3f3f9 !important;
+}
+/* ── Page Title ──────────────────────────────────────────── */
 .wa-page-title {
   font-size: 20px;
   font-weight: 600;
@@ -31,6 +33,7 @@
   gap: 0;
   border-bottom: 2px solid #e9ecef;
   margin-bottom: 20px;
+  overflow-x: auto;
 }
 
 .wa-tab {
@@ -47,6 +50,7 @@
   border-bottom: 2px solid transparent;
   margin-bottom: -2px;
   transition: all 0.2s;
+  white-space: nowrap;
 }
 
 .wa-tab.active {
@@ -57,9 +61,9 @@
 /* ── Form Elements ───────────────────────────────────────── */
 .wa-label {
   display: block;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
-  color: #495057;
+  color: #767679;
   margin-bottom: 6px;
 }
 
@@ -71,6 +75,8 @@
   padding: 6px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   gap: 4px;
+  max-width: 100%;
+  overflow-x: auto;
 }
 
 .wa-feed-toggle button {
@@ -86,6 +92,7 @@
   color: #6b7280;
   cursor: pointer;
   transition: background-color 0.2s ease, color 0.2s ease;
+  white-space: nowrap;
 }
 
 .wa-feed-toggle button i {
@@ -104,8 +111,8 @@
 
 .wa-select,
 .wa-input {
-  width: 100%;
-  padding: 10px 14px;
+  width: 32% !important;
+  padding: 8px 14px;
   border: 1px solid #e2e8f0;
   border-radius: 8px;
   font-size: 14px;
@@ -123,18 +130,18 @@
 }
 
 .wa-textarea {
-  width: 100%;
-  min-height: 100px;
-  padding: 12px 14px;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  font-size: 14px;
-  color: #495057;
-  background: #f8f9fa;
-  resize: vertical;
-  margin-bottom: 14px;
-  outline: none;
-  transition: border-color 0.2s;
+    width: 100%;
+    min-height: 86px;
+    padding: 12px 14px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #262728;
+    background: #f3f3f9;
+    resize: vertical;
+    margin-bottom: 14px;
+    outline: none;
+    transition: border-color 0.2s;
 }
 
 .wa-textarea:focus {
@@ -147,6 +154,7 @@
   position: relative;
   margin-bottom: 14px;
   display: inline-block;
+  max-width: 100%;
 }
 
 .wa-image-preview img {
@@ -176,6 +184,8 @@
   align-items: center;
   justify-content: space-between;
   margin-top: 8px;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .wa-upload-btn {
@@ -248,9 +258,10 @@
   justify-content: space-between;
   gap: 16px;
   margin-top: 8px;
+  flex-wrap: wrap;
 }
 
-.wa-expires-group { flex: 1; }
+.wa-expires-group { flex: 1; min-width: 160px; }
 
 .wa-date-input { margin-bottom: 0; }
 
@@ -286,18 +297,35 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  overflow: hidden;
+}
+
+.wa-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
 }
 
 .wa-author-info {
   display: flex;
   flex-direction: column;
   flex: 1;
+  min-width: 0;
 }
 
 .wa-author-name {
   font-weight: 600;
   font-size: 14px;
   color: #2d3a4a;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wa-post-designation {
+  font-size: 12px;
+  color: #6c757d;
 }
 
 .wa-time-ago {
@@ -311,6 +339,7 @@
   color: #adb5bd;
   cursor: pointer;
   font-size: 18px;
+  flex-shrink: 0;
 }
 
 /* ── Post Content ────────────────────────────────────────── */
@@ -319,13 +348,22 @@
   color: #495057;
   margin-bottom: 12px;
   line-height: 1.6;
+  word-break: break-word;
+}
+
+.wa-post-images {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
 }
 
 .wa-post-image {
   width: 100%;
+  max-width: 100%;
   border-radius: 10px;
-  margin-bottom: 12px;
   border: 1px solid #e9ecef;
+  object-fit: cover;
 }
 
 /* ── Poll Display ────────────────────────────────────────── */
@@ -358,6 +396,7 @@
   font-size: 13px;
   color: #495057;
   margin-bottom: 6px;
+  gap: 8px;
 }
 
 .wa-option-label { font-weight: 500; }
@@ -384,6 +423,8 @@
   font-size: 12px;
   color: #adb5bd;
   margin-top: 8px;
+  flex-wrap: wrap;
+  gap: 6px;
 }
 
 /* ── Post Footer ─────────────────────────────────────────── */
@@ -394,9 +435,11 @@
   border-top: 1px solid #f0f2f5;
   padding-top: 12px;
   margin-top: 14px;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
-.wa-footer-actions { display: flex; gap: 16px; }
+.wa-footer-actions { display: flex; gap: 16px; flex-wrap: wrap; }
 
 .wa-action-btn {
   background: none;
@@ -423,8 +466,101 @@
   color: #adb5bd;
 }
 
-/* ── Sidebar ─────────────────────────────────────────────── */
-.wa-sidebar { position: sticky; top: 80px; }
+/* ── Comments ────────────────────────────────────────────── */
+.wa-comments-block {
+  margin-top: 14px;
+  border-top: 1px solid #f0f2f5;
+  padding-top: 14px;
+}
+
+.wa-comment-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.wa-comment-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--vz-primary, #405189);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.wa-comment-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.wa-comment-body {
+  flex: 1;
+  min-width: 0;
+  background: #f8f9fa;
+  border-radius: 10px;
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.wa-comment-body strong {
+  font-size: 13px;
+  color: #2d3a4a;
+}
+
+.wa-comment-text {
+  font-size: 13px;
+  color: #495057;
+  word-break: break-word;
+}
+
+.wa-comment-delete {
+  background: none;
+  border: none;
+  color: #adb5bd;
+  cursor: pointer;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.wa-comment-input-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.wa-comment-input-row .wa-input {
+  margin-bottom: 0;
+}
+
+/* ── Empty State ─────────────────────────────────────────── */
+.wa-empty {
+  text-align: center;
+  padding: 40px 20px;
+  color: #adb5bd;
+}
+
+.wa-empty i {
+  font-size: 40px;
+  margin-bottom: 10px;
+  display: block;
+}
+
+/* ── Sidebar (Bootstrap col handles width) ──────────────────── */
+.wa-sidebar {
+  position: sticky;
+  top: 80px;
+}
 
 .wa-announcement-card {
   background: #fff;
@@ -453,11 +589,82 @@
 }
 
 /* ── Responsive ──────────────────────────────────────────── */
-@media (max-width: 992px) {
-  .wa-layout {
-    grid-template-columns: 1fr;
-  }
+
+/* Tablets and below — sidebar loses sticky, becomes stacked */
+@media (max-width: 991.98px) {
   .wa-sidebar {
     position: static;
+    margin-top: 20px;
+  }
+}
+
+/* Small tablets / large phones */
+@media (max-width: 767.98px) {
+  .wa-create-card {
+    padding: 16px;
+  }
+
+  .wa-feed-card {
+    padding: 16px;
+  }
+
+  .wa-tab {
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+
+  .wa-post-images {
+    grid-template-columns: 1fr;
+  }
+
+  .wa-poll-footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .wa-submit-btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .wa-form-footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .wa-upload-btn {
+    justify-content: center;
+  }
+}
+
+/* Small phones */
+@media (max-width: 575.98px) {
+  .wa-page-title {
+    font-size: 17px;
+  }
+
+  .wa-avatar {
+    width: 36px;
+    height: 36px;
+    font-size: 15px;
+  }
+
+  .wa-author-name {
+    font-size: 13px;
+  }
+
+  .wa-feed-toggle button {
+    padding: 7px 12px;
+    font-size: 13px;
+  }
+
+  .wa-comment-avatar {
+    width: 28px;
+    height: 28px;
+  }
+
+  .wa-post-content,
+  .wa-comment-text {
+    font-size: 13px;
   }
 }

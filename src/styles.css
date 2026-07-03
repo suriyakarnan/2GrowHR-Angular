@@ -1,4 +1,12 @@
+
+* {
+
+  font-family: 'Poppins';
+}
+
 /* === Top bar: Show entries + Search === */
+
+
 .app-dt-top {
   display: flex;
   justify-content: space-between;
@@ -290,6 +298,7 @@ table.app-datatable .link-deactivate:hover {
   transition: border-color 0.2s;
   user-select: none;
   gap: 8px;
+  
 }
 
 .sp-trigger.sp-active {

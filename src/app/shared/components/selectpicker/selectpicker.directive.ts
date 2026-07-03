@@ -10,6 +10,7 @@ import {
 @Directive({
   selector: 'select[selectpicker]',
   standalone: true,
+  exportAs: 'selectpicker'
 })
 export class SelectpickerDirective implements OnInit, OnDestroy {
   @Input() pickerPlaceholder: string = 'Search...';

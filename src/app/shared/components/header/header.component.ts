@@ -13,6 +13,12 @@ export class HeaderComponent {
 
   @Input() title: string = '';
 
+  isActionsOpen = false;
+
+  toggleActions(): void {
+    this.isActionsOpen = !this.isActionsOpen;
+  }
+
   constructor(private router: Router) {}
 
   // Edit Button Click → Wall Activity Page

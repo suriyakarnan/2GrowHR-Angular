@@ -2,7 +2,7 @@
     display:flex;
     justify-content:space-between;
     align-items:center;
-    padding:14px 14px 0px 14px;
+    padding:14px 14px 0px 26px;
 }
 
 .db-title{
@@ -37,4 +37,30 @@
 .icon-btn:hover{
     background:#f3f4f6;
     transform:translateY(-2px);
+}
+
+/* ===================================================== */
+/* Mobile only (Mobile L & Mobile M, <=480px)               */
+/* ===================================================== */
+
+@media (max-width: 480px){
+
+    .db-header{
+        padding: 12px 12px 0px 16px;
+    }
+
+    .db-title{
+        font-size: 17px;
+        line-height: 24px;
+    }
+
+    .db-actions{
+        gap: 6px;
+    }
+
+    .icon-btn{
+        width: 34px;
+        height: 34px;
+        font-size: 17px;
+    }
 }

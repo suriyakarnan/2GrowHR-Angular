@@ -35,9 +35,10 @@ export class ApiService {
     }).pipe(catchError(this.handleError));
   }
 
+  // ✅ NEW — POST with FormData (multipart/form-data), matches Postman "form-data" tab
   public postForm<T>(url: string, formData: FormData, params?: HttpParamsRecord): Observable<T> {
     return this.http.post<T>(`${this.baseUrl}${url}`, formData, {
-      headers: this.getPrivateHeaders(),
+      headers: this.getPrivateHeaders(),  // ⚠️ Don't set Content-Type — browser auto-sets multipart boundary
       params: new HttpParams({ fromObject: params ?? {} }),
     }).pipe(catchError(this.handleError));
   }
@@ -56,6 +57,7 @@ export class ApiService {
     if (error.status === 401) errorMessage = 'Unauthorized. Please login again.';
     if (error.status === 403) errorMessage = 'Access denied.';
     if (error.status === 404) errorMessage = 'Resource not found.';
+    if (error.status === 405) errorMessage = 'Method not allowed.';
     if (error.status === 500) errorMessage = 'Server error. Please try again later.';
     console.error('API Error:', error);
     return throwError(() => new Error(errorMessage));

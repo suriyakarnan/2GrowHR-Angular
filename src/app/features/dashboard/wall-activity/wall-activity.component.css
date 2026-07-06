@@ -541,7 +541,9 @@
 
 .wa-comment-input-row .wa-input {
   margin-bottom: 0;
+  width: 100% !important;
 }
+
 
 /* ── Empty State ─────────────────────────────────────────── */
 .wa-empty {

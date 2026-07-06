@@ -6,10 +6,11 @@ import {
   WallPost,
   Division,
   CreatePostPayload,
-  CreatePollPayload,
   CommentItem,
   CreateCommentPayload,
-  WallActivitySetup
+  WallActivitySetup,
+  LikeItem,
+  
 } from '../models/wall-activity.model';
 import { ApiService } from './api.service';
 
@@ -28,6 +29,13 @@ export class WallActivityService {
     } catch {
       return '';
     }
+  }
+
+  // ✅ FIXED — was JSON POST, now FormData (matches likely backend expectation)
+  getWallActivitySetup(employeeId: string): Observable<WallActivitySetup> {
+    const formData = new FormData();
+    formData.append('UserId', employeeId);
+    return this.apiService.postForm<WallActivitySetup>(`${URL}getwallactivitysetup`, formData);
   }
 
   // ✅ FIXED — was GET, now POST + FormData (matches Postman: POST /get with form-data)
@@ -111,24 +119,27 @@ export class WallActivityService {
     return this.apiService.postForm<{ success: boolean; message?: string }>(`${URL}deletecomment`, formData);
   }
 
-  likePost(wallPostId: number): Observable<{ success: boolean; message?: string }> {
+  getLikePost(likedId: number, likedEmployeeId: string): Observable<LikeItem[]> {
     const formData = new FormData();
-    formData.append('WallPostId', wallPostId.toString());
-    formData.append('LikedEmployeeId', this.getEmployeeId());
-    return this.apiService.postForm<{ success: boolean; message?: string }>(`${URL}like`, formData);
+    formData.append('LikedId', likedId.toString());
+    formData.append('LikedEmployeeId', likedEmployeeId);
+    return this.apiService.postForm<LikeItem[]>(`${URL}like`, formData);
+
   }
 
-  removeLike(wallPostId: number): Observable<{ success: boolean; message?: string }> {
-    const formData = new FormData();
-    formData.append('WallPostId', wallPostId.toString());
-    formData.append('LikedEmployeeId', this.getEmployeeId());
-    return this.apiService.postForm<{ success: boolean; message?: string }>(`${URL}removelike`, formData);
-  }
-
-  getPostLikes(wallPostId: number): Observable<any[]> {
+  addLike(wallPostId: number, likedEmployeeId: string): Observable<{ success: boolean; message: string; data: CommentItem }> {
     const formData = new FormData();
     formData.append('wallPostId', wallPostId.toString());
-    return this.apiService.postForm<any[]>(`${URL}posts/likes`, formData);
+    formData.append('likedEmployeeId', likedEmployeeId);
+    return this.apiService.postForm<{ success: boolean; message: string; data: CommentItem }>(`${URL}posts/like`, formData);
+  }
+
+  removeLike(wallPostId: number, EmployeeId: string): Observable<{ success: boolean; message?: string }> {
+
+    const formData = new FormData();
+    formData.append('wallPostId', wallPostId.toString());
+    formData.append('EmployeeId', EmployeeId.toString());
+    return this.apiService.postForm<{ success: boolean; message?: string }>(`${URL}removelike`, formData);
   }
 
   getDivisions(divisionCode: string, divisionName: string): Observable<Division[]> {
@@ -136,18 +147,5 @@ export class WallActivityService {
     return of([{ id: divisionCode, name: divisionName }]);
   }
 
-  createPoll(payload: CreatePollPayload): Observable<any> {
-    return of({ success: true });
-  }
-
-  votePoll(postId: string, optionId: string): Observable<any> {
-    return of({ success: true });
-  }
-
-  // ✅ FIXED — was JSON POST, now FormData (matches likely backend expectation)
-  getWallActivitySetup(employeeId: string): Observable<WallActivitySetup> {
-    const formData = new FormData();
-    formData.append('UserId', employeeId);
-    return this.apiService.postForm<WallActivitySetup>(`${URL}getwallactivitysetup`, formData);
-  }
+  
 }

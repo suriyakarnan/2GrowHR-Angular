@@ -82,3 +82,30 @@ export interface CreatePollPayload {
   expiresOn: string;
 }
 
+export interface LikeItem {
+
+        likedId: number;
+        likedEmployeeId: string;
+        profilePicture: string;
+        employeeName: string;
+        designation: string;
+        organizationName: string;
+        likedDate : string;
+}
+
+export interface AddLikePayload 
+{
+    wallPostId: number;
+    likedEmployeeId: string;
+
+}
+
+export interface RemoveLikePayload {
+
+    wallPostId: number;
+    EmployeeId: string;
+}
+
+
+
+

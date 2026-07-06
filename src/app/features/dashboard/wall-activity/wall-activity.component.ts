@@ -9,7 +9,6 @@ import {
   WallPost,
   Division,
   CreatePostPayload,
-  CreatePollPayload,
   CommentItem,
   WallActivitySetup
 } from '../../../core/models/wall-activity.model';
@@ -78,8 +77,8 @@ export class WallActivityComponent implements OnInit {
 
   // ── Wall Activity Setup (permissions) ──────────────────────
   activitySetup: WallActivitySetup | null = null;
-  canPostOrganization: boolean = true;
-  canPostDepartment: boolean = true;
+  canPostOrganization: boolean = false;
+  canPostDepartment: boolean = false;
 
   constructor(private wallService: WallActivityService) {}
 
@@ -115,17 +114,20 @@ export class WallActivityComponent implements OnInit {
 
   loadWallActivitySetup(): void {
   if (!this.orgId) return;
-  this.wallService.getWallActivitySetup(this.orgId).subscribe({ // 👈 employeeId illa, employeeNumericId anுப்பணும்
+  this.wallService.getWallActivitySetup(this.orgId).subscribe({ 
     next: (setup) => {
+      console.log('🔍 API Response:', setup);
       this.activitySetup = setup;
       this.canPostDepartment   = setup.enableDepartmentWall === 1;
       this.canPostOrganization = setup.employeePostContent === 1;
+      console.log('🔍 canPostOrganization:', this.canPostOrganization);
+      console.log('🔍 canPostDepartment:', this.canPostDepartment);
       if (!this.canPostOrganization && this.canPostDepartment) {
         this.postScope = 'Department';
       } else if (this.canPostOrganization) {
         this.postScope = 'Organization';
       }
-      setTimeout(() => this.postScopePicker?.refresh());
+      setTimeout(() => this.postScopePicker?.refresh(), 100);
     },
     error: (err) => console.error('Failed to load wall activity setup:', err)
   });
@@ -204,10 +206,22 @@ export class WallActivityComponent implements OnInit {
   // postScope === 'Department'   → populate divisionId   (confirmed via Postman)
 
   submitPost(): void {
+
+    console.log('🔍 postScope:', this.postScope, '| canPostOrganization:', this.canPostOrganization);
     if (!this.postContent.trim()) return;
 
     if (!this.canPostOrganization && !this.canPostDepartment) {
       alert('You are not allowed to post.');
+      return;
+    }
+
+    
+    if (this.postScope === 'Organization' && !this.canPostOrganization) {
+      alert('You are not allowed to post in Organization.');
+      return;
+    }
+    if (this.postScope === 'Department' && !this.canPostDepartment) {
+      alert('You are not allowed to post in Department.');
       return;
     }
 
@@ -260,57 +274,8 @@ export class WallActivityComponent implements OnInit {
     });
   }
 
-  // ── Poll ──────────────────────────────────────────────────
-
-  addPollOption(): void {
-    if (this.pollOptions.length < 5) this.pollOptions.push('');
-  }
-
-  removePollOption(index: number): void {
-    if (this.pollOptions.length > 2) this.pollOptions.splice(index, 1);
-  }
-
   trackByIndex(index: number): number { return index; }
 
-  submitPoll(): void {
-    const validOptions = this.pollOptions.filter(o => o.trim() !== '');
-    if (!this.pollQuestion.trim() || validOptions.length < 2 || !this.pollExpiresOn) return;
-    this.isSubmitting = true;
-    const payload: CreatePollPayload = {
-      divisionId: this.pollDivisionId,
-      question:   this.pollQuestion,
-      options:    validOptions,
-      expiresOn:  this.pollExpiresOn
-    };
-    this.wallService.createPoll(payload).subscribe({
-      next: () => { this.resetPollForm(); this.isSubmitting = false; },
-      error: ()  => { this.isSubmitting = false; }
-    });
-  }
-
-  resetPollForm(): void {
-    this.pollQuestion   = '';
-    this.pollOptions    = ['', ''];
-    this.pollExpiresOn  = '';
-    this.pollDivisionId = '';
-  }
-
-  // ── Like ──────────────────────────────────────────────────
-
-  toggleLike(post: WallPost): void {
-    const action$ = post.hasLiked === 'Liked'
-      ? this.wallService.removeLike(post.wallPostId)
-      : this.wallService.likePost(post.wallPostId);
-
-    action$.subscribe({
-      next: (res) => {
-        if (res.success) {
-          post.hasLiked   = post.hasLiked === 'Liked' ? 'Not Liked' : 'Liked';
-          post.likeCount += post.hasLiked === 'Liked' ? 1 : -1;
-        }
-      }
-    });
-  }
 
   // ── Comments ──────────────────────────────────────────────
 
@@ -343,6 +308,11 @@ export class WallActivityComponent implements OnInit {
         }
       }
     });
+  }
+
+  submitLike(post: WallPost): void {
+
+    if (!this.)
   }
 
   deleteComment(post: WallPost, comment: CommentItem): void {

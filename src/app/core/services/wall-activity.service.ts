@@ -10,7 +10,12 @@ import {
   CreateCommentPayload,
   WallActivitySetup,
   LikeItem,
-  
+  LikeActionResponse,
+  WallPoll,
+  CreatePollPayload,
+  PollCommentItem,
+  CreatePollCommentPayload,
+  PollStatsResponse
 } from '../models/wall-activity.model';
 import { ApiService } from './api.service';
 
@@ -67,13 +72,13 @@ export class WallActivityService {
   if (payload.divisionId && payload.divisionId !== '0') {
     formData.append('DivisionId', payload.divisionId);
     formData.append('SubDivisionId', payload.subDivisionId || '0');
-  }
+  } 
   if (payload.departmentId && payload.departmentId !== '0') {
     formData.append('DepartmnetId', payload.departmentId);  // typo intentional
   }
 
   formData.append('WallDescription', payload.content);
-  formData.append('UserRole',        'Employee');
+  formData.append('UserRole','Employee');
 
   if (payload.imageFile) {
     formData.append('file', payload.imageFile);
@@ -119,32 +124,109 @@ export class WallActivityService {
     return this.apiService.postForm<{ success: boolean; message?: string }>(`${URL}deletecomment`, formData);
   }
 
-  getLikePost(likedId: number, likedEmployeeId: string): Observable<LikeItem[]> {
+  getLikePost(wallPostId: number): Observable<LikeItem[]> {
     const formData = new FormData();
-    formData.append('LikedId', likedId.toString());
+    formData.append('WallPostId', wallPostId.toString());
+    return this.apiService.postForm<LikeItem[]>(`${URL}posts/likes`, formData);
+  }
+
+  addLike(wallPostId: number, likedEmployeeId: string): Observable<LikeActionResponse> {
+    const formData = new FormData();
+    formData.append('WallPostId', wallPostId.toString());
     formData.append('LikedEmployeeId', likedEmployeeId);
-    return this.apiService.postForm<LikeItem[]>(`${URL}like`, formData);
-
+    return this.apiService.postForm<LikeActionResponse>(`${URL}like`, formData);
   }
 
-  addLike(wallPostId: number, likedEmployeeId: string): Observable<{ success: boolean; message: string; data: CommentItem }> {
+  removeLike(wallPostId: number, employeeId: string): Observable<LikeActionResponse> {
     const formData = new FormData();
-    formData.append('wallPostId', wallPostId.toString());
-    formData.append('likedEmployeeId', likedEmployeeId);
-    return this.apiService.postForm<{ success: boolean; message: string; data: CommentItem }>(`${URL}posts/like`, formData);
-  }
-
-  removeLike(wallPostId: number, EmployeeId: string): Observable<{ success: boolean; message?: string }> {
-
-    const formData = new FormData();
-    formData.append('wallPostId', wallPostId.toString());
-    formData.append('EmployeeId', EmployeeId.toString());
-    return this.apiService.postForm<{ success: boolean; message?: string }>(`${URL}removelike`, formData);
+    formData.append('WallPostId', wallPostId.toString());
+    formData.append('Employeeid', employeeId); // exact casing per backend/Postman
+    return this.apiService.postForm<LikeActionResponse>(`${URL}removelike`, formData);
   }
 
   getDivisions(divisionCode: string, divisionName: string): Observable<Division[]> {
     if (!divisionCode || divisionCode === '0') return of([]);
     return of([{ id: divisionCode, name: divisionName }]);
+  }
+
+  // ── Poll ─────────────────────────────────────────────────
+
+  /** POST getpoll — mirrors getWallPosts pattern (EmployeeId + LoadByDivision) */
+  getPolls(employeeId: string, loadByDivision: boolean = false): Observable<WallPoll[]> {
+    const formData = new FormData();
+    formData.append('EmployeeId', employeeId);
+    formData.append('LoadByDivision', loadByDivision.toString());
+    return this.apiService.postForm<WallPoll[]>(`${URL}getpoll`, formData);
+  }
+
+  createPoll(payload: CreatePollPayload): Observable<{ success: boolean; message: string }> {
+    const formData = new FormData();
+    formData.append('Createdby', payload.Createdby);
+    formData.append('PollName', payload.PollName);
+    formData.append('Options', payload.Options);
+    formData.append('DivisionIds', payload.DivisionIds);
+    formData.append('SubDivisionIds', payload.SubDivisionIds);
+    formData.append('Department', payload.Department);
+    formData.append('ExpiryDate', payload.ExpiryDate);
+    formData.append('UserRole', payload.UserRole);
+    formData.append('OrgId', payload.OrgId);
+    formData.append('LikeCount', payload.LikeCount);
+    formData.append('CreatedOn', payload.CreatedOn);
+    formData.append('ModifiedAt', payload.ModifiedAt);
+
+    return this.apiService.postForm<{ success: boolean; message: string }>(`${URL}createpoll`, formData);
+  }
+
+  deletePoll(pollId: number): Observable<{ success: boolean; message: string }> {
+    const formData = new FormData();
+    formData.append('pollId', pollId.toString());
+    formData.append('currentEmployeeId', this.getEmployeeId());
+    formData.append('IsAdmin', 'false');
+    return this.apiService.postForm<{ success: boolean; message: string }>(`${URL}deletepoll`, formData);
+  }
+
+  getPollLikes(pollId: number): Observable<LikeItem[]> {
+    const formData = new FormData();
+    formData.append('PollId', pollId.toString());
+    return this.apiService.postForm<LikeItem[]>(`${URL}polls/likes/list`, formData);
+  }
+
+  addPollLike(pollId: number, likedEmployeeId: string): Observable<LikeActionResponse> {
+    const formData = new FormData();
+    formData.append('PollId', pollId.toString());
+    formData.append('LikedEmployeeId', likedEmployeeId);
+    return this.apiService.postForm<LikeActionResponse>(`${URL}polls/likes`, formData);
+  }
+
+  removePollLike(pollId: number, employeeId: string): Observable<LikeActionResponse> {
+    const formData = new FormData();
+    formData.append('PollId', pollId.toString());
+    formData.append('Employeeid', employeeId);
+    return this.apiService.postForm<LikeActionResponse>(`${URL}removelikepoll`, formData);
+  }
+
+  getPollComments(pollId: number): Observable<PollCommentItem[]> {
+    const formData = new FormData();
+    formData.append('PollId', pollId.toString());
+    return this.apiService.postForm<PollCommentItem[]>(`${URL}commentspoll/get`, formData);
+  }
+
+  addPollComment(payload: CreatePollCommentPayload): Observable<{ success: boolean; message: string; data: PollCommentItem }> {
+    const formData = new FormData();
+    formData.append('PollId', payload.pollId.toString());
+    formData.append('CommentedEmployeeId', this.getEmployeeId());
+    formData.append('CommentDescription', payload.commentDescription);
+    return this.apiService.postForm<{ success: boolean; message: string; data: PollCommentItem }>(
+      `${URL}addcommentspoll`,
+      formData
+    );
+  }
+
+  getPollStats(employeeId: string, pollId: number): Observable<PollStatsResponse> {
+    const formData = new FormData();
+    formData.append('EmployeeId', employeeId);
+    formData.append('PollId', pollId.toString());
+    return this.apiService.postForm<PollStatsResponse>(`${URL}pollstats`, formData);
   }
 
   

@@ -862,3 +862,408 @@
     font-size: 13px;
   }
 }
+
+/* ══════════════════════════════════════════════════════════ */
+/* NEW — Scenario 1: Poll Voting UI                             */
+/* ══════════════════════════════════════════════════════════ */
+.wa-poll-vote-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.wa-vote-option-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: #495057;
+  cursor: pointer;
+}
+
+.wa-vote-option-row input[type="radio"] {
+  accent-color: var(--vz-primary, #405189);
+  width: 17px;
+  height: 17px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.wa-vote-btn-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 14px;
+}
+
+.wa-vote-btn {
+  background: #fff;
+  border: 1.5px solid var(--vz-primary, #405189);
+  color: var(--vz-primary, #405189);
+  border-radius: 6px;
+  padding: 7px 22px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.wa-vote-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.wa-vote-btn:hover:not(:disabled) { background: var(--vz-primary, #405189); color: #fff; }
+
+/* ══════════════════════════════════════════════════════════ */
+/* NEW — Scenario 2: thicker result bars to match screenshot    */
+/* Overrides the thin 6px bar defined earlier in this file      */
+/* ══════════════════════════════════════════════════════════ */
+.wa-poll-bar-track {
+  height: 34px;
+  border-radius: 8px;
+}
+
+.wa-poll-bar-fill {
+  border-radius: 8px;
+}
+
+/* ══════════════════════════════════════════════════════════ */
+/* NEW — Scenario 3: 3-dot menu + dropdown                      */
+/* ══════════════════════════════════════════════════════════ */
+.wa-poll-menu-wrapper {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.wa-dots-btn {
+  font-size: 20px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wa-dots-btn:hover {
+  background: #f1f1f1;
+  color: #495057;
+}
+
+.wa-menu-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1040;
+  background: transparent;
+}
+
+.wa-poll-dropdown {
+  position: absolute;
+  top: 36px;
+  right: 0;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  min-width: 160px;
+  padding: 6px;
+  z-index: 1050;
+}
+
+.wa-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  background: none;
+  border: none;
+  text-align: left;
+  padding: 9px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #2d3a4a;
+  cursor: pointer;
+}
+
+.wa-dropdown-item:hover {
+  background: #f3f3f9;
+}
+
+.wa-dropdown-item i {
+  font-size: 16px;
+}
+
+.wa-dropdown-item-danger {
+  color: #dc3545;
+}
+
+.wa-dropdown-item-danger:hover {
+  background: #fdecec;
+}
+
+/* ══════════════════════════════════════════════════════════ */
+/* NEW — Scenario 3: Poll Stats Offcanvas                       */
+/* ══════════════════════════════════════════════════════════ */
+.wa-offcanvas-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 1060;
+}
+
+.wa-offcanvas {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  width: 420px;
+  max-width: 92vw;
+  background: #fff;
+  z-index: 1070;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 0.25s ease;
+  box-shadow: -4px 0 20px rgba(0,0,0,0.15);
+}
+
+.wa-offcanvas.open {
+  transform: translateX(0);
+}
+
+.wa-offcanvas-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid #eee;
+  flex-shrink: 0;
+}
+
+.wa-offcanvas-header h6 {
+  margin: 0;
+  font-weight: 700;
+  font-size: 16px;
+  color: #212529;
+}
+
+.wa-offcanvas-close {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: #6c757d;
+  cursor: pointer;
+}
+
+.wa-offcanvas-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0;
+}
+
+.wa-stats-author-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #f3f3f9;
+  padding: 16px 20px;
+}
+
+.wa-stats-question-sub {
+  font-size: 12px;
+  color: #6c757d;
+}
+
+.wa-stats-question-block {
+  padding: 18px 20px;
+}
+
+.wa-stats-question {
+  font-size: 14px;
+  font-weight: 600;
+  color: #2d3a4a;
+  margin-bottom: 14px;
+}
+
+.wa-stats-option-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.wa-stats-option-label {
+  font-size: 13px;
+  color: #495057;
+  width: 60px;
+  flex-shrink: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wa-stats-bar-track {
+  flex: 1;
+  height: 32px;
+  background: #eef0f2;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+
+.wa-stats-bar-fill {
+  height: 100%;
+  background: #2dd4bf;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: width 0.4s ease;
+  min-width: 2px;
+}
+
+.wa-stats-bar-text {
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.wa-stats-option-count {
+  font-size: 12px;
+  color: #6c757d;
+  width: 56px;
+  flex-shrink: 0;
+  text-align: right;
+}
+
+.wa-stats-meta-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #adb5bd;
+  padding: 0 20px 10px;
+}
+
+.wa-stats-scope-row {
+  font-size: 12px;
+  color: #495057;
+  padding: 0 20px 16px;
+}
+
+.wa-stats-scope-row strong {
+  color: #2d3a4a;
+  font-weight: 600;
+}
+
+.wa-stats-engagement-row {
+  display: flex;
+  gap: 24px;
+  background: #f3f3f9;
+  padding: 12px 20px;
+  font-size: 13px;
+  color: #495057;
+}
+
+.wa-stats-engagement-row i {
+  margin-right: 5px;
+  font-size: 14px;
+}
+
+.wa-stats-tabs {
+  display: flex;
+  border-bottom: 1px solid #eee;
+  padding: 0 20px;
+}
+
+.wa-stats-tab {
+  background: none;
+  border: none;
+  padding: 12px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #6c757d;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+}
+
+.wa-stats-tab.active {
+  color: var(--vz-primary, #405189);
+  border-bottom: 2px solid var(--vz-primary, #405189);
+  font-weight: 600;
+}
+
+.wa-stats-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 4px;
+}
+
+.wa-stats-table th {
+  text-align: left;
+  font-size: 12px;
+  color: #6c757d;
+  font-weight: 600;
+  padding: 10px 20px;
+  background: #f8f9fa;
+}
+
+.wa-stats-table td {
+  font-size: 13px;
+  color: #2d3a4a;
+  padding: 10px 20px;
+  border-top: 1px solid #f0f2f5;
+}
+
+.wa-stats-comments-list {
+  padding: 12px 20px;
+}
+
+.wa-stats-empty {
+  text-align: center;
+  color: #adb5bd;
+  font-size: 13px;
+  padding: 20px;
+}
+
+/* ══════════════════════════════════════════════════════════ */
+/* NEW — Responsive adjustments for the 3 additions             */
+/* ══════════════════════════════════════════════════════════ */
+@media (max-width: 767.98px) {
+  .wa-offcanvas {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .wa-vote-btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .wa-poll-dropdown {
+    right: 0;
+    left: auto;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .wa-poll-bar-track {
+    height: 28px;
+  }
+
+  .wa-stats-option-label {
+    width: 44px;
+    font-size: 12px;
+  }
+
+  .wa-stats-question-block {
+    padding: 14px 16px;
+  }
+
+  .wa-stats-author-row,
+  .wa-stats-engagement-row,
+  .wa-stats-tabs,
+  .wa-stats-table th,
+  .wa-stats-table td,
+  .wa-stats-comments-list {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}

@@ -111,7 +111,9 @@ export interface WallPoll {
   employeeName: string;
   divisionIds: number | null;
   subDivisionIds: number | null;
-  departmnetId: number | null;
+  departmnetId: number | null;          // backend typo — preserve exactly, per your convention
+  wallDescription: string | null;
+  imagePath: string | null;
   createdAt: string;
   modifiedAt: string;
   userRole: string;
@@ -120,15 +122,22 @@ export interface WallPoll {
   orgId: number;
   likeCount: number;
   commentCount: number;
+  likedEmployeeId: string;
+  likedEmployeeDesignation: string;
+  likedEmployeeName: string;
   hasLiked: 'Liked' | 'Not Liked';
+  likedEmployeesProfilePicture: string;
   designationName: string;
+  createdby: string | null;
   pollName: string;
+  createdOn: string | null;
   expiryDate: string;
+  options: string | null;
   optiontext: string;
-  hasVoted: string;
+  optionLetter: string | null;
+  hasVoted: boolean;                 // ← string, not boolean — matches actual payload
   userSelectedOption: string;
   voteCount: number;
-  /** JSON-encoded string — parse with JSON.parse to get ParsedPollOptionVote[] */
   optionVotesJson: string;
 }
 
@@ -195,11 +204,42 @@ export interface PollStatsData {
   options: PollStatsOption[];
   voteDetails: PollVoteDetail[];
   profilePicturePath: string;
+  pollFor?: string;   // e.g. "All Departments" — verify exact backend key name
 }
 
 export interface PollStatsResponse {
   success: boolean;
   data: PollStatsData;
+}
+
+// ── Poll Comment Edit/Delete ───────────────────────────────
+export interface EditPollCommentPayload {
+  UserId: string;              // ← the field your 400 error was missing
+  CommentId: number;
+  PollId: number;
+  CommentDescription: string;
+  CommentedEmployeeId?: string;
+  MentionEmployee?: string;
+}
+
+export interface DeletePollCommentPayload {
+  UserId: string;
+  CommentId: number;
+  PollId: number;
+  CommentedEmployeeId: string;
+}
+
+// ── Poll Voting ─────────────────────────────────────────────
+export interface SaveVotePayload {
+  UserId: string;
+  PollId: number;
+  OptionId: number;
+  EmployeeId: string;
+}
+
+export interface SaveVoteResponse {
+  success: boolean;
+  message: string;
 }
 
 

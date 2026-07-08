@@ -18,7 +18,13 @@ import {
   WallPoll,
   CreatePollPayload,
   PollCommentItem,
-  ParsedPollOptionVote
+  ParsedPollOptionVote,
+  EditPollCommentPayload,
+  DeletePollCommentPayload,
+  SaveVotePayload,
+  SaveVoteResponse,
+  PollStatsData,
+  PollStatsResponse
 } from '../../../core/models/wall-activity.model';
 
 
@@ -111,6 +117,28 @@ export class WallActivityComponent implements OnInit {
 
   userRole: string = 'Employee';
 
+  // ── Poll Comment Edit ───────────────────────────────────────
+  editingPollCommentId: number | null = null;
+  editPollCommentText: string = '';
+
+  // ── Poll Voting ─────────────────────────────────────────────
+  selectedVoteOption: Record<number, number> = {};   // pollId → chosen OptionId
+  isVoting: Record<number, boolean> = {};            // pollId → submitting state
+
+  // ── NEW: Poll 3-dot menu ─────────────────────────────────────
+  openPollMenuId: number | null = null;
+
+  // ── NEW: Admin gate for "View Stats" ─────────────────────────
+  // TODO: confirm real source — currently derived from userRole.
+  // Replace with the correct field once you tell me where admin
+  // status actually comes from (WallActivitySetup? a separate API?).
+  isAdmin: boolean = false;
+
+  // ── NEW: Poll Stats Offcanvas ─────────────────────────────────
+  statsPoll: PollStatsData | null = null;
+  statsActiveTab: 'response' | 'comments' = 'response';
+  isLoadingStats: boolean = false;
+
   
 
   constructor(private wallService: WallActivityService) {}
@@ -124,6 +152,8 @@ export class WallActivityComponent implements OnInit {
       this.departmentId = String(user.SFDept        || '0');
       this.divisionId   = String(user.Division_Code || '0');
       this.divisionName = user.Division_Name        || '';
+      this.userRole     = user.Role || user.UserRole || 'Employee';   // ← adjust key if different in your localStorage 'user' object
+      this.isAdmin       = this.userRole === 'Admin';                  // ← placeholder, confirm real logic
     }
 
     this.loadWallActivitySetup();
@@ -437,19 +467,24 @@ export class WallActivityComponent implements OnInit {
     this.brokenImages.add(url);
   }
 
+  private pollsRequestId = 0;
+
   loadPolls(): void {
-    if (!this.employeeId) return;
-    this.wallService.getPolls(this.employeeId, this.loadByDivision).subscribe({
-      next: (data) => {
-         console.log('🔍 raw polls response:', data);
-        this.wallPolls = Array.isArray(data) ? data : [];
-         console.log('🔍 wallPolls after assign:', this.wallPolls);
-        this.rebuildFeed();
-        console.log('🔍 feedItems after rebuild:', this.feedItems);
-      },
-      error: (err) => console.error('Failed to load polls:', err)
-    });
-  }
+  if (!this.employeeId) return;
+  const requestId = ++this.pollsRequestId;   // NEW
+  this.wallService.getPolls(this.employeeId, this.loadByDivision).subscribe({
+    next: (data) => {
+      if (requestId !== this.pollsRequestId) return;   // NEW — ignore stale/late responses
+      const raw = Array.isArray(data) ? data : [];
+      this.wallPolls = raw.map(p => ({
+        ...p,
+        hasVoted: (p as any).hasVoted === '1' || (p as any).hasVoted === 1
+      })) as WallPoll[];
+      this.rebuildFeed();
+    },
+    error: (err) => console.error('Failed to load polls:', err)
+  });
+}
 
   private rebuildFeed(): void {
     const postItems: FeedItem[] = this.wallPosts.map(post => ({ type: 'post', createdAt: post.createdAt, post }));
@@ -471,14 +506,19 @@ export class WallActivityComponent implements OnInit {
     if (this.pollOptions.length > 2) this.pollOptions.splice(index, 1);
   }
 
-  getParsedPollOptions(poll: WallPoll): ParsedPollOptionVote[] {
-    if (!poll.optionVotesJson) return [];
+  getParsedPollOptions(poll: WallPoll & { _parsedOptions?: ParsedPollOptionVote[] }): ParsedPollOptionVote[] {
+    if (poll._parsedOptions) return poll._parsedOptions;
+    if (!poll.optionVotesJson) return (poll._parsedOptions = []);
     try {
-      return JSON.parse(poll.optionVotesJson) as ParsedPollOptionVote[];
+      return (poll._parsedOptions = JSON.parse(poll.optionVotesJson) as ParsedPollOptionVote[]);
     } catch {
-      return [];
+      return (poll._parsedOptions = []);
     }
   }
+
+  trackByOptionId(index: number, opt: ParsedPollOptionVote): number {
+  return opt.OptionId;
+}
 
   getPollTotalVotes(poll: WallPoll): number {
     return this.getParsedPollOptions(poll).reduce((sum, o) => sum + (o.VoteCount || 0), 0);
@@ -638,5 +678,145 @@ const now = new Date().toISOString();
     return this.pollQuestion.trim().length > 0 && validOptions.length >= 2 && !!this.pollExpiresOn;
   }
 
-  
+  // ── Edit poll comment ───────────────────────────────────────
+startEditPollComment(comment: PollCommentItem): void {
+  this.editingPollCommentId = comment.commentId;
+  this.editPollCommentText = comment.commentDescription;
+}
+
+cancelEditPollComment(): void {
+  this.editingPollCommentId = null;
+  this.editPollCommentText = '';
+}
+
+saveEditPollComment(poll: WallPoll, comment: PollCommentItem): void {
+  if (!this.editPollCommentText.trim()) return;
+
+  this.wallService.editPollComment({
+    UserId: this.employeeId,
+    CommentId: comment.commentId,
+    PollId: poll.pollId,
+    CommentDescription: this.editPollCommentText,
+    CommentedEmployeeId: this.employeeId
+  }).subscribe({
+    next: (res) => {
+      if (res.success) {
+        comment.commentDescription = this.editPollCommentText;
+        this.cancelEditPollComment();
+      }
+    }
+  });
+}
+
+// ── Delete poll comment ─────────────────────────────────────
+deletePollComment(poll: WallPoll, comment: PollCommentItem): void {
+  this.wallService.deletePollComment({
+    UserId: this.employeeId,
+    CommentId: comment.commentId,
+    PollId: poll.pollId,
+    CommentedEmployeeId: this.employeeId
+  }).subscribe({
+    next: (res) => {
+      if (res.success) {
+        this.pollCommentsByPoll[poll.pollId] =
+          this.pollCommentsByPoll[poll.pollId].filter(c => c.commentId !== comment.commentId);
+        poll.commentCount -= 1;
+      }
+    }
+  });
+}
+
+// ── Voting ───────────────────────────────────────────────────
+selectVoteOption(pollId: number, optionId: number): void {
+  this.selectedVoteOption[pollId] = optionId;
+}
+
+submitVote(poll: WallPoll): void {
+
+   console.log('🔍 VOTING ON — poll.pollId:', poll.pollId, '| poll.pollName:', poll.pollName, '| available options:', this.getParsedPollOptions(poll));
+  const optionId = this.selectedVoteOption[poll.pollId];
+  console.log('🔍 selectedVoteOption sent:', optionId);
+  if (!optionId) { alert('Please select an option before voting.'); return; }
+
+  this.isVoting[poll.pollId] = true;
+
+  this.wallService.saveVote({
+    UserId: this.orgId,
+    PollId: poll.pollId,
+    OptionId: optionId,
+    EmployeeId: this.employeeId
+  }).subscribe({
+    next: (res) => {
+      this.isVoting[poll.pollId] = false;
+      if (res.success) {
+        poll.hasVoted = true;
+        this.loadPolls();               // refresh counts/percentages
+      } else {
+        alert(res.message || 'Vote failed.');
+      }
+    },
+    error: () => { this.isVoting[poll.pollId] = false; }
+  });
+}
+
+getOptionPercentage(poll: WallPoll, voteCount: number): number {
+  const total = this.getPollTotalVotes(poll);
+  return total === 0 ? 0 : Math.round((voteCount / total) * 100);
+}
+
+// ── NEW: Scenario 1 — expiry check ────────────────────────────
+isPollExpired(poll: WallPoll): boolean {
+  if (!poll.expiryDate) return false;
+  const expiry = new Date(poll.expiryDate);
+  expiry.setHours(23, 59, 59, 999);   // expire only at END of that day, not midnight
+  return expiry.getTime() < Date.now();
+}
+
+// ── NEW: Scenario 3 — 3-dot menu ──────────────────────────────
+togglePollMenu(poll: WallPoll): void {
+  this.openPollMenuId = this.openPollMenuId === poll.pollId ? null : poll.pollId;
+}
+
+closePollMenu(): void {
+  this.openPollMenuId = null;
+}
+
+// ── NEW: Scenario 3 — ownership check (for showing Delete) ────
+isPollOwner(poll: WallPoll): boolean {
+  return poll.employeeId === this.employeeId;
+}
+
+// ── NEW: Scenario 3 — Poll Stats Offcanvas ────────────────────
+openPollStats(poll: WallPoll): void {
+  this.isLoadingStats = true;
+  this.statsActiveTab = 'response';
+
+  this.wallService.getPollStats(this.employeeId, poll.pollId).subscribe({
+    next: (res: PollStatsResponse) => {
+      this.isLoadingStats = false;
+      if (res.success) {
+        this.statsPoll = res.data;
+        // Ensure poll comments are loaded for the Comments tab
+        if (!this.pollCommentsByPoll[poll.pollId]) {
+          this.wallService.getPollComments(poll.pollId).subscribe({
+            next: (data) => this.pollCommentsByPoll[poll.pollId] = data,
+            error: () => this.pollCommentsByPoll[poll.pollId] = []
+          });
+        }
+      } else {
+        alert('Failed to load poll stats.');
+      }
+    },
+    error: (err) => {
+      this.isLoadingStats = false;
+      console.error('Failed to load poll stats:', err);
+      alert('Failed to load poll stats.');
+    }
+  });
+}
+
+closePollStats(): void {
+  this.statsPoll = null;
+}
+
 }

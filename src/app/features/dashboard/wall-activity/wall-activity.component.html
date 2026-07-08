@@ -88,12 +88,13 @@
                     <option *ngIf="canPostDepartment" value="Department">Department</option>
                   </select>
 
-                  <input type="text" class="wa-input" style="width: 100% !important;" [(ngModel)]="pollQuestion"
-                    placeholder="What is the Poll about?" />
+                  <div>
+                    <input type="text" class="wa-input" [(ngModel)]="pollQuestion"
+                      placeholder="What is the Poll about?" />
+                  </div>
 
                   <div *ngFor="let opt of pollOptions; let i = index; trackBy: trackByIndex" class="wa-poll-option-row">
-                    <input type="text" class="wa-input" style="width: 100% !important;" [(ngModel)]="pollOptions[i]"
-                      placeholder="Add Option" />
+                    <input type="text" class="wa-input" [(ngModel)]="pollOptions[i]" placeholder="Add Option" />
                     <button *ngIf="pollOptions.length > 2" class="wa-remove-option" (click)="removePollOption(i)">
                       <i class="ti ti-x"></i>
                     </button>
@@ -106,10 +107,11 @@
                   <div class="wa-poll-footer">
                     <div class="wa-expires-group">
                       <label class="wa-label">Poll Expires on <span class="required">*</span></label>
-                      <input type="date" class="wa-input wa-date-input" style="width: 100% !important;"
+                      <input type="date" class="wa-input wa-date-input"
                         [(ngModel)]="pollExpiresOn" />
                     </div>
-                    <button class="wa-submit-btn" [disabled]="!isPollFormValid || isSubmittingPoll" (click)="submitPoll()">
+                    <button class="wa-submit-btn" [disabled]="!isPollFormValid || isSubmittingPoll"
+                      (click)="submitPoll()">
                       {{ isSubmittingPoll ? 'Creating...' : 'CREATE POLL' }}
                     </button>
                   </div>
@@ -129,7 +131,7 @@
               </button>
             </div>
 
-            
+
 
             <!-- ══════════════════════════════════════════════ -->
             <!-- FEED (posts + polls, merged, newest first)     -->
@@ -147,10 +149,10 @@
                       <div class="wa-avatar">
                         <img
                           *ngIf="post.profilePicturePath && !isImageBroken(getProfilePicUrl(post.profilePicturePath))"
-                          [src]="getProfilePicUrl(post.profilePicturePath)"
-                          alt=""
+                          [src]="getProfilePicUrl(post.profilePicturePath)" alt=""
                           (error)="markImageBroken(getProfilePicUrl(post.profilePicturePath))" />
-                        <span *ngIf="!post.profilePicturePath || isImageBroken(getProfilePicUrl(post.profilePicturePath))">
+                        <span
+                          *ngIf="!post.profilePicturePath || isImageBroken(getProfilePicUrl(post.profilePicturePath))">
                           {{ post.employeeName.charAt(0) }}
                         </span>
                       </div>
@@ -176,7 +178,8 @@
                     <!-- Like & Comment -->
                     <div class="wa-post-footer">
                       <div class="wa-footer-actions">
-                        <button class="wa-action-btn" [class.liked]="post.hasLiked === 'Liked'" (click)="SubmitLike(post)">
+                        <button class="wa-action-btn" [class.liked]="post.hasLiked === 'Liked'"
+                          (click)="SubmitLike(post)">
                           <i class="ti ti-thumb-up"></i>
                         </button>
                         <span class="wa-like-count" (click)="toggleLikes(post)">
@@ -204,10 +207,10 @@
                             <div class="wa-like-avatar">
                               <img
                                 *ngIf="liker.profilePicture && !isImageBroken(getProfilePicUrl(liker.profilePicture))"
-                                [src]="getProfilePicUrl(liker.profilePicture)"
-                                alt=""
+                                [src]="getProfilePicUrl(liker.profilePicture)" alt=""
                                 (error)="markImageBroken(getProfilePicUrl(liker.profilePicture))" />
-                              <span *ngIf="!liker.profilePicture || isImageBroken(getProfilePicUrl(liker.profilePicture))">
+                              <span
+                                *ngIf="!liker.profilePicture || isImageBroken(getProfilePicUrl(liker.profilePicture))">
                                 {{ liker.employeeName.charAt(0) }}
                               </span>
                             </div>
@@ -227,10 +230,8 @@
                     <div *ngIf="openCommentsPostId === post.wallPostId" class="wa-comments-block">
                       <div *ngFor="let c of commentsByPost[post.wallPostId]" class="wa-comment-item">
                         <div class="wa-comment-avatar">
-                          <img
-                            *ngIf="c.employeeProfilePic && !isImageBroken(getProfilePicUrl(c.employeeProfilePic))"
-                            [src]="getProfilePicUrl(c.employeeProfilePic)"
-                            alt=""
+                          <img *ngIf="c.employeeProfilePic && !isImageBroken(getProfilePicUrl(c.employeeProfilePic))"
+                            [src]="getProfilePicUrl(c.employeeProfilePic)" alt=""
                             (error)="markImageBroken(getProfilePicUrl(c.employeeProfilePic))" />
                           <span *ngIf="!c.employeeProfilePic || isImageBroken(getProfilePicUrl(c.employeeProfilePic))">
                             {{ c.employeeName.charAt(0) }}
@@ -245,8 +246,8 @@
                         </button>
                       </div>
                       <div class="wa-comment-input-row">
-                        <input type="text" class="wa-input" [(ngModel)]="newCommentText" placeholder="Write a comment..."
-                          (keyup.enter)="submitComment(post)" />
+                        <input type="text" class="wa-input" [(ngModel)]="newCommentText"
+                          placeholder="Write a comment..." (keyup.enter)="submitComment(post)" />
                         <button class="wa-submit-btn" (click)="submitComment(post)">Send</button>
                       </div>
                     </div>
@@ -263,10 +264,10 @@
                       <div class="wa-avatar">
                         <img
                           *ngIf="poll.profilePicturePath && !isImageBroken(getProfilePicUrl(poll.profilePicturePath))"
-                          [src]="getProfilePicUrl(poll.profilePicturePath)"
-                          alt=""
+                          [src]="getProfilePicUrl(poll.profilePicturePath)" alt=""
                           (error)="markImageBroken(getProfilePicUrl(poll.profilePicturePath))" />
-                        <span *ngIf="!poll.profilePicturePath || isImageBroken(getProfilePicUrl(poll.profilePicturePath))">
+                        <span
+                          *ngIf="!poll.profilePicturePath || isImageBroken(getProfilePicUrl(poll.profilePicturePath))">
                           {{ poll.employeeName.charAt(0) }}
                         </span>
                       </div>
@@ -274,39 +275,87 @@
                         <span class="wa-author-name">{{ poll.employeeName }}</span>
                         <span class="wa-time-ago">{{ getTimeAgo(poll.createdAt) }}</span>
                       </div>
-                      <button class="wa-more-btn" (click)="deletePoll(poll)" title="Delete poll">
-                        <img src="Assets/NewLoginPage/img/delete-icon.svg" alt="Delete" />
-                      </button>
+
+                      <!-- ══ NEW: 3-dot menu (replaces old direct-delete button) ══ -->
+                      <div class="wa-poll-menu-wrapper">
+                        <button class="wa-more-btn wa-dots-btn" (click)="togglePollMenu(poll)" title="More options">
+                          <i class="ti ti-dots-vertical"></i>
+                        </button>
+
+                        <!-- invisible click-catcher to close menu on outside click -->
+                        <div *ngIf="openPollMenuId === poll.pollId" class="wa-menu-backdrop" (click)="closePollMenu()">
+                        </div>
+
+                        <div *ngIf="openPollMenuId === poll.pollId" class="wa-poll-dropdown">
+
+                          <button *ngIf="isPollOwner(poll)" class="wa-dropdown-item"
+                            (click)="openPollStats(poll); closePollMenu()">
+                            <i class="ti ti-chart-bar"></i>
+                            <span>View Stats</span>
+                          </button>
+                          <button *ngIf="isPollOwner(poll)" class="wa-dropdown-item wa-dropdown-item-danger"
+                            (click)="deletePoll(poll); closePollMenu()">
+                            <i class="ti ti-trash"></i>
+                            <span>Delete</span>
+                          </button>
+                        </div>
+                      </div>
+                      <!-- ══ END NEW ══ -->
+
                     </div>
 
                     <!-- Poll Question -->
                     <p class="wa-poll-question">{{ poll.pollName }}</p>
 
-                    <!-- Poll Options — read-only result bars.
-                         NOTE: vote-submission (Savevote) button omitted here since that
-                         endpoint wasn't shown in your Postman screenshots. Once you confirm
-                         its fields, ask and I'll add a clickable voting version. -->
-                    <div class="wa-poll-options">
-                      <div *ngFor="let opt of getParsedPollOptions(poll)" class="wa-poll-option">
-                        <div class="wa-poll-option-header">
-                          <span class="wa-option-label">{{ opt.OptionText }}</span>
-                          <span class="wa-option-percent">{{ opt.Percentage }}% ({{ opt.VoteCount }} vote{{ opt.VoteCount === 1 ? '' : 's' }})</span>
-                        </div>
-                        <div class="wa-poll-bar-track">
-                          <div class="wa-poll-bar-fill" [style.width.%]="opt.Percentage"></div>
+                    <!-- ══ NEW: Scenario 1 — Voting UI (shown when not voted AND not expired) ══ -->
+                    <ng-container *ngIf="!poll.hasVoted && !isPollExpired(poll); else pollResultsBlock">
+
+                      <div class="wa-poll-vote-options">
+                        <label *ngFor="let opt of getParsedPollOptions(poll); trackBy: trackByOptionId"
+                          class="wa-vote-option-row">
+                          <input type="radio" [name]="'poll-' + poll.pollId" [value]="opt.OptionId"
+                            [checked]="selectedVoteOption[poll.pollId] === opt.OptionId"
+                            (change)="selectVoteOption(poll.pollId, opt.OptionId)" />
+                          <span>{{ opt.OptionText }}</span>
+                        </label>
+                      </div>
+
+                      <div class="wa-vote-btn-row">
+                        <button class="wa-vote-btn" [disabled]="isVoting[poll.pollId]" (click)="submitVote(poll)">
+                          {{ isVoting[poll.pollId] ? 'Voting...' : 'VOTE' }}
+                        </button>
+                      </div>
+
+                    </ng-container>
+
+                    <!-- ══ Scenario 2 — Results UI (shown when voted OR expired) ══ -->
+                    <ng-template #pollResultsBlock>
+                      <div class="wa-poll-options">
+                        <div *ngFor="let opt of getParsedPollOptions(poll)" class="wa-poll-option">
+                          <div class="wa-poll-option-header">
+                            <span class="wa-option-label">{{ opt.OptionText }}</span>
+                            <span class="wa-option-percent">{{ getOptionPercentage(poll, opt.VoteCount) | number:'1.2-2'
+                              }}%({{ opt.VoteCount }} vote{{ opt.VoteCount === 1 ? '' : 's' }})</span>
+                          </div>
+                          <div class="wa-poll-bar-track">
+                            <div class="wa-poll-bar-fill" [style.width.%]="getOptionPercentage(poll, opt.VoteCount)">
+                            </div>
+                          </div>
                         </div>
                       </div>
-                    </div>
 
-                    <div class="wa-poll-meta-stacked">
-                      <span>{{ getPollTotalVotes(poll) }} are voted</span>
-                      <span>{{ poll.expiryDate | date:'dd-MM-yyyy' }}</span>
-                    </div>
+                      <div class="wa-poll-meta-stacked">
+                        <span>{{ getPollTotalVotes(poll) }} are voted</span>
+                        <span>{{ poll.expiryDate | date:'dd-MM-yyyy' }}</span>
+                      </div>
+                    </ng-template>
+                    <!-- ══ END NEW ══ -->
 
                     <!-- Like & Comment -->
                     <div class="wa-post-footer">
                       <div class="wa-footer-actions">
-                        <button class="wa-action-btn" [class.liked]="poll.hasLiked === 'Liked'" (click)="submitPollLike(poll)">
+                        <button class="wa-action-btn" [class.liked]="poll.hasLiked === 'Liked'"
+                          (click)="submitPollLike(poll)">
                           <i class="ti ti-thumb-up"></i>
                           <span>Like</span>
                         </button>
@@ -341,10 +390,10 @@
                             <div class="wa-like-avatar">
                               <img
                                 *ngIf="liker.profilePicture && !isImageBroken(getProfilePicUrl(liker.profilePicture))"
-                                [src]="getProfilePicUrl(liker.profilePicture)"
-                                alt=""
+                                [src]="getProfilePicUrl(liker.profilePicture)" alt=""
                                 (error)="markImageBroken(getProfilePicUrl(liker.profilePicture))" />
-                              <span *ngIf="!liker.profilePicture || isImageBroken(getProfilePicUrl(liker.profilePicture))">
+                              <span
+                                *ngIf="!liker.profilePicture || isImageBroken(getProfilePicUrl(liker.profilePicture))">
                                 {{ liker.employeeName.charAt(0) }}
                               </span>
                             </div>
@@ -364,10 +413,8 @@
                     <div *ngIf="openPollCommentsId === poll.pollId" class="wa-comments-block">
                       <div *ngFor="let c of pollCommentsByPoll[poll.pollId]" class="wa-comment-item">
                         <div class="wa-comment-avatar">
-                          <img
-                            *ngIf="c.employeeProfilePic && !isImageBroken(getProfilePicUrl(c.employeeProfilePic))"
-                            [src]="getProfilePicUrl(c.employeeProfilePic)"
-                            alt=""
+                          <img *ngIf="c.employeeProfilePic && !isImageBroken(getProfilePicUrl(c.employeeProfilePic))"
+                            [src]="getProfilePicUrl(c.employeeProfilePic)" alt=""
                             (error)="markImageBroken(getProfilePicUrl(c.employeeProfilePic))" />
                           <span *ngIf="!c.employeeProfilePic || isImageBroken(getProfilePicUrl(c.employeeProfilePic))">
                             {{ c.employeeName.charAt(0) }}
@@ -380,8 +427,8 @@
                         <!-- delete button omitted: delete_poll_comment endpoint not confirmed in Postman -->
                       </div>
                       <div class="wa-comment-input-row">
-                        <input type="text" class="wa-input" [(ngModel)]="newPollCommentText" placeholder="Write a comment..."
-                          (keyup.enter)="submitPollComment(poll)" />
+                        <input type="text" class="wa-input" [(ngModel)]="newPollCommentText"
+                          placeholder="Write a comment..." (keyup.enter)="submitPollComment(poll)" />
                         <button class="wa-submit-btn" (click)="submitPollComment(poll)">Send</button>
                       </div>
                     </div>
@@ -393,7 +440,6 @@
 
               <!-- Empty State -->
               <div *ngIf="visibleFeedItems.length === 0" class="wa-empty">
-                <!-- ↑ CHANGED from feedItems.length to visibleFeedItems.length -->
                 <i class="ti ti-mood-empty"></i>
                 <p>No posts yet. Be the first to share something!</p>
               </div>
@@ -422,3 +468,128 @@
     </div>
   </div>
 </div>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- NEW — Scenario 3: Poll Stats Offcanvas (Admin only)         -->
+<!-- Sits outside the feed loop — one instance, shown via        -->
+<!-- statsPoll being non-null                                    -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div *ngIf="statsPoll" class="wa-offcanvas-backdrop" (click)="closePollStats()"></div>
+
+<div class="wa-offcanvas" [class.open]="statsPoll">
+  <ng-container *ngIf="statsPoll as stats">
+
+    <div class="wa-offcanvas-header">
+      <h6>Polls Stats</h6>
+      <button class="wa-offcanvas-close" (click)="closePollStats()">
+        <i class="ti ti-x"></i>
+      </button>
+    </div>
+
+    <div class="wa-offcanvas-body">
+
+      <!-- Author + question strip -->
+      <div class="wa-stats-author-row">
+        <div class="wa-avatar">
+          <img *ngIf="stats.profilePicturePath && !isImageBroken(getProfilePicUrl(stats.profilePicturePath))"
+            [src]="getProfilePicUrl(stats.profilePicturePath)" alt=""
+            (error)="markImageBroken(getProfilePicUrl(stats.profilePicturePath))" />
+          <span *ngIf="!stats.profilePicturePath || isImageBroken(getProfilePicUrl(stats.profilePicturePath))">
+            {{ stats.employeeName.charAt(0) }}
+          </span>
+        </div>
+        <div class="wa-author-info">
+          <span class="wa-author-name">{{ stats.employeeName }}</span>
+          <span class="wa-stats-question-sub">{{ stats.pollName }}</span>
+        </div>
+      </div>
+
+      <!-- Question + option bars -->
+      <div class="wa-stats-question-block">
+        <p class="wa-stats-question">{{ stats.pollName }}</p>
+
+        <div *ngFor="let opt of stats.options" class="wa-stats-option-row">
+          <span class="wa-stats-option-label">{{ opt.optionText }}</span>
+          <div class="wa-stats-bar-track">
+            <div class="wa-stats-bar-fill" [style.width.%]="opt.percentage">
+              <span *ngIf="opt.percentage > 0" class="wa-stats-bar-text">{{ opt.percentage | number:'1.0-0' }}%</span>
+            </div>
+          </div>
+          <span class="wa-stats-option-count">{{ opt.voteCount }} vote{{ opt.voteCount === 1 ? '' : 's' }}</span>
+        </div>
+      </div>
+
+      <!-- Meta row -->
+      <div class="wa-stats-meta-row">
+        <span>Poll ends on {{ stats.endDate | date:'dd-MMM-yyyy' }}</span>
+        <span>{{ stats.totalVoters }} Employee{{ stats.totalVoters === 1 ? '' : 's' }} Voted</span>
+      </div>
+
+      <div class="wa-stats-scope-row">
+        <span>Poll For :</span> <strong>{{ stats.pollFor || 'All Departments' }}</strong>
+      </div>
+
+      <!-- Liked / Comment strip -->
+      <div class="wa-stats-engagement-row">
+        <span><i class="ti ti-thumb-up"></i> Liked: {{ stats.likeCount }}</span>
+        <span><i class="ti ti-message"></i> Comment: {{ stats.commentCount }}</span>
+      </div>
+
+      <!-- Tabs -->
+      <div class="wa-stats-tabs">
+        <button class="wa-stats-tab" [class.active]="statsActiveTab === 'response'"
+          (click)="statsActiveTab = 'response'">
+          Response
+        </button>
+        <button class="wa-stats-tab" [class.active]="statsActiveTab === 'comments'"
+          (click)="statsActiveTab = 'comments'">
+          Comments
+        </button>
+      </div>
+
+      <!-- Response tab: voters table -->
+      <table *ngIf="statsActiveTab === 'response'" class="wa-stats-table">
+        <thead>
+          <tr>
+            <th>Employee Voted</th>
+            <th>Selected Option</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let v of stats.voteDetails">
+            <td>{{ v.employeeName }}</td>
+            <td>{{ v.selectedOption }}</td>
+          </tr>
+          <tr *ngIf="stats.voteDetails.length === 0">
+            <td colspan="2" class="wa-stats-empty">No votes yet.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Comments tab: reuse existing poll comments map -->
+      <div *ngIf="statsActiveTab === 'comments'" class="wa-stats-comments-list">
+        <div *ngFor="let c of pollCommentsByPoll[stats.pollId]" class="wa-comment-item">
+          <div class="wa-comment-avatar">
+            <img *ngIf="c.employeeProfilePic && !isImageBroken(getProfilePicUrl(c.employeeProfilePic))"
+              [src]="getProfilePicUrl(c.employeeProfilePic)" alt=""
+              (error)="markImageBroken(getProfilePicUrl(c.employeeProfilePic))" />
+            <span *ngIf="!c.employeeProfilePic || isImageBroken(getProfilePicUrl(c.employeeProfilePic))">
+              {{ c.employeeName.charAt(0) }}
+            </span>
+          </div>
+          <div class="wa-comment-body">
+            <strong>{{ c.employeeName }}</strong>
+            <span class="wa-comment-text">{{ c.commentDescription }}</span>
+          </div>
+        </div>
+        <div *ngIf="!pollCommentsByPoll[stats.pollId] || pollCommentsByPoll[stats.pollId].length === 0"
+          class="wa-stats-empty">
+          No comments yet.
+        </div>
+      </div>
+
+    </div>
+
+  </ng-container>
+</div>
+<!-- ══ END NEW ══ -->

@@ -7,12 +7,13 @@ import { Observable, tap, catchError, throwError } from 'rxjs';
 import { LoginResponse, UserData } from '../models/user.model';
 import { environment } from '../../../environments/environment';
 
+export type UserRole = 'admin' | 'employee';
+
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  // Built from environment instead of a hardcoded relative path
   private apiBase = `${environment.apiBaseUrl}api/app/apipayroll/`;
 
   constructor(
@@ -39,11 +40,16 @@ export class AuthService {
 
           const userData: UserData = response.Data[0];
 
+          // Today: API has no role field → defaults to 'employee'.
+          // Tomorrow: Admin API adds `userData.role` → this line needs zero changes.
+          const role: UserRole = (userData as any).role === 'admin' ? 'admin' : 'employee';
+
           localStorage.setItem('user', JSON.stringify(userData));
           localStorage.setItem('accessToken',  response.accessToken);
           localStorage.setItem('refreshToken', response.refreshToken);
           localStorage.setItem('org',        String(userData.org));
           localStorage.setItem('employeeId', userData.Sf_code);
+          localStorage.setItem('role', role);
         }
       }),
 
@@ -62,8 +68,7 @@ export class AuthService {
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('org');
     localStorage.removeItem('employeeId');
-    // Use loginAppUrl if logout should send them to a separate login app,
-    // otherwise keep the internal route navigate as-is.
+    localStorage.removeItem('role');
     this.router.navigate(['']);
   }
 
@@ -90,5 +95,10 @@ export class AuthService {
 
   getEmployeeId(): string {
     return localStorage.getItem('employeeId') || '';
+  }
+
+  // 🔑 NEW — used by roleGuard and login redirect
+  getRole(): UserRole {
+    return (localStorage.getItem('role') as UserRole) || 'employee';
   }
 }

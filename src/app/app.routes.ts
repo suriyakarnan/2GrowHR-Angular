@@ -1,55 +1,91 @@
 import { Routes } from '@angular/router';
-import { authGuard } from './core/guards/auth.guard'; 
+import { authGuard } from './core/guards/auth.guard';
+import { roleGuard } from './core/guards/role.guard';
 
 export const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
     loadComponent: () => import('./features/auth/login/login.component').then(m => m.LoginComponent)
-    
   },
+
+  // ---------- ADMIN ----------
   {
-    path: '',
-    loadComponent: () => import('./shared/components/layout/layout.component').then(m => m.LayoutComponent),
-    canActivate: [authGuard],
+    path: 'admin',
+    loadComponent: () => import('./layouts/admin-layout/admin-layout.component').then(m => m.AdminLayoutComponent),
+    canActivate: [authGuard, roleGuard],
+    data: { role: 'admin' },
     children: [
       {
         path: 'dashboard',
-        loadChildren: () => import('./features/dashboard/dashboard.routes').then(m => m.DASHBOARD_ROUTES)
+        loadChildren: () => import('./features/admin/dashboard/dashboard.routes').then(m => m.DASHBOARD_ROUTES)
       },
-     
       {
         path: 'employees',
-        loadChildren: () => import('./features/employees/employees.routes').then(m => m.EMPLOYEES_ROUTES)
+        loadChildren: () => import('./features/admin/employees/employees.routes').then(m => m.EMPLOYEES_ROUTES)
       },
       {
         path: 'attendance',
-        loadComponent: () => import('./features/attendance/attendance.component').then(m => m.AttendanceComponent)
+        loadComponent: () => import('./features/admin/attendance/attendance.component').then(m => m.AttendanceComponent)
       },
       {
         path: 'payrun',
-        loadChildren: () => import('./features/payrun/payrun.routes').then(m => m.Payrun_ROUTES)
+        loadChildren: () => import('./features/admin/payrun/payrun.routes').then(m => m.Payrun_ROUTES)
       },
       {
         path: 'loan',
-        loadComponent: () => import('./features/loan/loan.component').then(m => m.LoanComponent)
+        loadComponent: () => import('./features/admin/loan/loan.component').then(m => m.LoanComponent)
       },
       {
         path: 'reports',
-        loadComponent: () => import('./features/reports/reports.component').then(m => m.ReportsComponent)
+        loadComponent: () => import('./features/admin/reports/reports.component').then(m => m.ReportsComponent)
       },
       {
         path: 'setup',
-        loadComponent: () => import('./features/setup/setup.component').then(m => m.SetupComponent)
+        loadComponent: () => import('./features/admin/setup/setup.component').then(m => m.SetupComponent)
       },
       {
         path: 'hrms-portal',
-        loadComponent: () => import('./features/hrms-portal/hrms-portal.component').then(m => m.HrmsPortalComponent)
-      }
+        loadComponent: () => import('./features/admin/hrms-portal/hrms-portal.component').then(m => m.HrmsPortalComponent)
+      },
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   },
+
+  // ---------- EMPLOYEE ----------
   {
-    path: '**',
-    redirectTo: ''
-  }
+    path: 'employee',
+    loadComponent: () => import('./layouts/employee-layout/employee-layout.component').then(m => m.EmployeeLayoutComponent),
+    canActivate: [authGuard, roleGuard],
+    data: { role: 'employee' },
+    children: [
+      {
+        path: 'dashboard',
+        loadComponent: () => import('./features/employee/dashboard/dashboard.component').then(m => m.DashboardComponent)
+      },
+      {
+        path: 'profile',
+        loadComponent: () => import('./features/employee/profile/profile.component').then(m => m.ProfileComponent)
+      },
+      {
+        path: 'attendance',
+        loadComponent: () => import('./features/employee/attendance/attendance.component').then(m => m.AttendanceComponent)
+      },
+      {
+        path: 'finance',
+        loadComponent: () => import('./features/employee/finance/finance.component').then(m => m.FinanceComponent)
+      },
+      {
+        path: 'reports',
+        loadComponent: () => import('./features/employee/reports/reports.component').then(m => m.ReportsComponent)
+      },
+      {
+        path: 'task',
+        loadComponent: () => import('./features/employee/task/task.component').then(m => m.TaskComponent)
+      },
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
+    ]
+  },
+
+  { path: '**', redirectTo: '' }
 ];

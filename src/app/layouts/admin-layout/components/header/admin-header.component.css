@@ -1,0 +1,66 @@
+.db-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:14px 14px 0px 26px;
+}
+
+.db-title{
+    font-family:'Poppins',sans-serif;
+    font-weight:600;
+    font-size:22px;
+    line-height:33px;
+    color:#405189;
+    margin:0;
+}
+
+.db-actions{
+    display:flex;
+    gap:8px;
+}
+
+.icon-btn{
+    width:40px;
+    height:43px;
+    border-radius:50%;
+    border:1px solid #e5e7eb;
+    background:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    color:#6b7280;
+    font-size:22px;
+    transition:.3s;
+}
+
+.icon-btn:hover{
+    background:#f3f4f6;
+    transform:translateY(-2px);
+}
+
+/* ===================================================== */
+/* Mobile only (Mobile L & Mobile M, <=480px)               */
+/* ===================================================== */
+
+@media (max-width: 480px){
+
+    .db-header{
+        padding: 12px 12px 0px 16px;
+    }
+
+    .db-title{
+        font-size: 17px;
+        line-height: 24px;
+    }
+
+    .db-actions{
+        gap: 6px;
+    }
+
+    .icon-btn{
+        width: 34px;
+        height: 34px;
+        font-size: 17px;
+    }
+}

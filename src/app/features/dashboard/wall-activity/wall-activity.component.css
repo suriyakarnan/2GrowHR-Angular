@@ -27,7 +27,6 @@
 @media (max-width: 1024px) {
 
   .sp-wrapper {
-
     width: 45% !important;
   }
 }
@@ -53,7 +52,6 @@
   position: relative;  /* NEW — anchor for the indicator */
   display: flex;
   gap: 0;
- 
   margin-bottom: 20px;
   overflow-x: auto;
   overflow-y: visible;
@@ -148,16 +146,17 @@
 
 .wa-select,
 .wa-input {
-  width: 32% !important;
-  padding: 8px 14px;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  font-size: 14px;
-  color: #495057;
-  background: #f8f9fa;
-  margin-bottom: 14px;
-  outline: none;
-  transition: border-color 0.2s;
+    width: 47% !important;
+    padding: 0.5rem 0.9rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px !important;
+    font-size: .8125rem;
+    color: #212529;
+    background: #F3F3F9;
+    margin-bottom: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+    font-weight: 400;
 }
 
 .wa-select:focus,
@@ -499,7 +498,7 @@
 .wa-poll-bar-track {
   background: #e9ecef;
   border-radius: 4px;
-  height: 6px;
+  height: 70%;
   overflow: hidden;
 }
 
@@ -532,7 +531,22 @@
   gap: 10px;
 }
 
-.wa-footer-actions { display: flex; flex-wrap: wrap; }
+.wa-footer-actions { display: flex; flex-wrap: wrap; align-items: center;}
+
+.wa-footer-summary {
+  display: flex;
+  gap: 16px;
+  font-size: 12px;
+  color: #6c757d;
+}
+
+.wa-footer-summary span {
+  cursor: pointer;
+}
+
+.wa-footer-summary span:hover {
+  text-decoration: underline;
+}
 
 .wa-action-btn {
   background: none;
@@ -552,11 +566,16 @@
   color: var(--vz-primary, #405189);
 }
 
-.wa-action-btn i { font-size: 16px; }
+.wa-action-btn.liked i {
+  color: var(--vz-primary, #405189);   /* ensures filled icon glyph itself takes the color */
+}
+
+.wa-action-btn i { font-size: 23px; font-weight: 500; }
 
 .wa-comment-count {
   font-size: 12px;
   color: #adb5bd;
+  font-weight: 500;
 }
 
 /* ── Comments ────────────────────────────────────────────── */
@@ -685,10 +704,17 @@
 
 .wa-like-count {
   cursor: pointer;
- 
-  font-size: 13px;
+  font-size: 14px;
+  font-weight: 500;
   color: #495057;
 }
+
+.wa-comment-count {
+  cursor: pointer;
+  font-size: 14px;
+  color: #495057;
+}
+
 .wa-like-count:hover { text-decoration: underline; }
 
 .wa-likes-modal-overlay {
@@ -758,10 +784,10 @@
 }
 
 .wa-comment-count-right {
-  font-size: 12px;
-  color: #adb5bd;
-  cursor: pointer;
-  white-space: nowrap;
+      font-size: 14px;
+    font-weight: 500;
+    color: #495057;
+    cursor: pointer;
 }
 .wa-comment-count-right:hover { text-decoration: underline; }
 
@@ -917,7 +943,7 @@
 /* Overrides the thin 6px bar defined earlier in this file      */
 /* ══════════════════════════════════════════════════════════ */
 .wa-poll-bar-track {
-  height: 34px;
+  height: 23px;
   border-radius: 8px;
 }
 
@@ -1013,7 +1039,7 @@
   top: 0;
   right: 0;
   height: 100vh;
-  width: 420px;
+  width: 600px;
   max-width: 92vw;
   background: #fff;
   z-index: 1070;

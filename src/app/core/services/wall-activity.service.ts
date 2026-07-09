@@ -145,7 +145,7 @@
     removeLike(wallPostId: number, employeeId: string): Observable<LikeActionResponse> {
       const formData = new FormData();
       formData.append('WallPostId', wallPostId.toString());
-      formData.append('Employeeid', employeeId); // exact casing per backend/Postman
+      formData.append('EmployeeId', employeeId); // exact casing per backend/Postman
       return this.apiService.postForm<LikeActionResponse>(`${URL}removelike`, formData);
     }
 
@@ -206,7 +206,7 @@
     removePollLike(pollId: number, employeeId: string): Observable<LikeActionResponse> {
       const formData = new FormData();
       formData.append('PollId', pollId.toString());
-      formData.append('Employeeid', employeeId);
+      formData.append('EmployeeId', employeeId);
       return this.apiService.postForm<LikeActionResponse>(`${URL}removelikepoll`, formData);
     }
 
@@ -221,6 +221,7 @@
       formData.append('PollId', payload.pollId.toString());
       formData.append('CommentedEmployeeId', this.getEmployeeId());
       formData.append('CommentDescription', payload.commentDescription);
+      formData.append('MentionEmployee', payload.mentionEmployee || '');
       return this.apiService.postForm<{ success: boolean; message: string; data: PollCommentItem }>(
         `${URL}addcommentspoll`,
         formData

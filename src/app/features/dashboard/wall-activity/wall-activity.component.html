@@ -4,7 +4,7 @@
   <div class="container-fluid">
     <div class="card" style="border: none !important;">
 
-      <div class="card-body" style="background: #f3f3f9; padding: 7px;">
+      <div class="card-body" style="background: #f3f3f9; padding: 27px 7px;">
         <div class="row">
 
           <!-- ══════════════════════════════════════════════════ -->
@@ -107,8 +107,7 @@
                   <div class="wa-poll-footer">
                     <div class="wa-expires-group">
                       <label class="wa-label">Poll Expires on <span class="required">*</span></label>
-                      <input type="date" class="wa-input wa-date-input"
-                        [(ngModel)]="pollExpiresOn" />
+                      <input type="date" class="wa-input wa-date-input" [(ngModel)]="pollExpiresOn" />
                     </div>
                     <button class="wa-submit-btn" [disabled]="!isPollFormValid || isSubmittingPoll"
                       (click)="submitPoll()">
@@ -176,19 +175,25 @@
                     </div>
 
                     <!-- Like & Comment -->
+                    <!-- AFTER -->
                     <div class="wa-post-footer">
                       <div class="wa-footer-actions">
                         <button class="wa-action-btn" [class.liked]="post.hasLiked === 'Liked'"
                           (click)="SubmitLike(post)">
-                          <i class="ti ti-thumb-up"></i>
+                          <i class="ti" [class.ti-thumb-up]="post.hasLiked !== 'Liked'"
+                            [class.ti-thumb-up-filled]="post.hasLiked === 'Liked'"></i>
+                          <span>{{ post.hasLiked === 'Liked' ? 'Liked' : 'Like' }}</span>
                         </button>
-                        <span class="wa-like-count" (click)="toggleLikes(post)">
-                          {{ post.likeCount }} {{ post.likeCount === 1 ? 'Like' : 'Likes' }}
-                        </span>
                         <button class="wa-action-btn" (click)="toggleComments(post)">
                           <i class="ti ti-message"></i>
-                          <span>{{ post.commentCount }} Comments</span>
+                          <span>Comment</span>
                         </button>
+                      </div>
+                      <div class="wa-footer-summary">
+                        <span class="wa-like-count" (click)="toggleLikes(post)">{{ getLikeSummaryText(post.likeCount,
+                          post.hasLiked) }}</span>
+                        <span class="wa-comment-count-right" (click)="toggleComments(post)">{{ post.commentCount }} {{
+                          post.commentCount === 1 ? 'Comment' : 'Comments' }}</span>
                       </div>
                     </div>
 
@@ -352,28 +357,28 @@
                     <!-- ══ END NEW ══ -->
 
                     <!-- Like & Comment -->
+                    
                     <div class="wa-post-footer">
                       <div class="wa-footer-actions">
                         <button class="wa-action-btn" [class.liked]="poll.hasLiked === 'Liked'"
                           (click)="submitPollLike(poll)">
-                          <i class="ti ti-thumb-up"></i>
-                          <span>Like</span>
+                          <i class="ti" [class.ti-thumb-up]="poll.hasLiked !== 'Liked'"
+                            [class.ti-thumb-up-filled]="poll.hasLiked === 'Liked'"></i>
+                          <span>{{ poll.hasLiked === 'Liked' ? 'Liked' : 'Like' }}</span>
                         </button>
                         <button class="wa-action-btn" (click)="togglePollComments(poll)">
                           <i class="ti ti-message"></i>
                           <span>Comment</span>
                         </button>
                       </div>
-                      <span class="wa-comment-count-right" (click)="togglePollComments(poll)">
-                        {{ poll.commentCount }} {{ poll.commentCount === 1 ? 'Comment' : 'Comments' }}
-                      </span>
+                      <div class="wa-footer-summary">
+                        <span class="wa-like-count" (click)="togglePollLikes(poll)">{{
+                          getLikeSummaryText(poll.likeCount, poll.hasLiked) }}</span>
+                        <span class="wa-comment-count-right" (click)="togglePollComments(poll)">{{ poll.commentCount }}
+                          {{ poll.commentCount === 1 ? 'Comment' : 'Comments' }}</span>
+                      </div>
                     </div>
 
-                    <!-- Likes count still needs somewhere to live — clicking "Like" text won't
-                         show who liked it, so keep a small tappable count near the like button -->
-                    <div class="wa-poll-like-count-row" *ngIf="poll.likeCount > 0" (click)="togglePollLikes(poll)">
-                      {{ poll.likeCount }} {{ poll.likeCount === 1 ? 'Like' : 'Likes' }}
-                    </div>
 
                     <!-- Poll Likes Modal -->
                     <div *ngIf="openPollLikesId === poll.pollId" class="wa-likes-modal-overlay"

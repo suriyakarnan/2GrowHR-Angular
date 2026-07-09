@@ -178,7 +178,7 @@ export interface PollCommentItem {
 export interface CreatePollCommentPayload {
   pollId: number;
   commentDescription: string;
-  mentionEmployee?: string | null;
+  mentionEmployee?: string;
 }
 
 export interface PollStatsOption {

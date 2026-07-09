@@ -819,4 +819,15 @@ closePollStats(): void {
   this.statsPoll = null;
 }
 
+
+getLikeSummaryText(likeCount: number, hasLiked: 'Liked' | 'Not Liked'): string {
+  if (likeCount === 0) return '0 Likes';
+  if (hasLiked === 'Liked') {
+    const others = likeCount - 1;
+    if (others <= 0) return 'You';
+    return `You & ${others} ${others === 1 ? 'Other' : 'Others'}`;
+  }
+  return `${likeCount} ${likeCount === 1 ? 'Like' : 'Likes'}`;
+}
+
 }

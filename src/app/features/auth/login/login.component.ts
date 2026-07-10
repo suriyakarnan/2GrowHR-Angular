@@ -115,41 +115,36 @@ export class LoginComponent {
   // ──────────────────────────────────────────────────────────
   login() {
 
-    // Validation
-    if (!this.username.trim() || !this.password.trim()) {
-      this.errorMessage = 'Please enter username and password.';
-      return;
-    }
+  if (!this.username.trim() || !this.password.trim()) {
+    this.errorMessage = 'Please enter username and password.';
+    return;
+  }
 
-    this.isLoading    = true;
-    this.errorMessage = '';
-console.log("checking1 ${this.username} ${this.password}");
-    this.authService.login(this.username, this.password).subscribe({
+  this.isLoading    = true;
+  this.errorMessage = '';
 
-      next: (response) => {
-console.log("checking2 ${this.username} password ${this.password}");
-        this.isLoading = false;
+  this.authService.login(this.username, this.password).subscribe({
 
-         console.log('API RESPONSE:', response); // ← add this
+    next: (response) => {
+      this.isLoading = false;
 
-        if (response.success && response.Data?.length > 0) {
-          // ✅ Login success → navigate to dashboard
-          this.router.navigate(['/dashboard']);
-        } else {
-          // ❌ API returned success: false
-          this.errorMessage = response.BlockMsg || 'Invalid username or password.';
-        }
-
-      },
-
-      error: (err) => {
-        console.log("checking3 ${err}");
-        this.isLoading    = false;
-        this.errorMessage = err?.message || 'Something went wrong. Please try again.';
+      if (response.success && response.Data?.length > 0) {
+        // ✅ Login success → navigate based on role
+        const role = this.authService.getRole();
+        this.router.navigate([role === 'admin' ? '/admin/dashboard' : '/employee/dashboard']);
+      } else {
+        this.errorMessage = response.BlockMsg || 'Invalid username or password.';
       }
 
-    });
+    },
 
-  }
+    error: (err) => {
+      this.isLoading    = false;
+      this.errorMessage = err?.message || 'Something went wrong. Please try again.';
+    }
+
+  });
+
+}
 
 }

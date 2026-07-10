@@ -33,11 +33,11 @@
     width:100%;
     flex:1;
     overflow-y: auto;
-    scrollbar-width: none;       /* Firefox */
-    -ms-overflow-style: none;    /* IE/Edge */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
 .menu-list::-webkit-scrollbar{
-    display: none;               /* Chrome/Safari */
+    display: none;
 }
 
 .menu-item{
@@ -138,7 +138,6 @@
     background: rgba(255, 255, 255, 0.12);
 }
 
-/* Mobile-only chevron, hidden on desktop */
 .submenu-chevron {
     display: none;
     position: absolute;
@@ -151,11 +150,6 @@
 .submenu-chevron.rotated {
     transform: translateY(-50%) rotate(180deg);
 }
-
-/* ===================================================== */
-/* Mobile header bar (hamburger + logo, replaces old       */
-/* floating button — sits in normal document flow)         */
-/* ===================================================== */
 
 .mobile-header{
     display: none;
@@ -219,11 +213,6 @@
     z-index: 9998;
 }
 
-/* ===================================================== */
-/* Mobile only (Mobile L & Mobile M, <=480px)               */
-/* Tablet & Laptop keep the normal always-visible sidebar   */
-/* ===================================================== */
-
 @media (max-width: 480px){
 
     .mobile-header{
@@ -248,7 +237,7 @@
     }
 
     .logo{
-        display: none; /* logo now lives in .mobile-header instead */
+        display: none;
     }
 
     .menu-item{
@@ -271,7 +260,6 @@
         height: 60%;
     }
 
-    /* Employees becomes an inline accordion instead of a side flyout */
     .submenu-chevron{
         display: block;
     }

@@ -1,0 +1,23 @@
+/* src/app/layouts/admin-layout/admin-layout.component.css */
+
+.layout-container {
+    display: flex;
+}
+
+.main-content {
+    margin-left: 100px;
+    width: 100%;
+    min-height: 100vh;
+    background: #f4f6fb;
+}
+
+.page-content {
+    padding: 0px;
+}
+
+@media (max-width: 480px) {
+  .main-content {
+    margin-left: 0;
+    padding-top: 60px;
+  }
+}

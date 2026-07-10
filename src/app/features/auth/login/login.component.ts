@@ -110,41 +110,43 @@ export class LoginComponent {
     }, 700);
   }
 
-  // ──────────────────────────────────────────────────────────
-  // LOGIN — calls AuthService → API → stores token → navigate
-  // ──────────────────────────────────────────────────────────
   login() {
 
-  if (!this.username.trim() || !this.password.trim()) {
-    this.errorMessage = 'Please enter username and password.';
-    return;
-  }
-
-  this.isLoading    = true;
-  this.errorMessage = '';
-
-  this.authService.login(this.username, this.password).subscribe({
-
-    next: (response) => {
-      this.isLoading = false;
-
-      if (response.success && response.Data?.length > 0) {
-        // ✅ Login success → navigate based on role
-        const role = this.authService.getRole();
-        this.router.navigate([role === 'admin' ? '/admin/dashboard' : '/employee/dashboard']);
-      } else {
-        this.errorMessage = response.BlockMsg || 'Invalid username or password.';
-      }
-
-    },
-
-    error: (err) => {
-      this.isLoading    = false;
-      this.errorMessage = err?.message || 'Something went wrong. Please try again.';
+    if (!this.username.trim() || !this.password.trim()) {
+      this.errorMessage = 'Please enter username and password.';
+      return;
     }
 
-  });
+    this.isLoading    = true;
+    this.errorMessage = '';
 
-}
+    this.authService.login(this.username, this.password).subscribe({
+
+      next: (response) => {
+        this.isLoading = false;
+
+        if (response.success && response.Data?.length > 0) {
+          const role = this.authService.getRole();
+          this.router.navigate([role === 'admin' ? '/admin/dashboard' : '/employee/dashboard']);
+        } else {
+          this.errorMessage = response.BlockMsg || 'Invalid username or password.';
+        }
+
+      },
+
+      error: (err) => {
+        this.isLoading    = false;
+        this.errorMessage = err?.message || 'Something went wrong. Please try again.';
+      }
+
+    });   // ← subscribe({...}) closes HERE
+
+  }   // ← login() method closes HERE
+
+  // 🚧 TEMPORARY — remove once real Admin login API exists
+  testAsAdmin() {
+    this.authService.setRoleManually('admin');
+    this.router.navigate(['/admin/dashboard']);
+  }
 
 }

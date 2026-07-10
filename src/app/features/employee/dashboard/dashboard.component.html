@@ -1,1 +1,348 @@
-<p>dashboard works!</p>
+<div class="page-content">
+  <div class="container-fluid">
+
+    <!-- Welcome banner -->
+    <div class="row">
+      <div class="col-12">
+        <div class="welcome-banner">
+          <h4 class="welcome-title">Have a Good Day {{ employeeName }} !</h4>
+          <p class="welcome-subtitle">Welcome back <span class="wave">👋</span></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Remote Login / Shift Details -->
+    <div class="row">
+      <div class="col-12">
+        <div class="card remote-card">
+          <div class="card-body">
+            <div class="row align-items-center g-3">
+              <div class="col-12 col-lg-9">
+                <div class="row align-items-center g-3">
+                  <div class="col-12 col-md-4 col-lg-3">
+                    <div class="section-label">Remote Login</div>
+                    <div class="datetime-label">Current Date and Time</div>
+                    <div class="datetime-value">
+                      {{ currentDateTime | date:'dd MMM, yyyy' }}&nbsp;&nbsp;{{ currentDateTime | date:'hh:mm:ss a' }}
+                    </div>
+                  </div>
+                  <div class="col-12 col-md-8 col-lg-9">
+                    <div class="row g-2">
+                      <div class="col-6 col-sm-4 col-md-3">
+                        <button class="btn btn-remote-action w-100">
+                          Check-In
+                          <small class="d-block">00:00:00</small>
+                        </button>
+                      </div>
+                      <div class="col-6 col-sm-4 col-md-3">
+                        <button class="btn btn-remote-action-1 w-100">Work From Home</button>
+                      </div>
+                      <div class="col-6 col-sm-4 col-md-3">
+                        <button class="btn btn-remote-action-2 w-100">On Duty</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-12 col-lg-3 text-lg-end">
+                <div class="section-label">Shift Details</div>
+                <div class="shift-code">{{ shiftDetails.code }}</div>
+                <div class="shift-time">{{ shiftDetails.startTime }} - {{ shiftDetails.endTime }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Info cards -->
+    <div class="row">
+
+      <div class="col-12 col-sm-6 col-md-6 col-lg-3 col-xl-3">
+        <div class="card info-card">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <span class="info-title">Request</span>
+            <span class="info-icon icon-request">
+              <img src="/Assets/NewLoginPage/img/request.svg" alt="">
+            </span>
+          </div>
+          <div class="card-body text-center">
+            <div class="empty-state" *ngIf="requests.length === 0">
+              <span class="empty-icon icon-request">
+                <img src="/Assets/NewLoginPage/img/request.svg" alt="">
+              </span>
+              <div class="empty-text text-request">No Request</div>
+            </div>
+
+          </div>
+          <div class="load-more text-probation d-block text-center mb-3">
+            <a href="javascript:void(0)" class="load-more text-request">+ Load more</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-sm-6 col-md-6 col-lg-3 col-xl-3">
+        <div class="card info-card">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <span class="info-title">Probation</span>
+            <span class="info-icon icon-probation">
+              <img src="/Assets/NewLoginPage/img/probation.svg" alt="">
+
+            </span>
+          </div>
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="probation-label">In Probation ({{ probationList.length }})</span>
+              <button class="btn btn-outline-review btn-sm">Review</button>
+            </div>
+
+          </div>
+          <div class="load-more text-probation d-block text-center mb-3">
+            <a href="javascript:void(0)" class="load-more text-request">+ Load more</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-sm-6 col-md-6 col-lg-3 col-xl-3">
+        <div class="card info-card">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <span class="info-title">Holidays</span>
+            <span class="info-icon icon-holidays">
+              <img src="/Assets/NewLoginPage/img/holiday.svg" alt="">
+            </span>
+          </div>
+          <div class="card-body text-center">
+            <div class="empty-state" *ngIf="holidaysList.length === 0">
+              <span class="empty-icon icon-holidays">
+                <img src="/Assets/NewLoginPage/img/holiday.svg" alt="">
+              </span>
+              <div class="empty-text text-holidays">No Holidays</div>
+            </div>
+
+          </div>
+          <div class="load-more text-probation d-block text-center mb-3">
+            <a href="javascript:void(0)" class="load-more text-request">+ Load more</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-sm-6 col-md-6 col-lg-3 col-xl-3">
+        <div class="card info-card">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <span class="info-title">Anniversaries</span>
+            <span class="info-icon icon-anniversaries">
+              <img src="/Assets/NewLoginPage/img/sparkles.svg" alt="">
+            </span>
+          </div>
+          <div class="card-body">
+            <div class="list-item" *ngFor="let item of anniversaries">
+              <div class="list-item-name">{{ item.name }}</div>
+              <div class="list-item-sub">{{ item.date }} ({{ item.years }}yrs)</div>
+            </div>
+
+          </div>
+          <div class="load-more text-probation d-block text-center mb-3">
+            <a href="javascript:void(0)" class="load-more text-request">+ Load more</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Birthdays -->
+    <div class="row">
+      <div class="col-12 col-sm-6 col-md-6 col-lg-3 col-xl-3">
+        <div class="card info-card">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <span class="info-title">Birthdays</span>
+            <span class="info-icon icon-birthdays">
+              <img src="/Assets/NewLoginPage/img/cake.svg" alt="">
+            </span>
+          </div>
+          <div class="card-body">
+            <div class="list-item" *ngFor="let item of birthdays">
+              <div class="list-item-name">{{ item.name }}</div>
+              <div class="list-item-sub">{{ item.date }}</div>
+            </div>
+          </div>
+          <div class="load-more text-probation d-block text-center mb-3">
+            <a href="javascript:void(0)" class="load-more text-request">+ Load more</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Leave / Leave balance -->
+    <div class="row">
+
+      <div class="col-12 col-sm-6 col-md-6 col-lg-3 col-xl-3">
+        <div class="card info-card">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <span class="info-title">Leave</span>
+            <span class="info-icon icon-leave">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" color="#f7b84b"
+                class="bi bi-emoji-laughing" viewBox="0 0 16 16">
+                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"></path>
+                <path
+                  d="M12.331 9.5a1 1 0 0 1 0 1A5 5 0 0 1 8 13a5 5 0 0 1-4.33-2.5A1 1 0 0 1 4.535 9h6.93a1 1 0 0 1 .866.5M7 6.5c0 .828-.448 0-1 0s-1 .828-1 0S5.448 5 6 5s1 .672 1 1.5m4 0c0 .828-.448 0-1 0s-1 .828-1 0S9.448 5 10 5s1 .672 1 1.5">
+                </path>
+              </svg>
+            </span>
+          </div>
+          <div class="card-body text-center">
+            <div class="empty-state" *ngIf="leaveList.length === 0">
+              <span class="empty-icon icon-leave-face">
+                <svg xmlns="http://www.w3.org/2000/svg" width="100px" height="100" fill="currentColor" color="#0ab39c"
+                  class="bi bi-emoji-laughing img-fluid" viewBox="0 0 16 16" opacity="0.5">
+                  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"></path>
+                  <path
+                    d="M12.331 9.5a1 1 0 0 1 0 1A5 5 0 0 1 8 13a5 5 0 0 1-4.33-2.5A1 1 0 0 1 4.535 9h6.93a1 1 0 0 1 .866.5M7 6.5c0 .828-.448 0-1 0s-1 .828-1 0S5.448 5 6 5s1 .672 1 1.5m4 0c0 .828-.448 0-1 0s-1 .828-1 0S9.448 5 10 5s1 .672 1 1.5">
+                  </path>
+                </svg>
+              </span>
+              <div class="empty-text text-leave">No Leave</div>
+            </div>
+
+          </div>
+          <div class="load-more text-probation d-block text-center mb-3">
+            <a href="javascript:void(0)" class="load-more text-request">+ Load more</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-lg-9 col-xl-9">
+        <div class="card leave-balance-card">
+          <div class="card-header" style="border-bottom: none !important;">
+            <div class="row align-items-center g-2">
+              <div class="col-12 col-sm-8">
+                <div class="lb-title">Leave balance</div>
+                <div class="lb-subtitle">Available Leave balance</div>
+              </div>
+              <div class="col-12 col-sm-4 text-sm-end">
+                <button class="btn btn-outline-apply">Apply Leave</button>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="row" id="charttab">
+              <div class="col-12 col-sm-12 col-md-4 col-lg-4 text-center" *ngFor="let lb of leaveBalances">
+                <svg class="lb-circle mx-auto" width="120" height="120" viewBox="0 0 110 110">
+                  <circle cx="55" cy="55" r="46" fill="none" [attr.stroke]="lb.color" stroke-width="16"
+                    stroke-opacity="0.15"></circle>
+                  <circle cx="55" cy="55" r="46" fill="none" [attr.stroke]="lb.color" stroke-width="16"
+                    stroke-linecap="round" [attr.stroke-dasharray]="circleCircumference"
+                    [attr.stroke-dashoffset]="getDashOffset(lb.value, lb.max)" transform="rotate(-90 55 55)"></circle>
+                  <text x="55" y="61" text-anchor="middle" class="lb-circle-value">{{ lb.value }}</text>
+                </svg>
+                <p class="lb-circle-label mb-0" [ngClass]="lb.labelClass">{{ lb.label }}</p>
+              </div>
+
+              <div class="col-12 d-grid mt-4">
+                <button class="btn btn-view-all" type="button">View all leave balance</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Attendance -->
+    <div class="row">
+      <div class="col-12">
+        <div class="card attendance-card">
+          <div class="card-header" style="border-bottom: none !important;">
+            <div class="row align-items-center g-2">
+              <div class="col-12 col-md-6">
+                <div class="btn-group attendance-tabs" role="group">
+                  <button type="button" class="btn tab-btn" [class.active]="activeTab === 'my'"
+                    (click)="switchTab('my')">My attendance</button>
+                  <button type="button" class="btn tab-btn" [class.active]="activeTab === 'team'"
+                    (click)="switchTab('team')">Team attendance</button>
+                </div>
+              </div>
+              <div class="col-12 col-md-6 text-md-end">
+                <div class="month-nav d-inline-flex align-items-center" *ngIf="activeTab === 'my'">
+                  <button class="btn btn-nav" (click)="prevMonth()">&lsaquo;</button>
+                  <span class="month-label">{{ monthLabel }}</span>
+                  <button class="btn btn-nav" (click)="nextMonth()">&rsaquo;</button>
+                </div>
+                <div class="month-nav d-inline-flex align-items-center gap-4" *ngIf="activeTab === 'team'">
+                  <button class="btn btn-nav" (click)="prevWeek()">&lsaquo;</button>
+                  <span class="month-label">{{ teamWeekLabel }}</span>
+                  <button class="btn btn-nav" (click)="nextWeek()">&rsaquo;</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-body">
+
+            <div class="row">
+              <div class="col-12 col-md-10 col-lg-9 col-xl-9 col-xxl-9">
+
+                <!-- My Attendance calendar -->
+                <div *ngIf="activeTab === 'my'">
+                  <div class="row calendar-header g-0">
+                    <div class="col text-center" *ngFor="let d of weekDays">{{ d }}</div>
+                  </div>
+
+                  <div class="row g-0" *ngFor="let week of calendarWeeks">
+                    <div class="col calendar-cell" *ngFor="let day of week" [class.empty-cell]="!day.date">
+                      <ng-container *ngIf="day.date">
+                        <span class="corner-ribbon" [ngClass]="statusClass(day.status)" *ngIf="day.status"></span>
+                        <div class="cell-date">{{ day.date }}</div>
+                        <div class="cell-time time-in" *ngIf="day.checkIn">{{ day.checkIn }}</div>
+                        <div class="cell-time time-out" *ngIf="day.checkOut">{{ day.checkOut }}</div>
+                        <div class="cell-dash" *ngIf="day.status === 'holiday' && !day.checkOut">-</div>
+                      </ng-container>
+                    </div>
+                  </div>
+
+                  <div class="calendar-legend row g-3 mt-3">
+                    <div class="col-auto" *ngFor="let item of legend">
+                      <span class="legend-mark" [ngClass]="item.class"></span>
+                      <span class="legend-label">{{ item.label }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-12">
+
+                  <!-- Team Attendance table -->
+                  <div *ngIf="activeTab === 'team'" class="table-responsive">
+                    <div class="wekkly_table">
+                      <table class="table team-table mb-0">
+                        <thead class="wekkly_table_header">
+                          <tr>
+                            <th>Name</th>
+                            <th class="text-center" *ngFor="let d of teamWeekDays">{{ d | date:'d-EEE' }}</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let member of teamAttendance">
+                            <td>{{ member.code }} - {{ member.name }}</td>
+                            <td class="text-center" *ngFor="let day of member.days">
+                              <span class="status-badge" [ngClass]="statusClass(day.status)" *ngIf="day.status">
+                                {{ day.status | titlecase }}
+                              </span>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

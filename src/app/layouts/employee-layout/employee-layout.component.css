@@ -1,0 +1,32 @@
+/* src/app/layouts/employee-layout/employee-layout.component.css */
+
+.layout-container {
+    display: flex;
+}
+
+.main-content {
+    margin-left: 100px;
+    width: 100%;
+    min-height: 100vh;
+    background: #f4f6fb;
+}
+
+.page-content {
+   padding-top: 70px; 
+}
+
+@media (max-width: 480px) {
+  .main-content {
+    margin-left: 0;
+    padding-top: 60px;
+  }
+
+  @media (max-width: 767.98px) {
+  .page-content {
+    padding-top: 0px !important; /* force override base 70px rule — match your actual mobile .db-header height */
+    overflow-y: visible;
+    height: auto;
+    min-height: 100%;
+  }
+}
+}

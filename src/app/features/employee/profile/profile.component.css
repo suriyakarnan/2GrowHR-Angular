@@ -1,0 +1,375 @@
+.profile-row {
+  align-items: stretch;
+}
+
+/* ============ Sidebar (desktop) ============ */
+.profile-sidebar {
+  position: fixed;
+  top: 64px;
+  left: 220;
+  width: 280px;
+  bottom: 0;
+  overflow-y: auto;
+  background: #fff;
+  border-right: 1px solid #eceef4;
+  padding: 24px 20px;
+  height: auto;
+  min-height: 0;
+  z-index: 9999;
+}
+
+@media (min-width: 992px) {
+  .profile-main {
+    margin-left: 50px;
+  }
+}
+
+.sidebar-heading {
+  color: #405189;
+  font-weight: 500;
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.avatar-wrap {
+  width: 74px;
+  height: 76px;
+  border-radius: 50%;
+  background: #405189;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sidebar-section-title {
+  color: #405189;
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 0px;
+}
+.sidebar-divider {
+  margin: 0 0 12px;
+  border-color: #eceef4;
+}
+
+.sidebar-field-label {
+  color: #767679;
+  font-size: 12px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+.sidebar-field-value {
+  color: #000;
+  font-weight: 600;
+  font-size: 13px;
+  word-break: break-word;
+  margin-bottom: 0px;
+}
+
+.btn-resignation {
+  border: 1px solid #405189;
+  color: #405189;
+  background: #fff;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 8px 16px;
+  width: auto;
+}
+.btn-resignation:hover {
+  background: #363c63;
+  color: #fff;
+}
+
+/* ============ Main content / Tabs (desktop) ============ */
+.profile-main {
+  padding: 20px 24px;
+}
+
+.profile-tabs {
+  position: fixed;
+  top: 56px;
+  left: 364px;
+  right: 0;
+  z-index: 1020;
+  padding: 10px 26px 0;
+  margin: 0;
+  border-bottom: 1px solid #5b70b4;
+  gap: 28px;
+  background: #f3f3f9;
+}
+.profile-tabs .nav-link {
+  color: #8b8fa3;
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 0 0 12px;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+}
+.profile-tabs .nav-link.active {
+  color: #405189;
+  border-bottom: 2px solid #405189;
+}
+
+/* ============ Detail cards ============ */
+.detail-card {
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 1px 4px rgba(30, 34, 60, 0.06);
+  margin-bottom: 20px;
+  height: calc(100% - 20px);
+  display: flex;
+  flex-direction: column;
+}
+.detail-card .card-header {
+  background: #f3f3f9;
+  border-bottom: 1px solid #eceef4;
+  padding: 14px 18px;
+}
+.detail-title {
+  color: #405189;
+  font-weight: 600;
+  font-size: 14px;
+}
+.detail-card .card-body {
+  padding: 16px 18px;
+  flex: 1;
+}
+.detail-card .card-footer {
+  background: #fff;
+  border-top: 1px solid #eceef4;
+  padding: 14px 18px;
+}
+
+.field-block {
+  margin-bottom: 14px;
+}
+.field-label {
+  color: #767679;
+  font-size: 12px;
+  margin-bottom: 2px;
+  font-weight: 500;
+}
+.field-value {
+  color: #000;
+  font-weight: 500;
+  font-size: 14px;
+  word-break: break-word;
+}
+
+.detail-table-header {
+  color: #767679;
+  font-size: 12px;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.btn-view-more {
+  border: 1px solid #405189;
+  color: #405189;
+  background: #fff;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  padding: 8px 20px;
+}
+.btn-view-more:hover {
+  background: #363c63;
+  color: #fff;
+}
+
+.tab-placeholder {
+  padding: 40px 0;
+  color: #767679;
+}
+
+/* ============ Tablet-only merged Profile Overview card ============ */
+/* Colors unified with desktop sidebar/detail-card palette for consistent clarity */
+.tablet-overview-card .card-body {
+  padding: 20px 22px 8px;
+}
+
+.overview-header-row {
+  margin-bottom: 4px;
+}
+
+.avatar-wrap-sm {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #405189;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.overview-title {
+  color: #405189;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.section-label {
+  color: #405189;
+  font-weight: 600;
+  font-size: 14px;
+  margin-top: 14px;
+  margin-bottom: 0px;
+}
+
+.section-divider {
+  margin: 0 0 12px;
+  border-color: #eceef4;
+}
+
+.tablet-overview-card .field-label {
+  color: #767679;
+  font-size: 12px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+.tablet-overview-card .field-value {
+  color: #000;
+  font-weight: 600;
+  font-size: 13px;
+  word-break: break-word;
+}
+
+/* ============ Tablet range (768px - 991.98px) ============ */
+@media (max-width: 991.98px) {
+  .profile-sidebar {
+    position: static;
+    width: auto;
+    top: auto;
+    left: auto;
+    bottom: auto;
+    overflow-y: visible;
+  }
+
+  .profile-tabs {
+    position: static;
+    left: auto;
+    right: auto;
+    background: #f3f3f9;
+  }
+
+  .profile-main {
+    margin-left: 0;
+  }
+
+  .page-content {
+    padding-top: 0;
+  }
+}
+
+/* ============ Mobile range (below 768px) ============ */
+@media (max-width: 767.98px) {
+
+  .db-header {
+    left: 0 !important;
+    right: 0 !important;
+  }
+
+  /* Remove unwanted extra top space — only header's real height should push content down */
+  .page-content {
+   /* set this to your .db-header's EXACT rendered height on mobile — inspect and confirm */
+    overflow-y: visible;
+    height: auto;
+    min-height: 100%;
+  }
+
+  .profile-sidebar {
+    min-height: auto;
+    border-right: none;
+    border-bottom: 1px solid #eceef4;
+    text-align: center;
+    padding: 16px 14px;
+  }
+
+  .avatar-wrap {
+    margin: 0 auto;
+    width: 64px;
+    height: 64px;
+  }
+
+  .sidebar-heading {
+    font-size: 15px;
+  }
+  .sidebar-section-title {
+    font-size: 13px;
+  }
+  .sidebar-field-label {
+    font-size: 11px;
+  }
+  .sidebar-field-value {
+    font-size: 13px;
+  }
+
+  .profile-tabs {
+    gap: 14px;
+    padding: 8px 14px;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+  }
+  .profile-tabs .nav-link {
+    white-space: nowrap;
+    font-size: 13px;
+    padding: 0 0 10px;
+  }
+
+  .profile-main {
+    padding: 12px;
+  }
+
+  /* Unified font scale across all cards on mobile */
+  .detail-title,
+  .overview-title {
+    font-size: 14px;
+  }
+
+  .field-label,
+  .tablet-overview-card .field-label,
+  .section-label,
+  .detail-table-header {
+    font-size: 11px;
+  }
+
+  .field-value,
+  .tablet-overview-card .field-value {
+    font-size: 13px;
+  }
+
+  .btn-view-more,
+  .btn-resignation {
+    font-size: 12px;
+    padding: 7px 14px;
+  }
+
+  .detail-card {
+    height: auto;
+  }
+
+  .detail-card .card-header,
+  .detail-card .card-footer {
+    padding: 10px 14px;
+  }
+  .detail-card .card-body {
+    padding: 12px 14px;
+  }
+
+  .tablet-overview-card {
+    height: auto;
+    max-height: none;
+  }
+
+  .avatar-wrap-sm {
+    width: 36px;
+    height: 36px;
+  }
+
+  body,
+  .page-content {
+    overflow-x: hidden;
+  }
+}

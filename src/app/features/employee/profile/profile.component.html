@@ -1,1 +1,315 @@
-<p>profile works!</p>
+<div class="page-content">
+  <div class="">
+    <div class="row profile-row g-0">
+
+      <!-- Sidebar: mobile stacked (visible), tablet hidden, desktop side column -->
+      <div class="col-12 col-lg-3 col-xl-2 col-xxl-2 d-block d-md-none d-lg-block">
+        <div class="profile-sidebar">
+          <div class="row">
+            <div class="col-12 text-center">
+              <div class="sidebar-heading">Profile Overview</div>
+              <div class="avatar-wrap mx-auto">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="#95a3d4">
+                  <circle cx="12" cy="8" r="4"/>
+                  <path d="M4 20c0-4.4 3.6-7 8-7s8 2.6 8 7"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <div class="row mt-3">
+            <div class="col-12">
+              <div class="sidebar-section-title">Basic Info</div>
+              <hr class="sidebar-divider">
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-12">
+              <div class="sidebar-field-label">First Name</div>
+              <div class="sidebar-field-value">{{ employee.firstName }}</div>
+            </div>
+            <div class="col-12">
+              <div class="sidebar-field-label">Last Name</div>
+              <div class="sidebar-field-value">{{ employee.lastName }}</div>
+            </div>
+            <div class="col-12">
+              <div class="sidebar-field-label">E-Mail</div>
+              <div class="sidebar-field-value">{{ employee.email }}</div>
+            </div>
+            <div class="col-12">
+              <div class="sidebar-field-label">Mobile</div>
+              <div class="sidebar-field-value">{{ employee.mobile }}</div>
+            </div>
+          </div>
+
+          <div class="row mt-3">
+            <div class="col-12">
+              <div class="sidebar-section-title">Official Info</div>
+              <hr class="sidebar-divider">
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-12">
+              <div class="sidebar-field-label">Employee ID</div>
+              <div class="sidebar-field-value">{{ employee.employeeId }}</div>
+            </div>
+            <div class="col-12">
+              <div class="sidebar-field-label">Division</div>
+              <div class="sidebar-field-value">{{ employee.division }}</div>
+            </div>
+            <div class="col-12">
+              <div class="sidebar-field-label">Department</div>
+              <div class="sidebar-field-value">{{ employee.department }}</div>
+            </div>
+            <div class="col-12">
+              <div class="sidebar-field-label">Designation</div>
+              <div class="sidebar-field-value">{{ employee.designation }}</div>
+            </div>
+          </div>
+
+          <div class="row mt-4">
+            <div class="col-12">
+              <button class="btn btn-resignation" (click)="onResignationRequest()">Resignation Request</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tablet-only: merged overview card replaces sidebar at md range -->
+      <div class="col-12 d-none d-md-block d-lg-none">
+        <div class="card detail-card tablet-overview-card">
+          <div class="card-body">
+
+            <div class="row align-items-center overview-header-row">
+              <div class="col-auto">
+                <div class="avatar-wrap-sm">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="#fff">
+                    <circle cx="12" cy="8" r="4"/>
+                    <path d="M4 20c0-4.4 3.6-7 8-7s8 2.6 8 7"/>
+                  </svg>
+                </div>
+              </div>
+              <div class="col-auto">
+                <span class="overview-title">Profile Overview</span>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-12">
+                <div class="section-label">Personal Info</div>
+                <hr class="section-divider">
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-6 col-sm-3">
+                <div class="field-label">First Name</div>
+                <div class="field-value">{{ employee.firstName }}</div>
+              </div>
+              <div class="col-6 col-sm-3">
+                <div class="field-label">Last Name</div>
+                <div class="field-value">{{ employee.lastName }}</div>
+              </div>
+              <div class="col-6 col-sm-3">
+                <div class="field-label">E-Mail</div>
+                <div class="field-value">{{ employee.email }}</div>
+              </div>
+              <div class="col-6 col-sm-3">
+                <div class="field-label">Mobile</div>
+                <div class="field-value">{{ employee.mobile }}</div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-12">
+                <div class="section-label">Official Info</div>
+                <hr class="section-divider">
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-6 col-sm-3">
+                <div class="field-label">Employee ID</div>
+                <div class="field-value">{{ employee.employeeId }}</div>
+              </div>
+              <div class="col-6 col-sm-3">
+                <div class="field-label">Division</div>
+                <div class="field-value">{{ employee.division }}</div>
+              </div>
+              <div class="col-6 col-sm-3">
+                <div class="field-label">City</div>
+                <div class="field-value">{{ employee.city }}</div>
+              </div>
+              <div class="col-6 col-sm-3">
+                <div class="field-label">Department</div>
+                <div class="field-value">{{ employee.department }}</div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-6 col-sm-3">
+                <div class="field-label">Designation</div>
+                <div class="field-value">{{ employee.designation }}</div>
+              </div>
+              <div class="col-6 col-sm-3">
+                <div class="field-label">Reporting to</div>
+                <div class="field-value">{{ employee.reportingTo }}</div>
+              </div>
+            </div>
+
+          </div>
+          <div class="card-footer text-center">
+            <button class="btn btn-view-more" (click)="onViewMoreDetails('Profile Overview')">VIEW MORE DETAILS</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Content: always visible at every breakpoint, width adapts -->
+      <div class="col-12 col-lg-9 col-xl-10 col-xxl-10">
+        <div class="profile-main">
+
+          <!-- Tabs -->
+          <div class="row">
+            <div class="col-12">
+              <ul class="nav profile-tabs">
+                <li class="nav-item" *ngFor="let tab of tabs">
+                  <a href="javascript:void(0)" class="nav-link" [class.active]="activeTab === tab" (click)="switchTab(tab)">
+                    {{ tab }}
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Basic Info Tab Content -->
+          <div *ngIf="activeTab === 'Basic Info'">
+
+            <!-- Row 1: Basic Info / Personal Info / Address -->
+            <div class="row mt-3">
+              <div [ngClass]="panel.colSpan" *ngFor="let panel of basicInfoPanels">
+                <div class="card detail-card">
+                  <div class="card-header">
+                    <span class="detail-title">{{ panel.title }}</span>
+                  </div>
+                  <div class="card-body">
+                    <div class="row">
+                      <div class="col-6" style="border-right: 1px solid #efe9e9;">
+                        <div class="field-block" *ngFor="let field of panel.leftFields">
+                          <div class="field-label" *ngIf="field.label">{{ field.label }}</div>
+                          <div class="field-value">{{ field.value }}</div>
+                        </div>
+                      </div>
+                      <div class="col-6">
+                        <div class="field-block" *ngFor="let field of panel.rightFields">
+                          <div class="field-label" *ngIf="field.label">{{ field.label }}</div>
+                          <div class="field-value">{{ field.value }}</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card-footer text-center">
+                    <button class="btn btn-view-more" (click)="onViewMoreDetails(panel.title)">VIEW MORE DETAILS</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Row 2: Household Members / Educational Details / Experience Details -->
+            <div class="row">
+
+              <div [ngClass]="householdMembers.colSpan">
+                <div class="card detail-card">
+                  <div class="card-header">
+                    <span class="detail-title">{{ householdMembers.title }}</span>
+                  </div>
+                  <div class="card-body">
+                    <div class="row">
+                      <div class="col-6" style="border-right: 1px solid #efe9e9;" *ngFor="let column of householdMembers.columns">
+                        <div class="field-block" *ngFor="let field of column">
+                          <div class="field-label">{{ field.label }}</div>
+                          <div class="field-value">{{ field.value }}</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card-footer text-center">
+                    <button class="btn btn-view-more" (click)="onViewMoreDetails(householdMembers.title)">VIEW MORE DETAILS</button>
+                  </div>
+                </div>
+              </div>
+
+              <div [ngClass]="educationalDetails.colSpan">
+                <div class="card detail-card">
+                  <div class="card-header">
+                    <span class="detail-title">{{ educationalDetails.title }}</span>
+                  </div>
+                  <div class="card-body">
+                    <div class="row detail-table-header">
+                      <div class="col-6" *ngFor="let h of educationalDetails.headers">{{ h }}</div>
+                    </div>
+                    <div class="row" *ngFor="let row of educationalDetails.rows">
+                      <div class="col-6">
+                        <div class="field-value">{{ row.qualification }}</div>
+                      </div>
+                      <div class="col-6">
+                        <div class="field-value">{{ row.year }}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card-footer text-center">
+                    <button class="btn btn-view-more" (click)="onViewMoreDetails(educationalDetails.title)">VIEW MORE DETAILS</button>
+                  </div>
+                </div>
+              </div>
+
+              <div [ngClass]="experienceDetails.colSpan">
+                <div class="card detail-card">
+                  <div class="card-header">
+                    <span class="detail-title">{{ experienceDetails.title }}</span>
+                  </div>
+                  <div class="card-body">
+                    <div class="row detail-table-header">
+                      <div class="col-6" *ngFor="let h of experienceDetails.headers">{{ h }}</div>
+                    </div>
+                    <div class="row" *ngFor="let row of experienceDetails.rows">
+                      <div class="col-6">
+                        <div class="field-value">{{ row.company }}</div>
+                      </div>
+                      <div class="col-6">
+                        <div class="field-value">{{ row.year }}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card-footer text-center">
+                    <button class="btn btn-view-more" (click)="onViewMoreDetails(experienceDetails.title)">VIEW MORE DETAILS</button>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+          <!-- Work Info Tab Content -->
+          <div *ngIf="activeTab === 'Work Info'" class="tab-placeholder">
+            <p>Work Info content goes here.</p>
+          </div>
+
+          <!-- Documents Tab Content -->
+          <div *ngIf="activeTab === 'Documents'" class="tab-placeholder">
+            <p>Documents content goes here.</p>
+          </div>
+
+          <!-- Team Tab Content -->
+          <div *ngIf="activeTab === 'Team'" class="tab-placeholder">
+            <p>Team content goes here.</p>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

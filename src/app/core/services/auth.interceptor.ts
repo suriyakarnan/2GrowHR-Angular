@@ -1,9 +1,5 @@
-// ============================================================
-// FILE: src/app/core/interceptors/auth.interceptor.ts
-// ============================================================
-
 import {
-  HttpInterceptorFn, 
+  HttpInterceptorFn,
   HttpRequest,
   HttpHandlerFn,
   HttpErrorResponse
@@ -20,25 +16,28 @@ export const authInterceptor: HttpInterceptorFn = (
   const router = inject(Router);
   const token  = localStorage.getItem('accessToken');
 
-  // ── Attach JWT Bearer token to every outgoing request
   const authReq = token
-    ? req.clone({
-        setHeaders: {
-          Authorization: `Bearer ${token}`
-        }
-      })
+    ? req.clone({ setHeaders: { Authorization: `Bearer ${token}` } })
     : req;
 
   return next(authReq).pipe(
 
     catchError((error: HttpErrorResponse) => {
 
-      // ── 401 Unauthorized → clear storage and redirect to login
       if (error.status === 401) {
+
+        // 🚧 TEMPORARY — don't auto-logout when using the fake dev-admin token
+        const isDevFakeToken = localStorage.getItem('accessToken') === 'dev-fake-token';
+        if (isDevFakeToken) {
+          console.warn('Dev fake-admin token got 401 — real API rejected it. Ignoring logout for dev testing.');
+          return throwError(() => error);
+        }
+
         localStorage.removeItem('user');
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
         localStorage.removeItem('org');
+        localStorage.removeItem('role');
         router.navigate(['']);
       }
 

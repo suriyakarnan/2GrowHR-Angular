@@ -97,8 +97,17 @@ export class AuthService {
     return localStorage.getItem('employeeId') || '';
   }
 
-  // 🔑 NEW — used by roleGuard and login redirect
+  
   getRole(): UserRole {
     return (localStorage.getItem('role') as UserRole) || 'employee';
   }
+
+  // 🚧 TEMPORARY — remove once real Admin login API exists
+  setRoleManually(role: UserRole): void {
+    localStorage.setItem('role', role);
+    if (!this.isLoggedIn()) {
+      localStorage.setItem('accessToken', 'dev-fake-token');
+    }
+  }
+
 }

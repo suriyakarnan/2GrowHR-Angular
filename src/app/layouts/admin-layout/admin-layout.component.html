@@ -1,6 +1,9 @@
-<!-- admin-layout.component.html -->
-<app-admin-sidebar></app-admin-sidebar>
-<div class="main-content">
-  <app-admin-header [title]="pageTitle"></app-admin-header>
-  <router-outlet (activate)="onRouteActivate($event)"></router-outlet>
+<div class="layout-container">
+  <app-admin-sidebar></app-admin-sidebar>
+  <div class="main-content">
+    <app-admin-header [title]="pageTitle"></app-admin-header>
+    <div class="page-content">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
 </div>

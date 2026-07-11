@@ -298,8 +298,65 @@
           </div>
 
           <!-- Documents Tab Content -->
-          <div *ngIf="activeTab === 'Documents'" class="tab-placeholder">
-            <p>Documents content goes here.</p>
+          <div *ngIf="activeTab === 'Documents'" class="documents-tab">
+            <div class="row">
+
+              <!-- Folder list -->
+              <div class="col-12 col-lg-3">
+                <div class="folder-list">
+                  <div class="folder-card" *ngFor="let folder of folders"
+                       [class.active]="selectedFolder?.folderId === folder.folderId"
+                       (click)="selectFolder(folder)">
+                    <span class="folder-name">{{ folder.name }}</span>
+                    <span class="folder-status-icon">
+                      <i class="bi bi-check-circle-fill text-success" *ngIf="!folder.isPendingExists && !folder.isRejectedExists"></i>
+                      <i class="bi bi-exclamation-triangle-fill text-warning" *ngIf="folder.isPendingExists"></i>
+                      <i class="bi bi-x-circle-fill text-danger" *ngIf="folder.isRejectedExists && !folder.isPendingExists"></i>
+                    </span>
+                  </div>
+                  <div class="text-muted small p-2" *ngIf="loadingFolders">Loading folders…</div>
+                  <div class="text-muted small p-2" *ngIf="!loadingFolders && folders.length === 0">No folders found.</div>
+                </div>
+              </div>
+
+              <!-- Document list -->
+              <div class="col-12 col-lg-9">
+                <div class="text-muted small mb-2" *ngIf="loadingDocuments">Loading documents…</div>
+
+                <div class="document-card" *ngFor="let doc of documents">
+                  <div class="document-card-header">
+                    <span class="document-name">{{ doc.name }}</span>
+                    <span class="document-status-icon">
+                      <i class="bi bi-check-circle-fill text-success" *ngIf="!doc.isVerificationRequired"></i>
+                      <i class="bi bi-exclamation-triangle-fill text-warning" *ngIf="doc.isVerificationRequired && doc.isDataExists"></i>
+                      <i class="bi bi-x-circle-fill text-danger" *ngIf="doc.isDataExists && doc.status === 3"></i>
+                    </span>
+
+                    <div class="doc-menu-wrap ms-auto">
+                      <button class="btn-doc-menu" (click)="toggleDocMenu(doc.documentId)">
+                        <i class="bi bi-three-dots"></i>
+                      </button>
+                      <div class="doc-menu-dropdown" *ngIf="openMenuDocId === doc.documentId">
+                        <button (click)="onEditDocument(doc)">Edit</button>
+                        <button *ngIf="doc.allowToDownload" (click)="onDownloadFiles(doc)">
+                          Download Files ({{ doc.filesCount }})
+                        </button>
+                        <button (click)="openHistory(doc)">History</button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="document-reject-reason" *ngIf="doc.status === 3 && doc.rejectedReason">
+                    {{ doc.rejectedReason }}
+                  </div>
+                </div>
+
+                <div class="text-muted small" *ngIf="!loadingDocuments && documents.length === 0">
+                  No documents in this folder.
+                </div>
+              </div>
+
+            </div>
           </div>
 
           <!-- Team Tab Content -->
@@ -311,5 +368,87 @@
       </div>
 
     </div>
+  </div>
+</div>
+
+<!-- History offcanvas -->
+<div class="doc-offcanvas-backdrop" *ngIf="showHistoryPanel" (click)="closeHistory()"></div>
+<div class="doc-offcanvas" [class.open]="showHistoryPanel">
+  <div class="doc-offcanvas-header">
+    <span>{{ historyDocName }} - History</span>
+    <button class="btn-close-offcanvas" (click)="closeHistory()">
+      <i class="bi bi-x-lg"></i>
+    </button>
+  </div>
+  <div class="doc-offcanvas-body">
+    <div class="text-muted small" *ngIf="loadingHistory">Loading history…</div>
+
+    <div class="history-timeline" *ngIf="!loadingHistory">
+      <div class="history-item" *ngFor="let item of historyItems">
+        <div class="history-dot" [ngClass]="{
+          'dot-approved': item.status === 1 || item.status === 2,
+          'dot-rejected': item.status === 3
+        }"></div>
+        <div class="history-content" [ngClass]="{
+          'content-approved': item.status === 1 || item.status === 2,
+          'content-rejected': item.status === 3
+        }">
+          <div class="history-title">{{ item.status === 3 ? 'Rejected' : 'Sent to approval' }}</div>
+          <div class="history-sub">
+            {{ item.status === 3 ? ('Rejected by ' + (item.approvedBy || 'Admin')) : ('Request Submitted by ' + (item.approvedBy || '')) }}
+          </div>
+          <div class="history-remarks" *ngIf="item.remarks">
+            <span class="remarks-label">Remarks</span>
+            <span class="remarks-value">{{ item.remarks }}</span>
+          </div>
+          <div class="history-date">{{ item.date | date:'d MMM y, h:mm a' }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Edit offcanvas -->
+<div class="doc-offcanvas-backdrop" *ngIf="showEditPanel" (click)="closeEditPanel()"></div>
+<div class="doc-offcanvas" [class.open]="showEditPanel">
+  <div class="doc-offcanvas-header">
+    <span>{{ editDoc?.name }}</span>
+    <button class="btn-close-offcanvas" (click)="closeEditPanel()">
+      <i class="bi bi-x-lg"></i>
+    </button>
+  </div>
+
+  <div class="doc-offcanvas-body" *ngIf="!loadingEditDoc && editDoc">
+
+    <label class="edit-upload-label">
+      Upload file <span class="text-danger" *ngIf="editDoc.isMandatory">*</span>
+    </label>
+    <div class="edit-upload-dropzone">
+      Drag &amp; Drop your files or <a href="javascript:void(0)">Browse</a>
+    </div>
+    <div class="edit-upload-hint">File should be in pdf,jpg,png with max size of 3MB</div>
+
+    <div class="edit-file-row" *ngFor="let file of editDoc.files">
+      <span>{{ file.name }}</span>
+      <button class="btn-download-file" *ngIf="file.allowToDownload">
+        <i class="bi bi-download"></i> Download
+      </button>
+    </div>
+
+    <div class="edit-fields-grid">
+      <div class="edit-field" *ngFor="let field of editDoc.fields">
+        <label>{{ field.fieldName }} <span class="text-danger" *ngIf="field.isMandatory">*</span></label>
+        <input type="text" class="form-control" [(ngModel)]="editFieldValues[field.fieldId]" [ngModelOptions]="{standalone: true}">
+      </div>
+    </div>
+  </div>
+
+  <div class="text-muted small p-3" *ngIf="loadingEditDoc">Loading document…</div>
+
+  <div class="doc-offcanvas-footer" *ngIf="editDoc">
+    <button class="btn btn-cancel" (click)="closeEditPanel()">CANCEL</button>
+    <button class="btn btn-update" [disabled]="savingDocument" (click)="onUpdateDocument()">
+      {{ savingDocument ? 'SAVING...' : 'UPDATE' }}
+    </button>
   </div>
 </div>

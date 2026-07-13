@@ -1,4 +1,3 @@
-// src/app/core/models/mydocument.model.ts
 
 export interface FolderDetail {
   folderId: number;
@@ -23,7 +22,7 @@ export interface DocumentDetail {
   filesCount: number;
   isVerificationRequired: boolean;
   allowToViewByManagerHierarchy: boolean;
-  status: number;          // 1 = pending, 2 = verified, 3 = rejected
+  status: number;        
   isMandatory: boolean;
   rejectedReason: string;
 }
@@ -38,7 +37,7 @@ export interface DocumentHistoryItem {
   date: string;
   status: number;
   remarks: string;
-  role: number;            // 1 = admin, 2 = employee
+  role: number;           
   approvedBy: string;
 }
 
@@ -59,7 +58,7 @@ export interface DocumentField {
   documentId: number;
   folderId: number;
   fieldName: string;
-  fieldType: number;       // 3 = single select (more values TBD)
+  fieldType: number;       
   isMandatory: number;
   createdDate: string;
   options: string[];
@@ -85,15 +84,15 @@ export interface DocumentDetailById {
   folderId: number;
   name: string;
   description: string | null;
-  allowMultipleFiles: number;      // 0 = single file, 1 = multi-file
-  multipleFileCount: number;       // max upload slots when multi-file
+  allowMultipleFiles: number;      
+  multipleFileCount: number;       
   onboarding: number;
   hrms: number;
   isMandatory: number;
   isVerificationRequired: number;
   askEmployeeForExpiryDate: number;
   allowEmployeeMarkNotApplicable: number;
-  allowToDownload: number;         // 1 = show download btn, 0 = hide
+  allowToDownload: number;        
   allowToViewByManagerHierarchy: number;
   isActive: boolean;
   createdDate: string;
@@ -116,16 +115,35 @@ export interface SaveDocumentField {
 }
 
 export interface SaveDocumentPayload {
+  OrganizationId: number;      
+  DivId: number;              
   DocumentId: number;
   EmployeeId: string;
   Status: number;
   Role: number;
   MaxFileCount: number;
+  DocumentDataId: number;       
   Fields: SaveDocumentField[];
   FileNames: string[];
 }
 
 export interface SaveDocumentResponse {
   success: boolean;
+  message: string;
+}
+
+
+export interface PreviewFilePayload {
+  FileId: number;
+}
+
+export interface UploadedFile {
+  fileName: string;       
+  originalName: string;   
+}
+
+export interface UploadFileResponse {
+  success: boolean;
+  data: { fileName: string };
   message: string;
 }

@@ -477,8 +477,8 @@
 .doc-offcanvas {
   position: fixed;
   top: 0;
-  right: -420px;
-  width: 420px;
+  right: -700px;
+  width: 700px;
   height: 100%;
   background: #fff;
   z-index: 1050;
@@ -633,4 +633,37 @@
 }
 .btn-update:disabled {
   opacity: 0.6;
+}
+
+.document-card-header {
+  cursor: pointer;
+}
+
+.document-expanded-body {
+  padding: 16px 18px;
+  border-top: 1px solid #eceef4;
+}
+
+.expanded-field-label {
+  color: #767679;
+  font-size: 12px;
+  font-weight: 500;
+  margin-bottom: 2px;
+}
+
+.expanded-field-value {
+  color: #000;
+  font-weight: 600;
+  font-size: 13px;
+  margin-bottom: 14px;
+}
+
+.btn-view-file {
+  background: #2f9ee0;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 16px;
 }

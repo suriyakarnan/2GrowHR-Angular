@@ -18,7 +18,7 @@ export const routes: Routes = [
     children: [
       {
         path: 'dashboard',
-        loadChildren: () => import('./features/admin/dashboard/dashboard.routes').then(m => m.DASHBOARD_ROUTES)
+        loadChildren: () => import('./features/admin/dashboard/dashboard.component').then(m => m.DashboardComponent)
       },
       {
         path: 'employees',
@@ -82,6 +82,11 @@ export const routes: Routes = [
       {
         path: 'task',
         loadComponent: () => import('./features/employee/task/task.component').then(m => m.TaskComponent)
+      },
+      {
+        path: 'wall-activity',
+        loadComponent: () => import('./features/employee/wall-activity/wall-activity.component').then(m =>m.WallActivityComponent)
+
       },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]

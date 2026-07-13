@@ -26,7 +26,7 @@ export class EmployeeHeaderComponent {
   // Edit Button Click → Wall Activity Page
 // ...same logic as AdminHeaderComponent, but:
   goToWallActivity() {
-    this.router.navigate(['/employee/dashboard/wall-activity']); // if employee has this feature
+    this.router.navigate(['/employee/wall-activity']); // if employee has this feature
   }
 
 }

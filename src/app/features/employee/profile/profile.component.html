@@ -10,8 +10,8 @@
               <div class="sidebar-heading">Profile Overview</div>
               <div class="avatar-wrap mx-auto">
                 <svg width="48" height="48" viewBox="0 0 24 24" fill="#95a3d4">
-                  <circle cx="12" cy="8" r="4"/>
-                  <path d="M4 20c0-4.4 3.6-7 8-7s8 2.6 8 7"/>
+                  <circle cx="12" cy="8" r="4" />
+                  <path d="M4 20c0-4.4 3.6-7 8-7s8 2.6 8 7" />
                 </svg>
               </div>
             </div>
@@ -86,8 +86,8 @@
               <div class="col-auto">
                 <div class="avatar-wrap-sm">
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="#fff">
-                    <circle cx="12" cy="8" r="4"/>
-                    <path d="M4 20c0-4.4 3.6-7 8-7s8 2.6 8 7"/>
+                    <circle cx="12" cy="8" r="4" />
+                    <path d="M4 20c0-4.4 3.6-7 8-7s8 2.6 8 7" />
                   </svg>
                 </div>
               </div>
@@ -175,7 +175,8 @@
             <div class="col-12">
               <ul class="nav profile-tabs">
                 <li class="nav-item" *ngFor="let tab of tabs">
-                  <a href="javascript:void(0)" class="nav-link" [class.active]="activeTab === tab" (click)="switchTab(tab)">
+                  <a href="javascript:void(0)" class="nav-link" [class.active]="activeTab === tab"
+                    (click)="switchTab(tab)">
                     {{ tab }}
                   </a>
                 </li>
@@ -210,7 +211,8 @@
                     </div>
                   </div>
                   <div class="card-footer text-center">
-                    <button class="btn btn-view-more" (click)="onViewMoreDetails(panel.title)">VIEW MORE DETAILS</button>
+                    <button class="btn btn-view-more" (click)="onViewMoreDetails(panel.title)">VIEW MORE
+                      DETAILS</button>
                   </div>
                 </div>
               </div>
@@ -226,7 +228,8 @@
                   </div>
                   <div class="card-body">
                     <div class="row">
-                      <div class="col-6" style="border-right: 1px solid #efe9e9;" *ngFor="let column of householdMembers.columns">
+                      <div class="col-6" style="border-right: 1px solid #efe9e9;"
+                        *ngFor="let column of householdMembers.columns">
                         <div class="field-block" *ngFor="let field of column">
                           <div class="field-label">{{ field.label }}</div>
                           <div class="field-value">{{ field.value }}</div>
@@ -235,7 +238,8 @@
                     </div>
                   </div>
                   <div class="card-footer text-center">
-                    <button class="btn btn-view-more" (click)="onViewMoreDetails(householdMembers.title)">VIEW MORE DETAILS</button>
+                    <button class="btn btn-view-more" (click)="onViewMoreDetails(householdMembers.title)">VIEW MORE
+                      DETAILS</button>
                   </div>
                 </div>
               </div>
@@ -259,7 +263,8 @@
                     </div>
                   </div>
                   <div class="card-footer text-center">
-                    <button class="btn btn-view-more" (click)="onViewMoreDetails(educationalDetails.title)">VIEW MORE DETAILS</button>
+                    <button class="btn btn-view-more" (click)="onViewMoreDetails(educationalDetails.title)">VIEW MORE
+                      DETAILS</button>
                   </div>
                 </div>
               </div>
@@ -283,7 +288,8 @@
                     </div>
                   </div>
                   <div class="card-footer text-center">
-                    <button class="btn btn-view-more" (click)="onViewMoreDetails(experienceDetails.title)">VIEW MORE DETAILS</button>
+                    <button class="btn btn-view-more" (click)="onViewMoreDetails(experienceDetails.title)">VIEW MORE
+                      DETAILS</button>
                   </div>
                 </div>
               </div>
@@ -305,17 +311,19 @@
               <div class="col-12 col-lg-3">
                 <div class="folder-list">
                   <div class="folder-card" *ngFor="let folder of folders"
-                       [class.active]="selectedFolder?.folderId === folder.folderId"
-                       (click)="selectFolder(folder)">
+                    [class.active]="selectedFolder?.folderId === folder.folderId" (click)="selectFolder(folder)">
                     <span class="folder-name">{{ folder.name }}</span>
                     <span class="folder-status-icon">
-                      <i class="bi bi-check-circle-fill text-success" *ngIf="!folder.isPendingExists && !folder.isRejectedExists"></i>
+                      <i class="bi bi-check-circle-fill text-success"
+                        *ngIf="!folder.isPendingExists && !folder.isRejectedExists"></i>
                       <i class="bi bi-exclamation-triangle-fill text-warning" *ngIf="folder.isPendingExists"></i>
-                      <i class="bi bi-x-circle-fill text-danger" *ngIf="folder.isRejectedExists && !folder.isPendingExists"></i>
+                      <i class="bi bi-x-circle-fill text-danger"
+                        *ngIf="folder.isRejectedExists && !folder.isPendingExists"></i>
                     </span>
                   </div>
                   <div class="text-muted small p-2" *ngIf="loadingFolders">Loading folders…</div>
-                  <div class="text-muted small p-2" *ngIf="!loadingFolders && folders.length === 0">No folders found.</div>
+                  <div class="text-muted small p-2" *ngIf="!loadingFolders && folders.length === 0">No folders found.
+                  </div>
                 </div>
               </div>
 
@@ -324,15 +332,16 @@
                 <div class="text-muted small mb-2" *ngIf="loadingDocuments">Loading documents…</div>
 
                 <div class="document-card" *ngFor="let doc of documents">
-                  <div class="document-card-header">
+                  <div class="document-card-header" (click)="toggleDocExpand(doc)">
                     <span class="document-name">{{ doc.name }}</span>
                     <span class="document-status-icon">
                       <i class="bi bi-check-circle-fill text-success" *ngIf="!doc.isVerificationRequired"></i>
-                      <i class="bi bi-exclamation-triangle-fill text-warning" *ngIf="doc.isVerificationRequired && doc.isDataExists"></i>
+                      <i class="bi bi-exclamation-triangle-fill text-warning"
+                        *ngIf="doc.isVerificationRequired && doc.isDataExists"></i>
                       <i class="bi bi-x-circle-fill text-danger" *ngIf="doc.isDataExists && doc.status === 3"></i>
                     </span>
 
-                    <div class="doc-menu-wrap ms-auto">
+                    <div class="doc-menu-wrap ms-auto" (click)="$event.stopPropagation()">
                       <button class="btn-doc-menu" (click)="toggleDocMenu(doc.documentId)">
                         <i class="bi bi-three-dots"></i>
                       </button>
@@ -348,6 +357,24 @@
 
                   <div class="document-reject-reason" *ngIf="doc.status === 3 && doc.rejectedReason">
                     {{ doc.rejectedReason }}
+                  </div>
+
+                  <!-- Expanded field view -->
+                  <div class="document-expanded-body" *ngIf="expandedDocId === doc.documentId">
+                    <div class="text-muted small p-2" *ngIf="loadingExpandedDoc">Loading…</div>
+
+                    <div class="row" *ngIf="!loadingExpandedDoc && expandedDocFields">
+                      <div class="col-6 col-md-4" *ngFor="let field of expandedDocFields.fields">
+                        <div class="expanded-field-label">{{ field.fieldName }}</div>
+                        <div class="expanded-field-value">{{ field.fieldValue }}</div>
+                      </div>
+                      <div class="col-6 col-md-4" *ngFor="let file of expandedDocFields.files">
+                        <div class="expanded-field-label">{{ file.name }}</div>
+                        <button class="btn btn-view-file" (click)="onViewFile(file)">
+                          <i class="bi bi-eye"></i> View
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
@@ -395,7 +422,8 @@
         }">
           <div class="history-title">{{ item.status === 3 ? 'Rejected' : 'Sent to approval' }}</div>
           <div class="history-sub">
-            {{ item.status === 3 ? ('Rejected by ' + (item.approvedBy || 'Admin')) : ('Request Submitted by ' + (item.approvedBy || '')) }}
+            {{ item.status === 3 ? ('Rejected by ' + (item.approvedBy || 'Admin')) : ('Request Submitted by ' +
+            (item.approvedBy || '')) }}
           </div>
           <div class="history-remarks" *ngIf="item.remarks">
             <span class="remarks-label">Remarks</span>
@@ -423,11 +451,31 @@
     <label class="edit-upload-label">
       Upload file <span class="text-danger" *ngIf="editDoc.isMandatory">*</span>
     </label>
-    <div class="edit-upload-dropzone">
-      Drag &amp; Drop your files or <a href="javascript:void(0)">Browse</a>
+
+    <div class="edit-upload-dropzone"
+         (drop)="onFileDrop($event)"
+         (dragover)="onDragOver($event)">
+      Drag &amp; Drop your files or
+      <a href="javascript:void(0)" (click)="fileInput.click()">Browse</a>
+      <input #fileInput type="file" hidden multiple
+             accept=".pdf,.jpg,.jpeg,.png"
+             (change)="onFileSelected($event)">
     </div>
     <div class="edit-upload-hint">File should be in pdf,jpg,png with max size of 3MB</div>
 
+    <!-- Newly selected/uploading files -->
+    <div class="edit-file-row" *ngFor="let sel of selectedFiles">
+      <span>
+        {{ sel.name }}
+        <span class="text-muted small" *ngIf="!sel.uploaded">(uploading…)</span>
+        <i class="bi bi-check-circle-fill text-success" *ngIf="sel.uploaded"></i>
+      </span>
+      <button class="btn-remove-file" (click)="removeSelectedFile(sel)">
+        <i class="bi bi-x"></i>
+      </button>
+    </div>
+
+    <!-- Already-existing files on the document -->
     <div class="edit-file-row" *ngFor="let file of editDoc.files">
       <span>{{ file.name }}</span>
       <button class="btn-download-file" *ngIf="file.allowToDownload">
@@ -438,7 +486,8 @@
     <div class="edit-fields-grid">
       <div class="edit-field" *ngFor="let field of editDoc.fields">
         <label>{{ field.fieldName }} <span class="text-danger" *ngIf="field.isMandatory">*</span></label>
-        <input type="text" class="form-control" [(ngModel)]="editFieldValues[field.fieldId]" [ngModelOptions]="{standalone: true}">
+        <input type="text" class="form-control" [(ngModel)]="editFieldValues[field.fieldId]"
+          [ngModelOptions]="{standalone: true}">
       </div>
     </div>
   </div>
@@ -447,8 +496,8 @@
 
   <div class="doc-offcanvas-footer" *ngIf="editDoc">
     <button class="btn btn-cancel" (click)="closeEditPanel()">CANCEL</button>
-    <button class="btn btn-update" [disabled]="savingDocument" (click)="onUpdateDocument()">
-      {{ savingDocument ? 'SAVING...' : 'UPDATE' }}
+    <button class="btn btn-update" [disabled]="savingDocument || uploadingFile" (click)="onUpdateDocument()">
+      {{ savingDocument ? 'SAVING...' : (uploadingFile ? 'UPLOADING...' : 'UPDATE') }}
     </button>
   </div>
 </div>

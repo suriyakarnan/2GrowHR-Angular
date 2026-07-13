@@ -3,8 +3,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { WallActivityService } from '../../../../core/services/wall-activity.service';
-import { SelectpickerDirective } from '../../../../shared/components/selectpicker/selectpicker.directive';
+import { WallActivityService } from '../../../core/services/wall-activity.service';
+import { SelectpickerDirective } from '../../../shared/components/selectpicker/selectpicker.directive';
 
 import {
   WallPost,
@@ -25,7 +25,7 @@ import {
   SaveVoteResponse,
   PollStatsData,
   PollStatsResponse
-} from '../../../../core/models/wall-activity.model';
+} from '../../../core/models/wall-activity.model';
 
 
 const IMAGE_BASE = 'http://development.2growhr.io';

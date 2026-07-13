@@ -1,4 +1,3 @@
-// src/app/core/services/mydocument.service.ts
 
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -9,16 +8,14 @@ import {
   DocumentHistoryResponse,
   DocumentDetailByIdResponse,
   SaveDocumentPayload,
-  SaveDocumentResponse
+  SaveDocumentResponse,
+  UploadFileResponse
 } from '../models/mydocument.model';
 
-// Note: JSON endpoints — no trailing 'wallposts/'-style sub-path,
-// each call hits /api/<EndpointName> directly (matches your Postman URLs).
 const URL = 'api/';
 
 @Injectable({ providedIn: 'root' })
 export class MyDocumentService {
-
   private readonly apiService: ApiService = inject(ApiService);
 
   private getOrganizationId(): number {
@@ -36,50 +33,101 @@ export class MyDocumentService {
     }
   }
 
-  /** POST GetAllFolderDetailsForEmployee — { OrganizationId, EmployeeId } */
-  getAllFolderDetailsForEmployee(employeeId?: string): Observable<FolderDetailsResponse> {
-    const body = {
-      OrganizationId: this.getOrganizationId(),
-      EmployeeId: employeeId ?? this.getEmployeeId()
-    };
-    return this.apiService.post<FolderDetailsResponse>(`${URL}GetAllFolderDetailsForEmployee`, body);
+  private getDivisionId(): number {
+    const userStr = localStorage.getItem('user');
+    if (!userStr) return 0;
+    try {
+      return Number(JSON.parse(userStr).Division_Code) || 0;
+    } catch {
+      return 0;
+    }
   }
 
-  /** POST GetAllDocumentDetailsForEmployee — { OrganizationId, FolderId, EmployeeId } */
-  getAllDocumentDetailsForEmployee(folderId: number, employeeId?: string): Observable<DocumentDetailsResponse> {
-    const body = {
-      OrganizationId: this.getOrganizationId(),
-      FolderId: folderId,
-      EmployeeId: employeeId ?? this.getEmployeeId()
-    };
-    return this.apiService.post<DocumentDetailsResponse>(`${URL}GetAllDocumentDetailsForEmployee`, body);
-  }
 
-  /** POST GetDocumentHistoryDetails — { OrganizationId, EmployeeId, DocumentId } */
-  getDocumentHistoryDetails(documentId: number, employeeId?: string): Observable<DocumentHistoryResponse> {
+  getAllFolderDetailsForEmployee(
+    employeeId?: string,
+  ): Observable<FolderDetailsResponse> {
     const body = {
       OrganizationId: this.getOrganizationId(),
       EmployeeId: employeeId ?? this.getEmployeeId(),
-      DocumentId: documentId
     };
-    return this.apiService.post<DocumentHistoryResponse>(`${URL}GetDocumentHistoryDetails`, body);
+    return this.apiService.post<FolderDetailsResponse>(
+      `${URL}GetAllFolderDetailsForEmployee`,
+      body,
+    );
   }
 
-  /**
-   * POST GetDocumentDetailsByIdForEmployee — body not shown in your screenshot
-   * (only headers were captured), so this mirrors the same key pattern as the
-   * other three calls. Confirm against Postman's Body tab if this 400s.
-   */
-  getDocumentDetailsByIdForEmployee(documentId: number, employeeId?: string): Observable<DocumentDetailByIdResponse> {
+  
+  getAllDocumentDetailsForEmployee(
+    folderId: number,
+    employeeId?: string,
+  ): Observable<DocumentDetailsResponse> {
+    const body = {
+      OrganizationId: this.getOrganizationId(),
+      FolderId: folderId,
+      EmployeeId: employeeId ?? this.getEmployeeId(),
+      DivId: this.getDivisionId(),
+    };
+    return this.apiService.post<DocumentDetailsResponse>(
+      `${URL}GetAllDocumentDetailsForEmployee`,
+      body,
+    );
+  }
+
+  
+  getDocumentHistoryDetails(
+    documentId: number,
+    employeeId?: string,
+  ): Observable<DocumentHistoryResponse> {
+    const body = {
+      OrganizationId: this.getOrganizationId(),
+      EmployeeId: employeeId ?? this.getEmployeeId(),
+      DocumentId: documentId,
+    };
+    return this.apiService.post<DocumentHistoryResponse>(
+      `${URL}GetDocumentHistoryDetails`,
+      body,
+    );
+  }
+
+ 
+  getDocumentDetailsByIdForEmployee(
+    documentId: number,
+    employeeId?: string,
+  ): Observable<DocumentDetailByIdResponse> {
     const body = {
       OrganizationId: this.getOrganizationId(),
       DocumentId: documentId,
-      EmployeeId: employeeId ?? this.getEmployeeId()
+      EmployeeId: employeeId ?? this.getEmployeeId(),
+      DivId: this.getDivisionId(),
     };
-    return this.apiService.post<DocumentDetailByIdResponse>(`${URL}GetDocumentDetailsByIdForEmployee`, body);
+    return this.apiService.post<DocumentDetailByIdResponse>(
+      `${URL}GetDocumentDetailsByIdForEmployee`,
+      body,
+    );
   }
 
-  saveDocumentData(payload: SaveDocumentPayload): Observable<SaveDocumentResponse> {
-  return this.apiService.post<SaveDocumentResponse>(`${URL}SaveDocumentData`, payload);
+  saveDocumentData(
+    payload: SaveDocumentPayload,
+  ): Observable<SaveDocumentResponse> {
+    return this.apiService.post<SaveDocumentResponse>(
+      `${URL}SaveDocumentData`,
+      payload,
+    );
+  }
+
+  downloadFileBlob(fileUrl: string): Observable<Blob> {
+    return this.apiService.getBlob(fileUrl);
+  }
+
+  previewFile(fileId: number): Observable<Blob> {
+  return this.apiService.postFile(`${URL}PreviewFile`, { FileId: fileId });
+}
+
+
+uploadDocumentFile(file: File): Observable<UploadFileResponse> {
+  const formData = new FormData();
+  formData.append('file', file, file.name);
+  return this.apiService.postForm<UploadFileResponse>(`${URL}UploadDocumentFile`, formData);
 }
 }

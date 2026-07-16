@@ -467,6 +467,31 @@
   background: #f3f3f9;
 }
 
+.status-badge {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 500;
+  padding: 3px 10px;
+  border-radius: 12px;
+  white-space: nowrap;
+  margin-left: 8px;
+}
+
+.status-pending {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.status-verified {
+  background-color: #d1e7dd;
+  color: #0f5132;
+}
+
+.status-rejected {
+  background-color: #f8d7da;
+  color: #842029;
+}
+
 /* ============ Offcanvas (History / Edit) ============ */
 .doc-offcanvas-backdrop {
   position: fixed;

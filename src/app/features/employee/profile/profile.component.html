@@ -341,6 +341,10 @@
                       <i class="bi bi-x-circle-fill text-danger" *ngIf="doc.isDataExists && doc.status === 3"></i>
                     </span>
 
+                    <span class="status-badge" [ngClass]="statusClass(doc.status)">
+                      {{ statusLabel(doc.status) }}
+                    </span>
+
                     <div class="doc-menu-wrap ms-auto" (click)="$event.stopPropagation()">
                       <button class="btn-doc-menu" (click)="toggleDocMenu(doc.documentId)">
                         <i class="bi bi-three-dots"></i>
@@ -452,14 +456,10 @@
       Upload file <span class="text-danger" *ngIf="editDoc.isMandatory">*</span>
     </label>
 
-    <div class="edit-upload-dropzone"
-         (drop)="onFileDrop($event)"
-         (dragover)="onDragOver($event)">
+    <div class="edit-upload-dropzone" (drop)="onFileDrop($event)" (dragover)="onDragOver($event)">
       Drag &amp; Drop your files or
       <a href="javascript:void(0)" (click)="fileInput.click()">Browse</a>
-      <input #fileInput type="file" hidden multiple
-             accept=".pdf,.jpg,.jpeg,.png"
-             (change)="onFileSelected($event)">
+      <input #fileInput type="file" hidden multiple accept=".pdf,.jpg,.jpeg,.png" (change)="onFileSelected($event)">
     </div>
     <div class="edit-upload-hint">File should be in pdf,jpg,png with max size of 3MB</div>
 

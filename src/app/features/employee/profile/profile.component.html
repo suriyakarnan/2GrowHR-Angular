@@ -368,7 +368,7 @@
                     <div class="text-muted small p-2" *ngIf="loadingExpandedDoc">Loading…</div>
 
                     <div class="row" *ngIf="!loadingExpandedDoc && expandedDocFields">
-                      <div class="col-6 col-md-4" *ngFor="let field of expandedDocFields.fields">
+                      <div class="col-6 col-md-4" *ngFor="let field of expandedFieldsMerged">
                         <div class="expanded-field-label">{{ field.fieldName }}</div>
                         <div class="expanded-field-value">{{ field.fieldValue }}</div>
                       </div>

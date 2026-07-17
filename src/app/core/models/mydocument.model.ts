@@ -83,6 +83,7 @@ export interface DocumentDetailById {
   documentId: number;
   folderId: number;
   name: string;
+  documentDataId: number;
   description: string | null;
   allowMultipleFiles: number;      
   multipleFileCount: number;       
@@ -146,4 +147,15 @@ export interface UploadFileResponse {
   success: boolean;
   data: { fileName: string };
   message: string;
+}
+
+export interface ExistingFileRef {
+  FileId: number;
+  RelativePath: string;
+}
+
+export interface UploadDocumentsResponse {
+  success: boolean;
+  message: string;
+  data: string[]; 
 }

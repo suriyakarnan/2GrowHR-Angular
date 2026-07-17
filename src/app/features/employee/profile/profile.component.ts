@@ -8,6 +8,8 @@ import {
   DocumentDetailById,
   DocumentFile,
   SaveDocumentField,
+  ExistingFileRef, 
+  UploadDocumentsResponse 
 } from '../../../core/models/mydocument.model';
 import { MyDocumentService } from '../../../core/services/mydocument.service';
 import { environment } from '../../../../environments/environment';
@@ -202,19 +204,19 @@ export class ProfileComponent {
   }
 
   loadDocuments(folderId: number): void {
-    this.loadingDocuments = true;
-    this.myDocumentService
-      .getAllDocumentDetailsForEmployee(folderId)
-      .subscribe({
-        next: (res) => {
-          this.documents = res.data;
-          this.loadingDocuments = false;
-        },
-        error: () => {
-          this.loadingDocuments = false;
-        },
-      });
-  }
+  this.loadingDocuments = true;
+  this.myDocumentService
+    .getAllDocumentDetailsForEmployee(folderId)
+    .subscribe({
+      next: (res) => {
+        this.documents = this.dedupeDocuments(res.data);
+        this.loadingDocuments = false;
+      },
+      error: () => {
+        this.loadingDocuments = false;
+      },
+    });
+}
 
   toggleDocMenu(docId: number): void {
     if (this.openMenuDocId === docId) {
@@ -291,46 +293,69 @@ export class ProfileComponent {
   }
 
   onUpdateDocument(): void {
-    if (!this.editDoc) return;
-    const fields: SaveDocumentField[] = this.editDoc.fields.map((f) => ({
-      FieldId: f.fieldId,
-      FieldValue: this.editFieldValues[f.fieldId] || '',
-      IsRequired: f.isMandatory === 1,
-    }));
+  if (!this.editDoc) return;
 
-    const org = localStorage.getItem('org');
-    const userStr = localStorage.getItem('user');
-    const divId = userStr ? Number(JSON.parse(userStr).Division_Code) || 0 : 0;
+  const fields: SaveDocumentField[] = this.editDoc.fields.map(f => ({
+    FieldId: f.fieldId,
+    FieldValue: this.editFieldValues[f.fieldId] || '',
+    IsRequired: f.isMandatory === 1
+  }));
 
-    this.savingDocument = true;
-    this.myDocumentService
-      .saveDocumentData({
-        OrganizationId: org ? Number(org) : 0,
-        DivId: divId,
-        DocumentId: this.editDoc.documentId,
-        EmployeeId: this.getEmployeeIdLocal(),
-        Status: 1,
-        Role: 2,
-        MaxFileCount: this.editDoc.multipleFileCount || 1,
-        DocumentDataId: this.editDoc.fields[0]?.documentDataId ?? 0,
-        Fields: fields,
-        FileNames: this.pendingUploadFileNames,
-      })
-      .subscribe({
-        next: (res) => {
-          this.savingDocument = false;
-          if (res.success) {
-            this.closeEditPanel();
-            if (this.selectedFolder) {
-              this.loadDocuments(this.selectedFolder.folderId);
-            }
-          }
-        },
-        error: () => {
-          this.savingDocument = false;
-        },
-      });
+  const org = localStorage.getItem('org');
+  const divId = this.getDivisionIdLocal();
+  const editedDocId = this.editDoc.documentId;
+
+  this.savingDocument = true;
+  this.myDocumentService.saveDocumentData({
+    OrganizationId: org ? Number(org) : 0,
+    DivId: divId,
+    DocumentId: editedDocId,
+    EmployeeId: this.getEmployeeIdLocal(),
+    Status: 1,
+    Role: 2,
+    MaxFileCount: this.editDoc.multipleFileCount || 1,
+    DocumentDataId: this.editDoc.documentDataId
+      ?? this.editDoc.fields.find(f => f.documentDataId)?.documentDataId
+      ?? 0,
+    Fields: fields,
+    FileNames: this.pendingUploadFileNames
+  }).subscribe({
+    next: (res) => {
+      this.savingDocument = false;
+      if (res.success) {
+        this.closeEditPanel();
+        if (this.selectedFolder) {
+          this.loadDocuments(this.selectedFolder.folderId);
+        }
+        // 👇 refresh expanded card if it was showing this same document
+        if (this.expandedDocId === editedDocId) {
+          this.expandedDocId = null;
+          this.expandedDocFields = null;
+          this.loadingExpandedDoc = true;
+          this.myDocumentService.getDocumentDetailsByIdForEmployee(editedDocId).subscribe({
+            next: (r) => {
+              this.expandedDocId = editedDocId;
+              this.expandedDocFields = r.data;
+              this.loadingExpandedDoc = false;
+            },
+            error: () => { this.loadingExpandedDoc = false; }
+          });
+        }
+      }
+    },
+    error: () => { this.savingDocument = false; }
+  });
+}
+
+private getDivisionIdLocal(): number {
+  const userStr = localStorage.getItem('user');
+  if (!userStr) return 0;
+  try {
+    return Number(JSON.parse(userStr).Division_Code) || 0;
+  } catch {
+    return 0;
   }
+}
 
   toggleDocExpand(doc: DocumentDetail): void {
     // Collapse if same card clicked again
@@ -417,6 +442,16 @@ export class ProfileComponent {
     }
   }
 
+  private dedupeDocuments(docs: DocumentDetail[]): DocumentDetail[] {
+  const seen = new Set<string>();
+  return docs.filter((d) => {
+    const key = d.name.trim().toLowerCase();
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
   private buildFileUrl(file: DocumentFile): string {
     let path: string;
     try {
@@ -431,80 +466,99 @@ export class ProfileComponent {
   }
 
   onFileSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    if (!input.files || input.files.length === 0) return;
+  const input = event.target as HTMLInputElement;
+  if (!input.files || input.files.length === 0) return;
 
-    Array.from(input.files).forEach((file) => this.uploadFile(file));
-    input.value = ''; // allow re-selecting the same file name later
-  }
+  const validFiles = Array.from(input.files).filter(f => this.isFileValid(f));
+  if (validFiles.length) this.uploadFiles(validFiles);
+  input.value = '';
+}
 
   onFileDrop(event: DragEvent): void {
-    event.preventDefault();
-    if (!event.dataTransfer?.files) return;
-    Array.from(event.dataTransfer.files).forEach((file) =>
-      this.uploadFile(file),
-    );
-  }
+  event.preventDefault();
+  if (!event.dataTransfer?.files) return;
+
+  const validFiles = Array.from(event.dataTransfer.files).filter(f => this.isFileValid(f));
+  if (validFiles.length) this.uploadFiles(validFiles);
+}
 
   onDragOver(event: DragEvent): void {
     event.preventDefault(); // required to allow drop
   }
 
-  private uploadFile(file: File): void {
-    
-    const allowedTypes = [
-      'application/pdf',
-      'image/jpeg',
-      'image/jpg',
-      'image/png',
-    ];
-    const maxSizeBytes = 3 * 1024 * 1024;
+  private uploadFiles(files: File[]): void {
+  if (!this.editDoc) return;
 
-    if (!allowedTypes.includes(file.type)) {
-      console.error(`${file.name}: unsupported file type`);
-      return;
+  const entries = files.map(f => ({ name: f.name, uploaded: false }));
+  this.selectedFiles.push(...entries);
+  this.uploadingFile = true;
+
+  const existingFiles = this.editDoc.files.map(f => ({
+    FileId: f.fileId,
+    RelativePath: f.relativePath
+  }));
+
+  this.myDocumentService.uploadDocuments(
+    files,
+    this.editDoc.multipleFileCount || 1,
+    existingFiles
+  ).subscribe({
+    next: (res) => {
+      if (res.success) {
+        entries.forEach(e => e.uploaded = true);
+        this.pendingUploadFileNames = res.data; // canonical merged list from backend
+      }
+      this.uploadingFile = false;
+    },
+    error: (err) => {
+      console.error('Upload failed:', err);
+      this.selectedFiles = this.selectedFiles.filter(e => !entries.includes(e));
+      this.uploadingFile = false;
     }
-    if (file.size > maxSizeBytes) {
-      console.error(`${file.name}: exceeds 3MB limit`);
-      return;
-    }
+  });
+}
 
-    const entry: { name: string; uploaded: boolean; serverFileName?: string } =
-      { name: file.name, uploaded: false };
-    this.selectedFiles.push(entry);
-    this.uploadingFile = true;
+private isFileValid(file: File): boolean {
+  const allowedTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'];
+  const maxSizeBytes = 3 * 1024 * 1024; // 3MB
 
-    this.myDocumentService.uploadDocumentFile(file).subscribe({
-      next: (res) => {
-        if (res.success) {
-          entry.uploaded = true;
-          entry.serverFileName = res.data.fileName;
-          this.pendingUploadFileNames.push(res.data.fileName);
-        }
-        this.uploadingFile = false;
-      },
-      error: (err) => {
-        if (err.status === 401 || err.status === 0 || err.status === 500) {
-          // Session likely expired server-side — force re-login
-          console.error('Upload failed, possibly due to expired session:', err);
-          // e.g. redirect to login, or show "please log in again"
-        }
-        this.selectedFiles = this.selectedFiles.filter((f) => f !== entry);
-        this.uploadingFile = false;
-      },
-    });
+  if (!allowedTypes.includes(file.type)) {
+    console.error(`${file.name}: unsupported file type`);
+    return false;
   }
-
-  removeSelectedFile(entry: {
-    name: string;
-    uploaded: boolean;
-    serverFileName?: string;
-  }): void {
-    this.selectedFiles = this.selectedFiles.filter((f) => f !== entry);
-    if (entry.serverFileName) {
-      this.pendingUploadFileNames = this.pendingUploadFileNames.filter(
-        (n) => n !== entry.serverFileName,
-      );
-    }
+  if (file.size > maxSizeBytes) {
+    console.error(`${file.name}: exceeds 3MB limit`);
+    return false;
   }
+  return true;
+}
+
+  removeSelectedFile(entry: { name: string; uploaded: boolean }): void {
+  this.selectedFiles = this.selectedFiles.filter(f => f !== entry);
+}
+
+// Merges duplicate field submissions into one row per field name,
+// comma-joining their values — e.g. "Ajin123,Ajin123,Ajin,Ajin"
+get expandedFieldsMerged(): { fieldName: string; fieldValue: string }[] {
+  if (!this.expandedDocFields) return [];
+  const order: string[] = [];
+  const map = new Map<string, string[]>();
+
+  this.expandedDocFields.fields.forEach((f) => {
+    const key = f.fieldName;
+    if (!map.has(key)) {
+      map.set(key, []);
+      order.push(key);
+    }
+    map.get(key)!.push(f.fieldValue ?? '');
+  });
+
+  return order.map((fieldName) => ({
+    fieldName,
+    fieldValue: map.get(fieldName)!.join(','),
+  }));
+}
+  
+
+  
 }

@@ -2,7 +2,6 @@ import { Component, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
-
 @Component({
   selector: 'app-employee-sidebar',
   standalone: true,
@@ -13,19 +12,17 @@ import { RouterModule } from '@angular/router';
 export class EmployeeSidebarComponent {
 
   menus = [];
-
   showEmployeesMenu = false;
   isMobileMenuOpen = false;
   isMobile = false;
+  flyoutTop = 0; // NEW: tracks vertical screen position for the flyout
 
   employeeSubmenu = [
-    { label: 'Employee Directory', path: '/employees/directory' },
-    { label: 'Resigned/Deactivated List', path: '/employees/resigned-deactivated' },
-    { label: 'OnBoarding', path: '/employees/onboarding' },
-    { label: 'Resignation Status', path: '/employees/resignation-status' },
-    { label: 'Organization Tree', path: '/employees/organization-tree' },
-    { label: 'Exit Process', path: '/employees/exit-process' },
-    { label: 'Full & Final Settlement', path: '/employees/full-final-settlement' }
+    { label: 'Leave', path: '/attendance/attendance' },
+    { label: 'General Attendance Summary', path: '/attendance/general-attendance-summary' },
+    { label: 'Shift Mapping', path: '/attendance/shift-mapping' },
+    { label: 'Day Count Attendance Summary', path: '/attendance/daycount-attendance-summary' },
+    { label: 'Detailed Attendance Summary', path: '/attendance/detailed-attendance-summary' }
   ];
 
   constructor() {
@@ -36,7 +33,6 @@ export class EmployeeSidebarComponent {
   checkScreenSize() {
     this.isMobile = window.innerWidth <= 1024;
     if (!this.isMobile) {
-      // reset mobile-only states when switching back to desktop
       this.isMobileMenuOpen = false;
     } else {
       this.showEmployeesMenu = false;
@@ -58,13 +54,15 @@ export class EmployeeSidebarComponent {
   }
 
   onSubmenuLinkClick() {
-    // close whole drawer on mobile after picking a submenu item
     this.closeMobileMenu();
   }
 
-  // Desktop hover behaviour, untouched on desktop
-  onMenuMouseEnter() {
+  // CHANGED: now takes the MouseEvent to read the trigger's real screen position
+  onMenuMouseEnter(event: MouseEvent) {
     if (!this.isMobile) {
+      const target = event.currentTarget as HTMLElement;
+      const rect = target.getBoundingClientRect();
+      this.flyoutTop = rect.top; // align flyout's top edge with the hovered row
       this.showEmployeesMenu = true;
     }
   }
@@ -75,12 +73,10 @@ export class EmployeeSidebarComponent {
     }
   }
 
-  // On mobile, tapping "Employees" toggles the accordion instead of navigating away immediately
   onEmployeesLinkClick(event: Event) {
     if (this.isMobile) {
       event.preventDefault();
       this.showEmployeesMenu = !this.showEmployeesMenu;
     }
   }
-
 }

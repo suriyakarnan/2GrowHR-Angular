@@ -1,11 +1,17 @@
 import { Component } from '@angular/core';
+import { RouterModule, RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-attendance',
-  imports: [],
+  standalone: true,
+  imports: [
+    RouterModule,
+    RouterOutlet
+  ],
   templateUrl: './attendance.component.html',
-  styleUrl: './attendance.component.css'
+  styleUrls: ['./attendance.component.css']
 })
 export class AttendanceComponent {
 
+  
 }

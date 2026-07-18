@@ -15,7 +15,7 @@
   padding: 24px 20px;
   height: auto;
   min-height: 0;
-  z-index: 9999;
+  z-index: 1040;
 }
 
 @media (min-width: 992px) {

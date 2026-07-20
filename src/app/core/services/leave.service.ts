@@ -13,7 +13,7 @@ import {
   LeaveFormResponse,
   GetUnapproveLeaveListResponse,
   GetLeaveApprovePerAppliResponse,
-  LeaveApproveFinalSaveResponse
+  LeaveApproveFinalSaveResponse,
 } from '../models/leave.model';
 
 @Injectable({ providedIn: 'root' })
@@ -32,43 +32,48 @@ export class LeaveServices {
 
   GetLeaveStatus(): Observable<GetLeaveResponse> {
     const sfCode = this.getEmployeeId();
-
-    return this.apiService.get<GetLeaveResponse>(
+    return this.apiService.post<GetLeaveResponse>(
       `api/app/apipayroll/?axn=GetLeave_Status&sfCode=${sfCode}`,
+      null
     );
   }
 
   getLeavePerHistory(sl: number): Observable<GetLeavePerHistoryResponse> {
     const sfCode = this.getEmployeeId();
-    return this.apiService.get<GetLeavePerHistoryResponse>(
+    return this.apiService.post<GetLeavePerHistoryResponse>(
       `api/app/apipayroll/?sl=${sl}&axn=GetLeave_Perhistory&sfCode=${sfCode}`,
+      null
     );
   }
 
   getLeaveType(): Observable<GetLeaveTypeResponse> {
     const sfCode = this.getEmployeeId();
-    return this.apiService.get<GetLeaveTypeResponse>(
-      `api/app/apipayroll/?sfCode=${sfCode}&axn=LeaveType`
+    return this.apiService.post<GetLeaveTypeResponse>(
+      `api/app/apipayroll/?sfCode=${sfCode}&axn=LeaveType`,
+      null
     );
   }
 
   getApplicableDays(leaveId: number, empId: string): Observable<GetApplicableDaysResponse> {
-    return this.apiService.get<GetApplicableDaysResponse>(
-      `api/app/apipayroll/?axn=GetApplicableDays&Leave_Id=${leaveId}&EmpId=${empId}`
+    return this.apiService.post<GetApplicableDaysResponse>(
+      `api/app/apipayroll/?axn=GetApplicableDays&Leave_Id=${leaveId}&EmpId=${empId}`,
+      null
     );
   }
 
   getLeaveDates(fDate: string, lDate: string, slno: number, empId: string): Observable<GetLeaveDatesResponse> {
-    return this.apiService.get<GetLeaveDatesResponse>(
-      `api/app/apipayroll/?l_Date=${lDate}&slno=${slno}&axn=GetLeaveDates&sfCode=${empId}&f_Date=${fDate}`
+    return this.apiService.post<GetLeaveDatesResponse>(
+      `api/app/apipayroll/?l_Date=${lDate}&slno=${slno}&axn=GetLeaveDates&sfCode=${empId}&f_Date=${fDate}`,
+      null
     );
   }
 
   validateLeaveForm(payload: LeaveFormValidatePayload): Observable<LeaveFormValidateResponse> {
     const sfCode = this.getEmployeeId();
     const data = encodeURIComponent(JSON.stringify(payload));
-    return this.apiService.get<LeaveFormValidateResponse>(
-      `api/app/apipayroll/?sfCode=${sfCode}&axn=LeaveFormValidate&data=${data}`
+    return this.apiService.post<LeaveFormValidateResponse>(
+      `api/app/apipayroll/?sfCode=${sfCode}&axn=LeaveFormValidate&data=${data}`,
+      null
     );
   }
 
@@ -83,22 +88,25 @@ export class LeaveServices {
 
   getUnapproveLeaveList(): Observable<GetUnapproveLeaveListResponse> {
     const sfCode = this.getEmployeeId();
-    return this.apiService.get<GetUnapproveLeaveListResponse>(
-      `api/app/apipayroll/?axn=UnapproveLeavelist&sfCode=${sfCode}`
+    return this.apiService.post<GetUnapproveLeaveListResponse>(
+      `api/app/apipayroll/?axn=UnapproveLeavelist&sfCode=${sfCode}`,
+      null
     );
   }
 
   getLeaveApprovePerAppli(sl: number): Observable<GetLeaveApprovePerAppliResponse> {
     const sfCode = this.getEmployeeId();
-    return this.apiService.get<GetLeaveApprovePerAppliResponse>(
-      `api/app/apipayroll/?sfCode=${sfCode}&axn=LeaveapprovePerAppli&sl=${sl}`
+    return this.apiService.post<GetLeaveApprovePerAppliResponse>(
+      `api/app/apipayroll/?sfCode=${sfCode}&axn=LeaveapprovePerAppli&sl=${sl}`,
+      null
     );
   }
 
   leaveApproveFinalSave(currentUser: string, sl: number): Observable<LeaveApproveFinalSaveResponse> {
-  const sfCode = this.getEmployeeId();
-  return this.apiService.get<LeaveApproveFinalSaveResponse>(
-    `api/app/apipayroll/?axn=LeaveapproveFinalsave&sfCode=${sfCode}&CurrentUser=${currentUser}&sl=${sl}`
-  );
-}
+    const sfCode = this.getEmployeeId();
+    return this.apiService.post<LeaveApproveFinalSaveResponse>(
+      `api/app/apipayroll/?axn=LeaveapproveFinalsave&sfCode=${sfCode}&CurrentUser=${currentUser}&sl=${sl}`,
+      null
+    );
+  }
 }

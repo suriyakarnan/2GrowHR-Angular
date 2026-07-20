@@ -10,15 +10,14 @@ export const ATTENDANCE_ROUTES: Routes = [
       {
         path: 'attendance',
         loadComponent: () =>
-          import('./leave/leave.component').then(m => m.LeaveComponent)
+          import('./leave/leave.component').then(m => m.LeaveComponent),
+        loadChildren: () =>
+          import('./leave/leave.routes').then(m => m.LEAVE_ROUTES)
       },
-      
       {
         path: 'general-attendance-summary',
         loadComponent: () =>
           import('./general-attendance-summary/general-attendance-summary.component').then(m => m.GeneralAttendanceSummaryComponent),
-        // loadChildren: () =>
-        //   import('').then(m => m.RESIGNED_DEACTIVATED_LIST_ROUTES)
       },
       {
         path: 'shift-mapping',
@@ -36,10 +35,5 @@ export const ATTENDANCE_ROUTES: Routes = [
           import('./detailed-attendance-summary/detailed-attendance-summary.component').then(m => m.DetailedAttendanceSummaryComponent)
       }
     ]
-  },
-//   {
-//         path: 'directory/add',
-//         loadComponent: () =>
-//           import('./employee-directory/add-employee/add-employee.component').then(m => m.AddEmployeeComponent)
-//       }
+  }
 ];

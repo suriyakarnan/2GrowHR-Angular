@@ -71,7 +71,7 @@ export interface LeaveType {
 
 export interface GetLeaveTypeResponse {
   success: boolean;
-  data: LeaveType[];
+  Data: LeaveType[];   
 }
 
 export interface ApplicableDays {

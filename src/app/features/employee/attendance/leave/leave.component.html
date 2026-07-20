@@ -1,1 +1,131 @@
-<p>leave works!</p>
+<div class="page-content">
+  <div class="container-fluid">
+
+    <!-- Second-level tabs: Leave Form / Leave History / Leave Balance -->
+    <ul class="nav nav-tabs-custom mb-3">
+      <li class="nav-item">
+        <a class="nav-link" routerLink="leave-form" routerLinkActive="active">Leave Form</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="history" routerLinkActive="active">Leave History</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="balance-old" routerLinkActive="active">Leave Balance (Old)</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="balance-new" routerLinkActive="active">Leave Balance (New)</a>
+      </li>
+    </ul>
+
+    <!-- LEAVE FORM: shown inline for the default route, no separate component -->
+    <div class="row" *ngIf="isLeaveFormRoute">
+      <div class="col-12 col-sm-12 col-md-12 col-lg-8 col-xl-8 col-xxl-8">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title mb-0">Leave Details</h5>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xxl-6 mb-3">
+                <label class="form-label">Leave Type<span class="text-danger">*</span></label>
+                <select class="form-select" [(ngModel)]="selectedLeaveTypeId" (ngModelChange)="onDateRangeChange()">
+                  <option [ngValue]="null">Select Leave Type</option>
+                  <option *ngFor="let lt of leaveTypes" [ngValue]="lt.id">{{ lt.name }}</option>
+                </select>
+              </div>
+
+              <div class="col-12 col-sm-6 col-md-6 col-lg-3 col-xl-3 col-xxl-3 mb-3">
+                <label class="form-label">From Date<span class="text-danger">*</span></label>
+                <input type="date" class="form-control" [(ngModel)]="fromDate" (change)="onDateRangeChange()">
+              </div>
+
+              <div class="col-12 col-sm-6 col-md-6 col-lg-3 col-xl-3 col-xxl-3 mb-3">
+                <label class="form-label">End Date<span class="text-danger">*</span></label>
+                <input type="date" class="form-control" [(ngModel)]="toDate" (change)="onDateRangeChange()">
+              </div>
+
+              <div class="col-12 mb-3" *ngIf="applicableDays.length">
+                <div class="alert alert-info mb-0" *ngFor="let d of applicableDays">
+                  {{ d.Description }}
+                </div>
+              </div>
+
+              <!-- Per-day type selection -->
+              <div class="col-12" *ngIf="leaveDates.length">
+                <div class="card border">
+                  <div class="card-header">
+                    <h6 class="mb-0">Leave Date</h6>
+                  </div>
+                  <div class="card-body p-0">
+                    <div class="row mx-0 py-2 border-bottom" *ngFor="let d of leaveDates">
+                      <div class="col-6 col-sm-4 col-md-4 col-lg-4 col-xl-4 col-xxl-4 py-2">
+                        {{ d.Weekname }} {{ d.Date }}
+                      </div>
+                      <div class="col-6 col-sm-4 col-md-4 col-lg-4 col-xl-4 col-xxl-4">
+                        <select class="form-select"
+                                [ngModel]="dayTypeSelections[d.Date]"
+                                (ngModelChange)="onDayTypeChange(d.Date, $event)">
+                          <option value="Full Day">Full Day</option>
+                          <option value="Half Day">Half Day</option>
+                          <option value="No Leave">No Leave</option>
+                        </select>
+                      </div>
+                      <div class="col-12 col-sm-4 col-md-4 col-lg-4 col-xl-4 col-xxl-4"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row mx-0 bg-primary text-white py-2 mt-2">
+                  <div class="col-6">Total Days</div>
+                  <div class="col-6 text-end">{{ totalDays }} Day(s)</div>
+                </div>
+              </div>
+
+              <div class="col-12 mt-3">
+                <label class="form-label">Reason for Leave<span class="text-danger">*</span></label>
+                <textarea class="form-control" rows="3" [(ngModel)]="reason"></textarea>
+              </div>
+
+              <div class="col-12 mt-3">
+                <label class="form-label">Upload file<span class="text-danger">*</span></label>
+                <div class="border border-dashed rounded p-4 text-center">
+                  <input type="file" id="leaveFile" class="d-none" (change)="onFileSelect($event)">
+                  <label for="leaveFile" class="mb-0" style="cursor:pointer;">
+                    Drag and drop or <span class="text-primary">Browse</span>
+                  </label>
+                  <div *ngIf="selectedFile" class="small mt-2">{{ selectedFile.name }}</div>
+                </div>
+              </div>
+
+              <div class="col-12 text-danger mt-2" *ngIf="validationMsg">{{ validationMsg }}</div>
+
+              <div class="col-12 mt-3 text-end">
+                <button class="btn btn-outline-secondary me-2" (click)="clearAll()">Clear All</button>
+                <button class="btn btn-primary" [disabled]="isSubmitting" (click)="apply()">Apply</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Leave Balance rail -->
+      <div class="col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4 col-xxl-4">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title mb-0">Leave Balance</h5>
+          </div>
+          <div class="card-body p-0">
+            <div class="row mx-0 py-2 border-bottom" *ngFor="let lt of leaveBalanceList">
+              <div class="col-8">{{ lt.name }}</div>
+              <div class="col-4 text-end">{{ lt.Balance | number:'1.2-2' }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- History / Balance sub-routes render here -->
+    <router-outlet *ngIf="!isLeaveFormRoute"></router-outlet>
+
+  </div>
+</div>

@@ -1,0 +1,105 @@
+<div class="card">
+  <div class="card-header">
+    <div class="row align-items-center">
+      <div class="col-12 col-sm-4 col-md-4 col-lg-3 col-xl-3 col-xxl-3 mb-2 mb-lg-0">
+        <select class="form-select">
+          <option>All</option>
+        </select>
+      </div>
+      <div class="col-12 col-sm-4 col-md-4 col-lg-3 col-xl-3 col-xxl-3 mb-2 mb-lg-0">
+        <select class="form-select">
+          <option>My Leave History</option>
+        </select>
+      </div>
+      <div class="col-12 col-sm-4 col-md-4 col-lg-3 col-xl-3 col-xxl-3">
+        <input type="text" class="form-control" placeholder="Select date range">
+      </div>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <div class="row mb-3">
+      <div class="col-6 col-sm-4 col-md-3 col-lg-2 col-xl-2 col-xxl-2">
+        <select class="form-select">
+          <option>10</option>
+          <option>25</option>
+          <option>50</option>
+        </select>
+      </div>
+      <div class="col-6 col-sm-8 col-md-9 col-lg-10 col-xl-10 col-xxl-10 text-end">
+        <input type="text" class="form-control d-inline-block" style="max-width:250px;"
+               placeholder="Search" [(ngModel)]="searchTerm" (ngModelChange)="onSearch()">
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-12">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle">
+            <thead>
+              <tr>
+                <th>Employee ID</th>
+                <th>Employee Name</th>
+                <th>Leave Type</th>
+                <th>Request date</th>
+                <th>Days/Hrs</th>
+                <th>Leave From</th>
+                <th>Leave To</th>
+                <th>Reason</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let rec of filteredList">
+                <td>{{ rec.Emp_Id }}</td>
+                <td>{{ rec.emp_name ?? '-' }}</td>
+                <td>{{ rec.Leave_Type }}</td>
+                <td>{{ rec.Created_Date }}</td>
+                <td>{{ rec.No_of_Days }} Days</td>
+                <td>{{ rec.From_Date }}</td>
+                <td>{{ rec.To_Date }}</td>
+                <td>{{ rec.Reason }}</td>
+                <td><span [class]="statusBadgeClass(rec)">{{ rec.LStatus }}</span></td>
+                <td>
+                  <a href="javascript:void(0)" class="text-primary me-2" (click)="viewHistory(rec.Sl_NO)">
+                    <i class="bi bi-eye"></i> View
+                  </a>
+                  <a href="javascript:void(0)" class="text-danger">
+                    <i class="bi bi-trash"></i> Delete
+                  </a>
+                </td>
+              </tr>
+              <tr *ngIf="!isLoading && !filteredList.length">
+                <td colspan="10" class="text-center py-4">No records found</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Per-application history modal (getLeavePerHistory) -->
+<div class="modal d-block" tabindex="-1" *ngIf="showHistoryModal" style="background:rgba(0,0,0,0.5);">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Leave Approval History</h5>
+        <button type="button" class="btn-close" (click)="closeModal()"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row py-2 border-bottom" *ngFor="let h of selectedHistory">
+          <div class="col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xxl-6">
+            <strong>{{ h.status }}</strong> by {{ h.App_Rej_by || h.Rejected_by }}
+          </div>
+          <div class="col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xxl-6 text-sm-end">
+            {{ h.app_rej_dt }}
+          </div>
+        </div>
+        <div *ngIf="!selectedHistory.length" class="text-center py-3">No history available</div>
+      </div>
+    </div>
+  </div>
+</div>

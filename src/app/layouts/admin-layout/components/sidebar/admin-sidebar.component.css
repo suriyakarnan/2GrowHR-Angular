@@ -105,10 +105,10 @@
 }
 
 .submenu-flyout {
-    position: absolute;
-    left: 100%;
-    top: 0;
-    width: 220px;
+    position: fixed;
+    left: 100px; 
+    top: 120px; 
+    width: 250px;
     background: #46539a;
     border-radius: 0 8px 8px 8px;
     padding: 8px 0;

@@ -69,7 +69,7 @@ export const routes: Routes = [
       },
       {
         path: 'attendance',
-        loadComponent: () => import('./features/employee/attendance/attendance.component').then(m => m.AttendanceComponent)
+        loadChildren: () => import('./features/employee/attendance/attendance.routes').then(m => m.ATTENDANCE_ROUTES)
       },
       {
         path: 'finance',

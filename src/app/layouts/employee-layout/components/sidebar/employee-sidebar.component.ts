@@ -17,13 +17,14 @@ export class EmployeeSidebarComponent {
   isMobile = false;
   flyoutTop = 0; // NEW: tracks vertical screen position for the flyout
 
-  employeeSubmenu = [
-    { label: 'Leave', path: '/attendance/attendance' },
-    { label: 'General Attendance Summary', path: '/attendance/general-attendance-summary' },
-    { label: 'Shift Mapping', path: '/attendance/shift-mapping' },
-    { label: 'Day Count Attendance Summary', path: '/attendance/daycount-attendance-summary' },
-    { label: 'Detailed Attendance Summary', path: '/attendance/detailed-attendance-summary' }
-  ];
+  // AFTER
+employeeSubmenu = [
+  { label: 'Leave', path: '/employee/attendance/attendance' },
+  { label: 'General Attendance Summary', path: '/employee/attendance/general-attendance-summary' },
+  { label: 'Shift Mapping', path: '/employee/attendance/shift-mapping' },
+  { label: 'Day Count Attendance Summary', path: '/employee/attendance/daycount-attendance-summary' },
+  { label: 'Detailed Attendance Summary', path: '/employee/attendance/detailed-attendance-summary' }
+];
 
   constructor() {
     this.checkScreenSize();

@@ -116,14 +116,15 @@
                         stroke-linejoin="round" />
                 </svg>
             </a>
+            <div class="submenu-flyout" *ngIf="showEmployeesMenu">
+                <a *ngFor="let item of employeeSubmenu" [routerLink]="item.path" routerLinkActive="submenu-active"
+                    class="submenu-link" (click)="onSubmenuLinkClick()">
+                    {{ item.label }}
+                </a>
+            </div>
         </div>
 
-        <div class="submenu-flyout" *ngIf="showEmployeesMenu">
-            <a *ngFor="let item of employeeSubmenu" [routerLink]="item.path" routerLinkActive="submenu-active"
-                class="submenu-link" (click)="onSubmenuLinkClick()">
-                {{ item.label }}
-            </a>
-        </div>
+
 
 
         <!-- Finance -->

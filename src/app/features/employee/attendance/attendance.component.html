@@ -1,23 +1,26 @@
-
 <div class="page-content">
     <div class="container-fluid">
+    
         <ul class="nav nav-tabs attendance-tabs">
             <li class="nav-item">
-                <a class="nav-link" routerLink="directory" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">Leave</a>
+                <a class="nav-link" routerLink="attendance" routerLinkActive="active"
+                    [routerLinkActiveOptions]="{exact:true}">Leave</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" routerLink="resigned-deactivated" routerLinkActive="active">Summary</a>
+                <a class="nav-link" routerLink="general-attendance-summary" routerLinkActive="active">General Attendance
+                    Summary</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" routerLink="onboarding" routerLinkActive="active">Shift Mapping</a>
+                <a class="nav-link" routerLink="shift-mapping" routerLinkActive="active">Shift Mapping</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" routerLink="resignation-status" routerLinkActive="active">Day Count Attendance Summary</a>
+                <a class="nav-link" routerLink="daycount-attendance-summary" routerLinkActive="active">Day Count
+                    Attendance Summary</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" routerLink="organization-tree" routerLinkActive="active">Detailed Attendance Summary</a>
+                <a class="nav-link" routerLink="detailed-attendance-summary" routerLinkActive="active">Detailed
+                    Attendance Summary</a>
             </li>
-         
         </ul>
 
         <router-outlet></router-outlet>

@@ -13,6 +13,6 @@ export const LEAVE_ROUTES: Routes = [
   {
     path: 'history',
     loadComponent: () =>
-      import('./History/history.component').then(m => m.HistoryComponent)
+      import('./history/history.component').then(m => m.HistoryComponent)
   }
 ];

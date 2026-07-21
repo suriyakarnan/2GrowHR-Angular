@@ -2,40 +2,26 @@
   <div class="card-header">
     <div class="row align-items-center">
       <div class="col-12 col-sm-4 col-md-4 col-lg-3 col-xl-3 col-xxl-3 mb-2 mb-lg-0">
-        <select class="form-select">
+        <select class="form-select" selectpicker pickerLabel="All">
           <option>All</option>
         </select>
       </div>
       <div class="col-12 col-sm-4 col-md-4 col-lg-3 col-xl-3 col-xxl-3 mb-2 mb-lg-0">
-        <select class="form-select">
+        <select class="form-select" selectpicker pickerLabel="My Leave History">
           <option>My Leave History</option>
         </select>
       </div>
       <div class="col-12 col-sm-4 col-md-4 col-lg-3 col-xl-3 col-xxl-3">
-        <input type="text" class="form-control" placeholder="Select date range">
+        <input type="text" class="form-control" dateRangePicker (change)="onDateRangeFilter($event)">
       </div>
     </div>
   </div>
 
   <div class="card-body">
-    <div class="row mb-3">
-      <div class="col-6 col-sm-4 col-md-3 col-lg-2 col-xl-2 col-xxl-2">
-        <select class="form-select">
-          <option>10</option>
-          <option>25</option>
-          <option>50</option>
-        </select>
-      </div>
-      <div class="col-6 col-sm-8 col-md-9 col-lg-10 col-xl-10 col-xxl-10 text-end">
-        <input type="text" class="form-control d-inline-block" style="max-width:250px;"
-               placeholder="Search" [(ngModel)]="searchTerm" (ngModelChange)="onSearch()">
-      </div>
-    </div>
-
     <div class="row">
       <div class="col-12">
         <div class="table-responsive">
-          <table class="table table-hover align-middle">
+          <table class="table table-hover align-middle" appDatatable [rowsPerPage]="10">
             <thead>
               <tr>
                 <th>Employee ID</th>
@@ -70,7 +56,7 @@
                   </a>
                 </td>
               </tr>
-              <tr *ngIf="!isLoading && !filteredList.length">
+              <tr *ngIf="!isLoading && !filteredList.length" data-empty-row>
                 <td colspan="10" class="text-center py-4">No records found</td>
               </tr>
             </tbody>

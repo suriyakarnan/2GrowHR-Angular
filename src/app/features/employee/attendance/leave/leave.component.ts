@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
@@ -10,7 +10,7 @@ import {
 } from '@angular/router';
 import { filter } from 'rxjs/operators';
 
-import { LeaveServices } from '../../../../core/services/leave.service'; 
+import { LeaveServices } from '../../../../core/services/leave.service';
 import {
   LeaveType,
   ApplicableDays,
@@ -19,6 +19,9 @@ import {
   LeaveFormValidatePayload,
   LeaveFormPayload,
 } from '../../../../core/models/leave.model';
+
+import { SelectpickerDirective } from '../../../../shared/components/selectpicker/selectpicker.directive';
+import { DatePickerDirective } from '../../../../shared/components/datepicker/date-picker.directive';
 
 @Component({
   selector: 'app-leave',
@@ -29,6 +32,8 @@ import {
     RouterOutlet,
     RouterLink,
     RouterLinkActive,
+    SelectpickerDirective,
+    DatePickerDirective,
   ],
   templateUrl: './leave.component.html',
   styleUrl: './leave.component.css',
@@ -37,24 +42,32 @@ export class LeaveComponent implements OnInit {
   private readonly leaveServices = inject(LeaveServices);
   private readonly router = inject(Router);
 
-  // true when we're on the default 'leave-form' segment -> show the form inline
+  // ADD — references to the two selectpicker directive instances via exportAs
+  @ViewChild('leaveTypePicker') leaveTypePicker?: SelectpickerDirective;
+  @ViewChild('employeePicker') employeePicker?: SelectpickerDirective;
+
   isLeaveFormRoute = true;
 
   // ---- Leave Form state ----
   leaveTypes: LeaveType[] = [];
   selectedLeaveTypeId: number | null = null;
+
+  // ADD — employee dropdown state
+  // ⚠️ Placeholder type — replace `any` with your real Employee model once confirmed
+  employees: any[] = [];
+  selectedEmployeeId: string | null = null;
+
   fromDate = '';
   toDate = '';
   applicableDays: ApplicableDays[] = [];
   leaveDates: LeaveDate[] = [];
-  dayTypeSelections: Record<string, string> = {}; // date -> dayType
+  dayTypeSelections: Record<string, string> = {};
   reason = '';
   selectedFile: File | null = null;
   totalDays = 0;
   isSubmitting = false;
   validationMsg = '';
 
-  // Leave balance (right rail) — reused from leaveTypes' Balance field
   get leaveBalanceList(): LeaveType[] {
     return this.leaveTypes;
   }
@@ -62,9 +75,9 @@ export class LeaveComponent implements OnInit {
   ngOnInit(): void {
     this.trackActiveRoute();
     this.loadLeaveTypes();
+    this.loadEmployees();
   }
 
-  // Keep leave-form vs history in sync with the URL, same as full-final-settlement
   private trackActiveRoute(): void {
     this.isLeaveFormRoute = this.router.url.endsWith('/leave-form');
     this.router.events
@@ -74,13 +87,34 @@ export class LeaveComponent implements OnInit {
       });
   }
 
-
   loadLeaveTypes(): void {
     this.leaveServices.getLeaveType().subscribe({
       next: (res) => {
-        if (res.success) this.leaveTypes = res.Data;   // capital D
+        if (res.success) {
+          this.leaveTypes = res.Data;
+          // FIX — options were built by the directive before this data arrived.
+          // Wait a tick for *ngFor to render the new <option> elements, then
+          // tell the directive to re-read the native <select> and rebuild its list.
+          setTimeout(() => this.leaveTypePicker?.refresh());
+        }
       },
     });
+  }
+
+  // ADD — mirrors loadLeaveTypes(). Replace the service call with your real one.
+  loadEmployees(): void {
+    // ⚠️ TODO: confirm actual method name/service, e.g.:
+    // this.leaveServices.getEmployeeList().subscribe({ ... })
+    // or a dedicated EmployeeService if one exists in core/services.
+    //
+    // this.leaveServices.getEmployeeList().subscribe({
+    //   next: (res) => {
+    //     if (res.success) {
+    //       this.employees = res.Data;
+    //       setTimeout(() => this.employeePicker?.refresh());
+    //     }
+    //   },
+    // });
   }
 
   onDateRangeChange(): void {
@@ -116,12 +150,11 @@ export class LeaveComponent implements OnInit {
   }
 
   calculateTotalDays(): void {
-    // Full Day = 1, Half Day = 0.5 — adjust if backend sends different unit tokens
     this.totalDays = this.leaveDates.reduce((sum, d) => {
       const type = this.dayTypeSelections[d.Date];
       if (type === 'Full Day') return sum + 1;
       if (type === 'Half Day') return sum + 0.5;
-      return sum; // 'No Leave' contributes 0
+      return sum;
     }, 0);
   }
 
@@ -132,6 +165,7 @@ export class LeaveComponent implements OnInit {
 
   clearAll(): void {
     this.selectedLeaveTypeId = null;
+    this.selectedEmployeeId = null;
     this.fromDate = '';
     this.toDate = '';
     this.applicableDays = [];
@@ -196,9 +230,6 @@ export class LeaveComponent implements OnInit {
             : '0',
     }));
 
-    // NOTE: `File` is typed as string in LeaveFormPayload — confirm with Postman
-    // whether the backend expects base64 here, or whether this endpoint actually
-    // needs postForm() with multipart, like your uploadDocumentFile() work.
     const payload: Omit<LeaveFormPayload, 'sfCode'> = {
       Reason: this.reason,
       Leave_Type_Id: this.selectedLeaveTypeId!,
@@ -208,7 +239,7 @@ export class LeaveComponent implements OnInit {
       Apply_Days: String(this.totalDays),
       Balance_Days: String(leaveType?.Balance ?? ''),
       Available_Days: String(leaveType?.Balance ?? ''),
-      File: '', // populate once upload approach is confirmed
+      File: '',
       DateDetails: dateDetails,
     };
 
@@ -234,5 +265,24 @@ export class LeaveComponent implements OnInit {
     } catch {
       return '';
     }
+  }
+
+  onFromDateSelected(event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
+    if (!value) return;
+    this.fromDate = this.toIsoDate(value);
+    this.onDateRangeChange();
+  }
+
+  onToDateSelected(event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
+    if (!value) return;
+    this.toDate = this.toIsoDate(value);
+    this.onDateRangeChange();
+  }
+
+  private toIsoDate(ddmmyyyy: string): string {
+    const [dd, mm, yyyy] = ddmmyyyy.split('/');
+    return `${yyyy}-${mm}-${dd}`;
   }
 }

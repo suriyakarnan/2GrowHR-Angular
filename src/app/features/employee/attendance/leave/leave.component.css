@@ -1,0 +1,60 @@
+/* Container */
+.nav-tabs-custom {
+    border-bottom: 1px solid #a3acd1;
+    margin-bottom: 20px;
+    background: #e1e3ee;
+    border-radius: 6px;
+    display: flex;
+    list-style: none;
+    padding: 0;
+}
+
+/* Remove Bootstrap default tab styling */
+.nav-tabs-custom .nav-item {
+    position: relative;
+}
+
+.nav-tabs-custom .nav-link {
+    border: none !important;
+    background: none !important;
+    color: #7c7e86;
+    font-size: 15px;
+    font-weight: 500;
+    padding: 5px 18px 14px 18px;
+    position: relative;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    border-top: 2px solid transparent;
+    display: block;
+}
+
+/* Hover */
+.nav-tabs-custom .nav-link:hover {
+    color: #405189;
+}
+
+/* Active Tab (routerLinkActive="active") */
+.nav-tabs-custom .nav-link.active {
+    color: #405189 !important;
+    font-weight: 600;
+    background: transparent !important;
+    border-top: 2px solid #405189;
+}
+
+/* Animated Underline */
+.nav-tabs-custom .nav-link::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    width: 0;
+    height: 4px;
+    border-radius: 50px;
+    border-top: 3px solid #405189;
+    transition: width 0.35s ease;
+}
+
+/* Active Underline */
+.nav-tabs-custom .nav-link.active::after {
+    width: 100%;
+}

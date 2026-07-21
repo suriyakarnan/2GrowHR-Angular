@@ -4,10 +4,20 @@ import { FormsModule } from '@angular/forms';
 import { LeaveServices } from '../../../../../core/services/leave.service';
 import { GetLeaveStatus, GetLeavePerHistory } from '../../../../../core/models/leave.model';
 
+import { SelectpickerDirective } from '../../../../../shared/components/selectpicker/selectpicker.directive';
+import { DateRangePickerDirective } from '../../../../../shared/components/datepicker/date-range-picker.directive';
+import { TableDatatableDirective } from '../../../../../shared/components/data-table/table-datatable.directive';
+
 @Component({
   selector: 'app-leave-history',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    SelectpickerDirective,
+    DateRangePickerDirective,
+    TableDatatableDirective,
+  ],
   templateUrl: './history.component.html',
   styleUrl: './history.component.css'
 })
@@ -16,7 +26,6 @@ export class HistoryComponent implements OnInit {
 
   leaveList: GetLeaveStatus[] = [];
   filteredList: GetLeaveStatus[] = [];
-  searchTerm = '';
   isLoading = false;
 
   // per-record history modal state
@@ -41,16 +50,27 @@ export class HistoryComponent implements OnInit {
     });
   }
 
-  onSearch(): void {
-    const term = this.searchTerm.toLowerCase().trim();
-    this.filteredList = !term
-      ? this.leaveList
-      : this.leaveList.filter(l =>
-          l.Emp_Id?.toLowerCase().includes(term) ||
-          l.Leave_Type?.toLowerCase().includes(term) ||
-          l.Reason?.toLowerCase().includes(term) ||
-          l.LStatus?.toLowerCase().includes(term)
-        );
+  // Filters filteredList by From_Date falling within the picked range
+  onDateRangeFilter(event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
+    const [startStr, endStr] = value.split(' - ').map(s => s.trim());
+    if (!startStr || !endStr) return;
+
+    const start = this.toDateObj(startStr);
+    const end = this.toDateObj(endStr);
+    if (!start || !end) return;
+
+    this.filteredList = this.leaveList.filter(rec => {
+      const recFrom = this.toDateObj(rec.From_Date);
+      return recFrom !== null && recFrom >= start && recFrom <= end;
+    });
+  }
+
+  private toDateObj(ddmmyyyy: string): Date | null {
+    if (!ddmmyyyy) return null;
+    const [dd, mm, yyyy] = ddmmyyyy.split('/').map(Number);
+    if (!dd || !mm || !yyyy) return null;
+    return new Date(yyyy, mm - 1, dd);
   }
 
   viewHistory(sl: number): void {
@@ -70,7 +90,6 @@ export class HistoryComponent implements OnInit {
   }
 
   statusBadgeClass(record: GetLeaveStatus): string {
-    // StusClr comes from backend but fall back on LStatus text
     const status = record.LStatus?.toLowerCase() ?? '';
     if (status.includes('approve')) return 'badge bg-success-subtle text-success';
     if (status.includes('reject')) return 'badge bg-danger-subtle text-danger';

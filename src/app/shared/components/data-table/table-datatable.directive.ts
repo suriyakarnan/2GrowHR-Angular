@@ -1,10 +1,17 @@
-import { Directive, ElementRef, Input, AfterViewInit, Renderer2 } from '@angular/core';
+import {
+  Directive,
+  ElementRef,
+  Input,
+  AfterViewInit,
+  OnDestroy,
+  Renderer2,
+} from '@angular/core';
 
 @Directive({
   selector: '[appDatatable]',
-  standalone: true
+  standalone: true,
 })
-export class TableDatatableDirective implements AfterViewInit {
+export class TableDatatableDirective implements AfterViewInit, OnDestroy {
   @Input() rowsPerPage: number = 10;
 
   @Input() sortable = true;
@@ -20,12 +27,17 @@ export class TableDatatableDirective implements AfterViewInit {
   private sortColumn = -1;
   private sortDirection: 'asc' | 'desc' = 'asc';
 
-  constructor(private el: ElementRef<HTMLTableElement>, private renderer: Renderer2) {}
+  // NEW — watches <tbody> for rows added/removed after this directive's
+  // initial setup (e.g. rows rendered later from an async API response).
+  private observer?: MutationObserver;
+  private isInternalUpdate = false;
+
+  constructor(
+    private el: ElementRef<HTMLTableElement>,
+    private renderer: Renderer2,
+  ) {}
 
   ngAfterViewInit(): void {
-
-    
-
     const table = this.el.nativeElement;
     this.renderer.addClass(table, 'app-datatable');
 
@@ -33,8 +45,13 @@ export class TableDatatableDirective implements AfterViewInit {
     if (!this.tbody) return;
 
     this.allRows = Array.from(this.tbody.querySelectorAll('tr')).filter(
-      tr => !tr.hasAttribute('data-empty-row')
+      (tr) => !tr.hasAttribute('data-empty-row'),
     );
+
+    // gives every cell a custom tooltip (data-tooltip) showing its full
+    // text, so content truncated by the ellipsis CSS is still readable
+    // on hover. Runs once, applies to every table using this directive.
+    this.applyCellTooltips();
 
     if (this.sortable) {
       this.initializeSorting();
@@ -42,9 +59,62 @@ export class TableDatatableDirective implements AfterViewInit {
 
     this.buildTopBar(table);
     this.buildBottomBar(table);
+    this.wrapTableForScroll(table); // wraps table in scrollable container
     this.renderPage(1);
 
-    
+    // NEW — catches rows added after async data load (e.g. rows populated
+    // from an HTTP call that resolves after ngAfterViewInit already ran)
+    this.observeTableChanges();
+  }
+
+  ngOnDestroy(): void {
+    this.observer?.disconnect();
+  }
+
+  // NEW — rebuilds allRows + tooltips + pagination whenever the tbody's
+  // children actually change, so search/entries/pagination stay in sync
+  // no matter when the real rows land in the DOM.
+  private observeTableChanges(): void {
+    this.observer = new MutationObserver(() => {
+      if (this.isInternalUpdate) return;
+      this.refreshRows();
+    });
+    this.observer.observe(this.tbody, { childList: true });
+  }
+
+  private refreshRows(): void {
+    this.allRows = Array.from(this.tbody.querySelectorAll('tr')).filter(
+      (tr) => !tr.hasAttribute('data-empty-row'),
+    );
+    this.applyCellTooltips();
+    this.renderPage(1);
+  }
+
+  private applyCellTooltips(): void {
+  this.allRows.forEach((row) => {
+    Array.from(row.children).forEach((cell) => {
+      const text = cell.textContent?.trim();
+      if (!text) return;
+
+      this.renderer.setAttribute(cell, 'data-tooltip', text);
+      // no innerHTML rebuild — icons, links, and Actions cells stay intact
+    });
+  });
+}
+
+  // wraps the <table> in a scrollable div so only ~6 rows show at a time,
+  // with the sticky header staying pinned while scrolling. Pagination
+  // (Show 10/25/50/100 + Previous/Next) is untouched — this only affects
+  // the visible viewport height of the current page.
+  private wrapTableForScroll(table: HTMLTableElement): void {
+    const wrapper = this.renderer.createElement('div');
+    this.renderer.addClass(wrapper, 'app-dt-scroll-wrapper');
+
+    const parent = table.parentElement;
+    if (!parent) return;
+
+    parent.insertBefore(wrapper, table);
+    wrapper.appendChild(table);
   }
 
   private buildTopBar(table: HTMLTableElement) {
@@ -60,11 +130,12 @@ export class TableDatatableDirective implements AfterViewInit {
 
     this.entriesSelect = this.renderer.createElement('select');
     this.renderer.addClass(this.entriesSelect, 'app-dt-entries-select');
-    [10, 25, 50, 100].forEach(n => {
+    [10, 25, 50, 100].forEach((n) => {
       const opt = this.renderer.createElement('option');
       this.renderer.setProperty(opt, 'value', n);
       this.renderer.setProperty(opt, 'textContent', String(n));
-      if (n === this.rowsPerPage) this.renderer.setProperty(opt, 'selected', true);
+      if (n === this.rowsPerPage)
+        this.renderer.setProperty(opt, 'selected', true);
       this.renderer.appendChild(this.entriesSelect, opt);
     });
     this.entriesSelect.addEventListener('change', () => {
@@ -116,7 +187,9 @@ export class TableDatatableDirective implements AfterViewInit {
   private getFilteredRows(): HTMLElement[] {
     const term = (this.searchBox?.value || '').toLowerCase().trim();
     if (!term) return this.allRows;
-    return this.allRows.filter(tr => tr.textContent?.toLowerCase().includes(term));
+    return this.allRows.filter((tr) =>
+      tr.textContent?.toLowerCase().includes(term),
+    );
   }
 
   private applySearch() {
@@ -129,12 +202,12 @@ export class TableDatatableDirective implements AfterViewInit {
     const totalPages = Math.max(1, Math.ceil(totalEntries / this.rowsPerPage));
     this.currentPage = Math.min(page, totalPages);
 
-    this.allRows.forEach(tr => this.renderer.setStyle(tr, 'display', 'none'));
+    this.allRows.forEach((tr) => this.renderer.setStyle(tr, 'display', 'none'));
 
     const start = (this.currentPage - 1) * this.rowsPerPage;
     const end = start + this.rowsPerPage;
     const pageRows = rows.slice(start, end);
-    pageRows.forEach(tr => this.renderer.setStyle(tr, 'display', ''));
+    pageRows.forEach((tr) => this.renderer.setStyle(tr, 'display', ''));
 
     const shownStart = totalEntries === 0 ? 0 : start + 1;
     const shownEnd = Math.min(end, totalEntries);
@@ -148,7 +221,12 @@ export class TableDatatableDirective implements AfterViewInit {
     const ul = this.renderer.createElement('ul');
     this.renderer.addClass(ul, 'app-dt-pagination');
 
-    const makeItem = (label: string, page: number, disabled = false, active = false) => {
+    const makeItem = (
+      label: string,
+      page: number,
+      disabled = false,
+      active = false,
+    ) => {
       const li = this.renderer.createElement('li');
       this.renderer.addClass(li, 'app-dt-page-item');
       if (disabled) this.renderer.addClass(li, 'disabled');
@@ -167,7 +245,10 @@ export class TableDatatableDirective implements AfterViewInit {
       return li;
     };
 
-    this.renderer.appendChild(ul, makeItem('Previous', this.currentPage - 1, this.currentPage === 1));
+    this.renderer.appendChild(
+      ul,
+      makeItem('Previous', this.currentPage - 1, this.currentPage === 1),
+    );
 
     const maxVisible = 5;
     let startPage = Math.max(1, this.currentPage - 2);
@@ -177,7 +258,10 @@ export class TableDatatableDirective implements AfterViewInit {
     }
 
     if (startPage > 1) {
-      this.renderer.appendChild(ul, makeItem('1', 1, false, this.currentPage === 1));
+      this.renderer.appendChild(
+        ul,
+        makeItem('1', 1, false, this.currentPage === 1),
+      );
       if (startPage > 2) {
         this.renderer.appendChild(ul, makeItem('...', 0, true));
       }
@@ -185,70 +269,80 @@ export class TableDatatableDirective implements AfterViewInit {
 
     for (let p = startPage; p <= endPage; p++) {
       if (p === 1 && startPage > 1) continue;
-      this.renderer.appendChild(ul, makeItem(String(p), p, false, p === this.currentPage));
+      this.renderer.appendChild(
+        ul,
+        makeItem(String(p), p, false, p === this.currentPage),
+      );
     }
 
     if (endPage < totalPages) {
       if (endPage < totalPages - 1) {
         this.renderer.appendChild(ul, makeItem('...', 0, true));
       }
-      this.renderer.appendChild(ul, makeItem(String(totalPages), totalPages, false, this.currentPage === totalPages));
+      this.renderer.appendChild(
+        ul,
+        makeItem(
+          String(totalPages),
+          totalPages,
+          false,
+          this.currentPage === totalPages,
+        ),
+      );
     }
 
-    this.renderer.appendChild(ul, makeItem('Next', this.currentPage + 1, this.currentPage === totalPages));
+    this.renderer.appendChild(
+      ul,
+      makeItem('Next', this.currentPage + 1, this.currentPage === totalPages),
+    );
     this.renderer.appendChild(this.paginationWrapper, ul);
   }
 
   private initializeSorting(): void {
-  const headers = this.el.nativeElement.querySelectorAll('thead th');
+    const headers = this.el.nativeElement.querySelectorAll('thead th');
 
-  headers.forEach((th, index) => {
-    this.renderer.setStyle(th, 'cursor', 'pointer');
+    headers.forEach((th, index) => {
+      this.renderer.setStyle(th, 'cursor', 'pointer');
 
-    th.addEventListener('click', () => {
-      this.sortTable(index);
+      th.addEventListener('click', () => {
+        this.sortTable(index);
+      });
     });
-  });
   }
 
- private sortTable(columnIndex: number): void {
-
-  if (this.sortColumn === columnIndex) {
-    this.sortDirection =
-      this.sortDirection === 'asc' ? 'desc' : 'asc';
-  } else {
-    this.sortColumn = columnIndex;
-    this.sortDirection = 'asc';
-  }
-
-  this.allRows.sort((a, b) => {
-
-    const aText = a.children[columnIndex]?.textContent?.trim() || '';
-    const bText = b.children[columnIndex]?.textContent?.trim() || '';
-
-    const aNumber = parseFloat(aText);
-    const bNumber = parseFloat(bText);
-
-    let result = 0;
-
-    if (!isNaN(aNumber) && !isNaN(bNumber)) {
-      result = aNumber - bNumber;
+  private sortTable(columnIndex: number): void {
+    if (this.sortColumn === columnIndex) {
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
     } else {
-      result = aText.localeCompare(bText);
+      this.sortColumn = columnIndex;
+      this.sortDirection = 'asc';
     }
 
-    return this.sortDirection === 'asc'
-      ? result
-      : -result;
-  });
+    this.allRows.sort((a, b) => {
+      const aText = a.children[columnIndex]?.textContent?.trim() || '';
+      const bText = b.children[columnIndex]?.textContent?.trim() || '';
 
-  // IMPORTANT
-  this.allRows.forEach(row => {
-    this.tbody.appendChild(row);
-  });
+      const aNumber = parseFloat(aText);
+      const bNumber = parseFloat(bText);
 
-  this.renderPage(1);
+      let result = 0;
 
-  
-}
+      if (!isNaN(aNumber) && !isNaN(bNumber)) {
+        result = aNumber - bNumber;
+      } else {
+        result = aText.localeCompare(bText);
+      }
+
+      return this.sortDirection === 'asc' ? result : -result;
+    });
+
+    // NEW — guard so this reordering doesn't get picked up by the
+    // MutationObserver and trigger an unnecessary refresh/loop
+    this.isInternalUpdate = true;
+    this.allRows.forEach((row) => {
+      this.tbody.appendChild(row);
+    });
+    this.isInternalUpdate = false;
+
+    this.renderPage(1);
+  }
 }

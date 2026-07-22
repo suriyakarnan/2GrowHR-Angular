@@ -9,6 +9,16 @@
     padding: 0;
 }
 
+.form-label {
+
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 18px;
+    color: #767679;
+}
+
 /* Remove Bootstrap default tab styling */
 .nav-tabs-custom .nav-item {
     position: relative;
@@ -18,7 +28,7 @@
     border: none !important;
     background: none !important;
     color: #7c7e86;
-    font-size: 15px;
+    font-size: 13px;
     font-weight: 500;
     padding: 5px 18px 14px 18px;
     position: relative;

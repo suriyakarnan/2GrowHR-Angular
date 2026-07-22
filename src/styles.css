@@ -1,4 +1,3 @@
-
 * {
 
   font-family: 'Poppins';
@@ -6,6 +5,19 @@
 
 /* === Top bar: Show entries + Search === */
 
+.btn-primary {
+
+    color: #fff !important;
+    background-color: #405189 !important;
+    border-color: #405189 !important;
+
+}
+
+.btn {
+
+  font-size: 13px !important;
+  font-weight: 400 !important;
+}
 
 .app-dt-top {
   display: flex;
@@ -56,6 +68,7 @@
 table.app-datatable {
   width: 100%;
   border-collapse: collapse;
+  table-layout: fixed;
 }
 
 table.app-datatable thead th {
@@ -69,6 +82,9 @@ table.app-datatable thead th {
   border-top: none;
   white-space: nowrap;
   background-color: #f0f0f6;
+  position: sticky;
+  top: 0;
+  z-index: 2;
 }
 
 table.app-datatable thead th i.fa-sort {
@@ -85,6 +101,44 @@ table.app-datatable tbody td {
   vertical-align: middle;
   font-weight: 400;
   gap: 15px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+}
+
+/* === Custom cell tooltip (data-tooltip) === */
+table.app-datatable tbody td {
+  position: relative;
+}
+
+table.app-datatable tbody td[data-tooltip]:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: 8px;
+  bottom: 100%;
+  margin-bottom: 6px;
+  background: #1d2124;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 6px 10px;
+  border-radius: 4px;
+  white-space: normal;
+  max-width: 260px;
+  z-index: 20;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+table.app-datatable tbody td[data-tooltip]:hover::before {
+  content: '';
+  position: absolute;
+  left: 16px;
+  bottom: 100%;
+  margin-bottom: 1px;
+  border: 5px solid transparent;
+  border-top-color: #1d2124;
+  z-index: 20;
 }
 
 table.app-datatable tbody td:first-child {
@@ -143,6 +197,7 @@ table.app-datatable .link-deactivate i {
 table.app-datatable .link-deactivate:hover {
   text-decoration: underline;
 }
+
 
 /* === Status badges (reusable across any table) === */
 .status-badge {
@@ -268,6 +323,26 @@ table.app-datatable .link-deactivate:hover {
 
 .app-dt-page-item.disabled .app-dt-page-link:hover {
   background-color: #fff;
+}
+
+/* === Scrollable wrapper — shows ~6 rows, rest via scroll === */
+.app-dt-scroll-wrapper {
+  max-height: 340px;
+  overflow-y: auto;
+  position: relative;
+}
+
+.app-dt-scroll-wrapper::-webkit-scrollbar {
+  width: 4px;
+}
+
+.app-dt-scroll-wrapper::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.app-dt-scroll-wrapper::-webkit-scrollbar-thumb {
+  background: #ced4da;
+  border-radius: 4px;
 }
 
 /* ============================================================

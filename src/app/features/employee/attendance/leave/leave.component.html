@@ -1,6 +1,13 @@
 <div class="page-content">
   <div class="container-fluid">
 
+    <div class="position-fixed top-0 start-50 translate-middle-x mt-3" style="z-index: 1080;" *ngIf="showSuccessToast">
+      <div class="alert alert-success d-flex align-items-center shadow-sm mb-0" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i>
+        {{ successMessage }}
+      </div>
+    </div>
+
     <ul class="nav nav-tabs-custom mb-3">
       <li class="nav-item">
         <a class="nav-link" routerLink="leave-form" routerLinkActive="active">Leave Form</a>
@@ -16,21 +23,20 @@
       </li>
     </ul>
 
-    <div class="row" *ngIf="isLeaveFormRoute">
+    <div class="row" [hidden]="!isLeaveFormRoute">
       <div class="col-12 col-sm-12 col-md-12 col-lg-8 col-xl-8 col-xxl-8">
         <div class="card">
           <div class="card-header">
-            <h5 class="card-title mb-0">Leave Details</h5>
+            <h5 class="card-title mt-2" style="font-size: 14px;">Leave Details</h5>
           </div>
           <div class="card-body">
             <div class="row">
 
-              <!-- ADD — Employee Name dropdown, mirrors Leave Type layout -->
               <div class="col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xxl-6 mb-3">
                 <label class="form-label">Employee Name<span class="text-danger">*</span></label>
-                <select class="form-select" selectpicker #employeePicker="selectpicker"
-                  pickerLabel="Select" pickerPlaceholder="Search employee..."
-                  [(ngModel)]="selectedEmployeeId">
+                <select class="form-select" selectpicker #employeePicker="selectpicker" pickerLabel="Select"
+                  pickerPlaceholder="Search employee..." [(ngModel)]="selectedEmployeeId"
+                  (ngModelChange)="onEmployeeChange()">
                   <option [ngValue]="null">Select</option>
                   <option *ngFor="let emp of employees" [ngValue]="emp.id">{{ emp.name }}</option>
                 </select>
@@ -38,20 +44,20 @@
 
               <div class="col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xxl-6 mb-3">
                 <label class="form-label">Leave Type<span class="text-danger">*</span></label>
-                <select class="form-select" selectpicker #leaveTypePicker="selectpicker"
-                  pickerLabel="Select" pickerPlaceholder="Search leave type..."
-                  [(ngModel)]="selectedLeaveTypeId" (ngModelChange)="onDateRangeChange()">
+                <select class="form-select" selectpicker #leaveTypePicker="selectpicker" pickerLabel="Select"
+                  pickerPlaceholder="Search leave type..." [(ngModel)]="selectedLeaveTypeId"
+                  (ngModelChange)="onDateRangeChange()">
                   <option [ngValue]="null">Select</option>
                   <option *ngFor="let lt of leaveTypes" [ngValue]="lt.id">{{ lt.name }}</option>
                 </select>
               </div>
 
-              <div class="col-12 col-sm-6 col-md-6 col-lg-3 col-xl-3 col-xxl-3 mb-3">
+              <div class="col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xxl-6 mb-3">
                 <label class="form-label">From Date<span class="text-danger">*</span></label>
                 <input type="text" class="form-control" datePicker (change)="onFromDateSelected($event)">
               </div>
 
-              <div class="col-12 col-sm-6 col-md-6 col-lg-3 col-xl-3 col-xxl-3 mb-3">
+              <div class="col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xxl-6 mb-3">
                 <label class="form-label">End Date<span class="text-danger">*</span></label>
                 <input type="text" class="form-control" datePicker (change)="onToDateSelected($event)">
               </div>
@@ -63,29 +69,39 @@
               </div>
 
               <div class="col-12" *ngIf="leaveDates.length">
-                <div class="card border">
-                  <div class="card-header">
-                    <h6 class="mb-0">Leave Date</h6>
+                <div class="card" style="background: #f0f0f6; border: 1px solid #95A3D4; border-radius: 0px;">
+                  <div class="card-header" style="border-bottom: 1px solid #95A3D4;">
+                    <h6 class="mt-2" style="font-size: 14px;">Leave Date</h6>
                   </div>
                   <div class="card-body p-0">
-                    <div class="row mx-0 py-2 border-bottom" *ngFor="let d of leaveDates">
-                      <div class="col-6 col-sm-4 col-md-4 col-lg-4 col-xl-4 col-xxl-4 py-2">
+                    <div class="row mx-0 py-2" *ngFor="let d of leaveDates">
+                      <div class="col-6 col-sm-4 col-md-4 col-lg-4 col-xl-4 col-xxl-4 py-2"
+                        style="font-size: 13px; color: #767679">
                         {{ d.Weekname }} {{ d.Date }}
                       </div>
                       <div class="col-6 col-sm-4 col-md-4 col-lg-4 col-xl-4 col-xxl-4">
-                        <select class="form-select" selectpicker pickerLabel="Full Day"
-                          [ngModel]="dayTypeSelections[d.Date]" (ngModelChange)="onDayTypeChange(d.Date, $event)">
+                        <select class="form-select" style="border: 1px solid #95A3D4 !important;" selectpicker
+                          pickerLabel="Full Day" [ngModel]="dayTypeSelections[d.Date]"
+                          (ngModelChange)="onDayTypeChange(d.Date, $event)">
                           <option value="Full Day">Full Day</option>
                           <option value="Half Day">Half Day</option>
                           <option value="No Leave">No Leave</option>
                         </select>
                       </div>
-                      <div class="col-12 col-sm-4 col-md-4 col-lg-4 col-xl-4 col-xxl-4"></div>
+                      <div class="col-12 col-sm-4 col-md-4 col-lg-4 col-xl-4 col-xxl-4">
+                        <select class="form-select" selectpicker pickerLabel="First Half"
+                          *ngIf="dayTypeSelections[d.Date] === 'Half Day'" [ngModel]="halfDaySelections[d.Date]"
+                          (ngModelChange)="onHalfDayChange(d.Date, $event)">
+                          <option value="First Half">First Half</option>
+                          <option value="Second Half">Second Half</option>
+                        </select>
+                      </div>
                     </div>
                   </div>
                 </div>
 
-                <div class="row mx-0 bg-primary text-white py-2 mt-2">
+                <div class="row mx-0 text-white py-3 mb-2" style="height: 50px; background: #405189; border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px; font-size: 13px;">
                   <div class="col-6">Total Days</div>
                   <div class="col-6 text-end">{{ totalDays }} Day(s)</div>
                 </div>
@@ -93,14 +109,14 @@
 
               <div class="col-12 mt-3">
                 <label class="form-label">Reason for Leave<span class="text-danger">*</span></label>
-                <textarea class="form-control" rows="3" [(ngModel)]="reason"></textarea>
+                <textarea class="form-control" style="font-size: 13px;" rows="3" [(ngModel)]="reason"></textarea>
               </div>
 
               <div class="col-12 mt-3">
                 <label class="form-label">Upload file<span class="text-danger">*</span></label>
                 <div class="border border-dashed rounded p-4 text-center">
                   <input type="file" id="leaveFile" class="d-none" (change)="onFileSelect($event)">
-                  <label for="leaveFile" class="mb-0" style="cursor:pointer;">
+                  <label for="leaveFile" class="mb-0" style="cursor:pointer; font-size: 13px;">
                     Drag and drop or <span class="text-primary">Browse</span>
                   </label>
                   <div *ngIf="selectedFile" class="small mt-2">{{ selectedFile.name }}</div>
@@ -110,7 +126,8 @@
               <div class="col-12 text-danger mt-2" *ngIf="validationMsg">{{ validationMsg }}</div>
 
               <div class="col-12 mt-3 text-end">
-                <button class="btn btn-outline-secondary me-2" (click)="clearAll()">Clear All</button>
+                <button class="btn me-2" style="border: 1px solid #405189; color:#405189;" (click)="clearAll()">Clear
+                  All</button>
                 <button class="btn btn-primary" [disabled]="isSubmitting" (click)="apply()">Apply</button>
               </div>
             </div>
@@ -118,15 +135,20 @@
         </div>
       </div>
 
-      <div class="col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4 col-xxl-4">
-        <div class="card">
-          <div class="card-header">
-            <h5 class="card-title mb-0">Leave Balance</h5>
-          </div>
-          <div class="card-body p-0">
-            <div class="row mx-0 py-2 border-bottom" *ngFor="let lt of leaveBalanceList">
-              <div class="col-8">{{ lt.name }}</div>
-              <div class="col-4 text-end">{{ lt.Balance | number:'1.2-2' }}</div>
+      <div class="col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4 col-xxl-4" style="background: #ffffff !important;">
+        <div class="mt-2 mx-2">
+          <div class="card" style="border: none !important;">
+            <div class="card-header"
+              style="background: #ffffff; border: none !important; border-bottom: 1px solid #e9ebec !important;">
+              <h5 class="card-title mt-3 mb-3" style="font-size: 14px;">Leave Balance</h5>
+            </div>
+            <div class="card-body p-0" style="border: none !important;
+    border-bottom: 1px solid #DFDFDF !important;">
+              <div class="row mx-0 py-3 border-bottom" *ngFor="let lt of leaveBalanceList">
+                <div class="col-8" style="color: #767679; font-size: 13px !important;">{{ lt.name }}</div>
+                <div class="col-4 text-end" style="color: #767679; font-size: 13px !important;">{{ lt.Balance |
+                  number:'1.2-2' }}</div>
+              </div>
             </div>
           </div>
         </div>

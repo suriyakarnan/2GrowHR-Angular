@@ -56,19 +56,28 @@ export class HistoryComponent implements OnInit {
     const [startStr, endStr] = value.split(' - ').map(s => s.trim());
     if (!startStr || !endStr) return;
 
-    const start = this.toDateObj(startStr);
-    const end = this.toDateObj(endStr);
+    const start = this.parsePickerDate(startStr);
+    const end = this.parsePickerDate(endStr);
     if (!start || !end) return;
 
     this.filteredList = this.leaveList.filter(rec => {
-      const recFrom = this.toDateObj(rec.From_Date);
+      const recFrom = this.parseRecordDate(rec.From_Date);
       return recFrom !== null && recFrom >= start && recFrom <= end;
     });
   }
 
-  private toDateObj(ddmmyyyy: string): Date | null {
+  // Parses the DateRangePickerDirective's own output format: dd/mm/yyyy
+  private parsePickerDate(ddmmyyyy: string): Date | null {
     if (!ddmmyyyy) return null;
     const [dd, mm, yyyy] = ddmmyyyy.split('/').map(Number);
+    if (!dd || !mm || !yyyy) return null;
+    return new Date(yyyy, mm - 1, dd);
+  }
+
+  // Parses the backend's record date format: dd-mm-yyyy
+  private parseRecordDate(ddmmyyyy: string): Date | null {
+    if (!ddmmyyyy) return null;
+    const [dd, mm, yyyy] = ddmmyyyy.split('-').map(Number);
     if (!dd || !mm || !yyyy) return null;
     return new Date(yyyy, mm - 1, dd);
   }

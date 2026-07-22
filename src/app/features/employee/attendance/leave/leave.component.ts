@@ -42,18 +42,17 @@ export class LeaveComponent implements OnInit {
   private readonly leaveServices = inject(LeaveServices);
   private readonly router = inject(Router);
 
-  // ADD — references to the two selectpicker directive instances via exportAs
   @ViewChild('leaveTypePicker') leaveTypePicker?: SelectpickerDirective;
   @ViewChild('employeePicker') employeePicker?: SelectpickerDirective;
 
   isLeaveFormRoute = true;
 
+  halfDaySelections: Record<string, string> = {};
+
   // ---- Leave Form state ----
   leaveTypes: LeaveType[] = [];
   selectedLeaveTypeId: number | null = null;
 
-  // ADD — employee dropdown state
-  // ⚠️ Placeholder type — replace `any` with your real Employee model once confirmed
   employees: any[] = [];
   selectedEmployeeId: string | null = null;
 
@@ -68,13 +67,16 @@ export class LeaveComponent implements OnInit {
   isSubmitting = false;
   validationMsg = '';
 
+  // ---- Toast state ----
+  showSuccessToast = false;
+  successMessage = '';
+
   get leaveBalanceList(): LeaveType[] {
     return this.leaveTypes;
   }
 
   ngOnInit(): void {
     this.trackActiveRoute();
-    this.loadLeaveTypes();
     this.loadEmployees();
   }
 
@@ -87,34 +89,44 @@ export class LeaveComponent implements OnInit {
       });
   }
 
+  loadEmployees(): void {
+    const userStr = localStorage.getItem('user');
+    if (!userStr) return;
+
+    try {
+      const user = JSON.parse(userStr);
+      const empId = user.sf_emp_id;
+      const empName = (user.Sf_Name || '').trim();
+
+      if (empId && empName) {
+        this.employees = [{ id: empId, name: `${empName} (${empId})` }];
+        this.selectedEmployeeId = empId;
+        setTimeout(() => this.employeePicker?.refresh());
+        this.onEmployeeChange();
+      }
+    } catch {
+      this.employees = [];
+    }
+  }
+
+  onEmployeeChange(): void {
+    this.selectedLeaveTypeId = null;
+    this.leaveTypes = [];
+    this.resetDependentFormState();
+
+    if (!this.selectedEmployeeId) return;
+    this.loadLeaveTypes();
+  }
+
   loadLeaveTypes(): void {
     this.leaveServices.getLeaveType().subscribe({
       next: (res) => {
         if (res.success) {
           this.leaveTypes = res.Data;
-          // FIX — options were built by the directive before this data arrived.
-          // Wait a tick for *ngFor to render the new <option> elements, then
-          // tell the directive to re-read the native <select> and rebuild its list.
           setTimeout(() => this.leaveTypePicker?.refresh());
         }
       },
     });
-  }
-
-  // ADD — mirrors loadLeaveTypes(). Replace the service call with your real one.
-  loadEmployees(): void {
-    // ⚠️ TODO: confirm actual method name/service, e.g.:
-    // this.leaveServices.getEmployeeList().subscribe({ ... })
-    // or a dedicated EmployeeService if one exists in core/services.
-    //
-    // this.leaveServices.getEmployeeList().subscribe({
-    //   next: (res) => {
-    //     if (res.success) {
-    //       this.employees = res.Data;
-    //       setTimeout(() => this.employeePicker?.refresh());
-    //     }
-    //   },
-    // });
   }
 
   onDateRangeChange(): void {
@@ -146,7 +158,19 @@ export class LeaveComponent implements OnInit {
 
   onDayTypeChange(date: string, value: string): void {
     this.dayTypeSelections[date] = value;
+
+    if (value === 'Half Day') {
+      this.halfDaySelections[date] =
+        this.halfDaySelections[date] || 'First Half';
+    } else {
+      delete this.halfDaySelections[date];
+    }
+
     this.calculateTotalDays();
+  }
+
+  onHalfDayChange(date: string, value: string): void {
+    this.halfDaySelections[date] = value;
   }
 
   calculateTotalDays(): void {
@@ -163,22 +187,36 @@ export class LeaveComponent implements OnInit {
     if (input.files?.length) this.selectedFile = input.files[0];
   }
 
-  clearAll(): void {
-    this.selectedLeaveTypeId = null;
-    this.selectedEmployeeId = null;
+  private resetDependentFormState(): void {
     this.fromDate = '';
     this.toDate = '';
     this.applicableDays = [];
     this.leaveDates = [];
     this.dayTypeSelections = {};
+    this.halfDaySelections = {};
     this.reason = '';
     this.selectedFile = null;
     this.totalDays = 0;
     this.validationMsg = '';
   }
 
+  clearAll(): void {
+    this.selectedLeaveTypeId = null;
+    this.selectedEmployeeId = null;
+    this.leaveTypes = [];
+    this.resetDependentFormState();
+  }
+
+  private resetToDefaultState(): void {
+    this.selectedLeaveTypeId = null;
+    this.leaveTypes = [];
+    this.resetDependentFormState();
+    this.loadEmployees();
+  }
+
   apply(): void {
     if (
+      !this.selectedEmployeeId ||
       !this.selectedLeaveTypeId ||
       !this.fromDate ||
       !this.toDate ||
@@ -218,9 +256,16 @@ export class LeaveComponent implements OnInit {
     const leaveType = this.leaveTypes.find(
       (l) => l.id === this.selectedLeaveTypeId,
     );
+
     const dateDetails: LeaveDateDetail[] = this.leaveDates.map((d) => ({
-      date: d.Date,
-      interval: '',
+      // FIX: d.Date arrives as "2026-07-23T00:00:00" from GetLeaveDates.
+      // The backend SQL layer throws a conversion error on the full
+      // timestamp, so only the date portion is sent.
+      date: d.Date.split('T')[0],
+      interval:
+        this.dayTypeSelections[d.Date] === 'Half Day'
+          ? this.halfDaySelections[d.Date]
+          : '',
       dayType: this.dayTypeSelections[d.Date],
       dayTypeId:
         this.dayTypeSelections[d.Date] === 'Full Day'
@@ -247,14 +292,20 @@ export class LeaveComponent implements OnInit {
       next: (res) => {
         this.isSubmitting = false;
         if (res.success) {
-          this.clearAll();
-          this.router.navigate(['/leave/history']);
+          this.showToast('Leave applied successfully');
+          this.resetToDefaultState();
         }
       },
       error: () => {
         this.isSubmitting = false;
       },
     });
+  }
+
+  private showToast(message: string): void {
+    this.successMessage = message;
+    this.showSuccessToast = true;
+    setTimeout(() => (this.showSuccessToast = false), 3000);
   }
 
   private getCurrentEmpId(): string {

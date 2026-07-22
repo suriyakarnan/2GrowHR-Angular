@@ -1,6 +1,6 @@
-<div class="card">
-  <div class="card-header">
-    <div class="row align-items-center">
+<div class="card border-0">
+  <div class="card-header bg-white" style="border: none !important;">
+    <div class="row align-items-center py-2">
       <div class="col-12 col-sm-4 col-md-4 col-lg-3 col-xl-3 col-xxl-3 mb-2 mb-lg-0">
         <select class="form-select" selectpicker pickerLabel="All">
           <option>All</option>
@@ -17,11 +17,25 @@
     </div>
   </div>
 
+  <div style="height: 12px; background: #f3f6f9; border: none !important"></div>
+
   <div class="card-body">
     <div class="row">
       <div class="col-12">
         <div class="table-responsive">
           <table class="table table-hover align-middle" appDatatable [rowsPerPage]="10">
+            <colgroup>
+              <col style="width: 9%;"> <!-- Employee ID -->
+              <col style="width: 12%;"> <!-- Employee Name -->
+              <col style="width: 13%;"> <!-- Leave Type -->
+              <col style="width: 9%;"> <!-- Request date -->
+              <col style="width: 8%;"> <!-- Days/Hrs -->
+              <col style="width: 9%;"> <!-- Leave From -->
+              <col style="width: 9%;"> <!-- Leave To -->
+              <col style="width: 8%;"> <!-- Reason -->
+              <col style="width: 8%;"> <!-- Status -->
+              <col style="width: 15%;"> <!-- Actions -->
+            </colgroup>
             <thead>
               <tr>
                 <th>Employee ID</th>

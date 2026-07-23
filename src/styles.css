@@ -104,42 +104,9 @@ table.app-datatable tbody td {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-
 }
 
-/* === Custom cell tooltip (data-tooltip) === */
-table.app-datatable tbody td {
-  position: relative;
-}
 
-table.app-datatable tbody td[data-tooltip]:hover::after {
-  content: attr(data-tooltip);
-  position: absolute;
-  left: 8px;
-  bottom: 100%;
-  margin-bottom: 6px;
-  background: #1d2124;
-  color: #fff;
-  font-size: 12px;
-  font-weight: 500;
-  padding: 6px 10px;
-  border-radius: 4px;
-  white-space: normal;
-  max-width: 260px;
-  z-index: 20;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-}
-
-table.app-datatable tbody td[data-tooltip]:hover::before {
-  content: '';
-  position: absolute;
-  left: 16px;
-  bottom: 100%;
-  margin-bottom: 1px;
-  border: 5px solid transparent;
-  border-top-color: #1d2124;
-  z-index: 20;
-}
 
 table.app-datatable tbody td:first-child {
   font-size: 15px;
@@ -196,6 +163,23 @@ table.app-datatable .link-deactivate i {
 
 table.app-datatable .link-deactivate:hover {
   text-decoration: underline;
+}
+
+
+.app-dt-floating-tooltip {
+  position: fixed;
+  display: none;
+  background: #1d2124;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 6px 10px;
+  border-radius: 4px;
+  white-space: normal;
+  max-width: 260px;
+  z-index: 9999;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  pointer-events: none;
 }
 
 

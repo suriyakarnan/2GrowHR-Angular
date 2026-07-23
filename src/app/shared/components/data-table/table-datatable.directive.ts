@@ -65,10 +65,12 @@ export class TableDatatableDirective implements AfterViewInit, OnDestroy {
     // NEW — catches rows added after async data load (e.g. rows populated
     // from an HTTP call that resolves after ngAfterViewInit already ran)
     this.observeTableChanges();
+    this.setupFloatingTooltip();
   }
 
   ngOnDestroy(): void {
     this.observer?.disconnect();
+    this.tooltipEl?.remove();
   }
 
   // NEW — rebuilds allRows + tooltips + pagination whenever the tbody's
@@ -90,17 +92,57 @@ export class TableDatatableDirective implements AfterViewInit, OnDestroy {
     this.renderPage(1);
   }
 
+  private tooltipEl?: HTMLElement;
+
   private applyCellTooltips(): void {
-  this.allRows.forEach((row) => {
-    Array.from(row.children).forEach((cell) => {
-      const text = cell.textContent?.trim();
+    this.allRows.forEach((row) => {
+      Array.from(row.children).forEach((cell) => {
+        const text = cell.textContent?.trim();
+        if (!text) return;
+
+        const el = cell as HTMLElement;
+        const isTruncated = el.scrollWidth > el.clientWidth;
+
+        if (isTruncated) {
+          this.renderer.setAttribute(cell, 'data-tooltip', text);
+        } else {
+          this.renderer.removeAttribute(cell, 'data-tooltip');
+        }
+      });
+    });
+  }
+
+  private setupFloatingTooltip(): void {
+    if (this.tooltipEl) return; // only create once
+
+    this.tooltipEl = this.renderer.createElement('div');
+    this.renderer.addClass(this.tooltipEl, 'app-dt-floating-tooltip');
+    this.renderer.appendChild(document.body, this.tooltipEl);
+
+    this.renderer.listen(this.tbody, 'mouseover', (event: MouseEvent) => {
+      const target = (event.target as HTMLElement).closest(
+        'td[data-tooltip]',
+      ) as HTMLElement | null;
+      if (!target || !this.tooltipEl) return;
+
+      const text = target.getAttribute('data-tooltip');
       if (!text) return;
 
-      this.renderer.setAttribute(cell, 'data-tooltip', text);
-      // no innerHTML rebuild — icons, links, and Actions cells stay intact
+      this.tooltipEl.textContent = text;
+      this.tooltipEl.style.display = 'block';
+
+      const rect = target.getBoundingClientRect();
+      const tipRect = this.tooltipEl.getBoundingClientRect();
+      this.tooltipEl.style.left = `${rect.left}px`;
+      this.tooltipEl.style.top = `${rect.top - tipRect.height - 8}px`;
     });
-  });
-}
+
+    this.renderer.listen(this.tbody, 'mouseout', (event: MouseEvent) => {
+      const target = (event.target as HTMLElement).closest('td[data-tooltip]');
+      if (!target || !this.tooltipEl) return;
+      this.tooltipEl.style.display = 'none';
+    });
+  }
 
   // wraps the <table> in a scrollable div so only ~6 rows show at a time,
   // with the sticky header staying pinned while scrolling. Pagination

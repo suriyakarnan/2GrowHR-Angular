@@ -34,7 +34,7 @@ export class LeaveServices {
     const sfCode = this.getEmployeeId();
     return this.apiService.post<GetLeaveResponse>(
       `api/app/apipayroll/?axn=GetLeave_Status&sfCode=${sfCode}`,
-      null
+      null,
     );
   }
 
@@ -42,7 +42,7 @@ export class LeaveServices {
     const sfCode = this.getEmployeeId();
     return this.apiService.post<GetLeavePerHistoryResponse>(
       `api/app/apipayroll/?sl=${sl}&axn=GetLeave_Perhistory&sfCode=${sfCode}`,
-      null
+      null,
     );
   }
 
@@ -50,39 +50,51 @@ export class LeaveServices {
     const sfCode = this.getEmployeeId();
     return this.apiService.post<GetLeaveTypeResponse>(
       `api/app/apipayroll/?sfCode=${sfCode}&axn=LeaveType`,
-      null
+      null,
     );
   }
 
-  getApplicableDays(leaveId: number, empId: string): Observable<GetApplicableDaysResponse> {
+  getApplicableDays(
+    leaveId: number,
+    empId: string,
+  ): Observable<GetApplicableDaysResponse> {
     return this.apiService.post<GetApplicableDaysResponse>(
       `api/app/apipayroll/?axn=GetApplicableDays&Leave_Id=${leaveId}&EmpId=${empId}`,
-      null
+      null,
     );
   }
 
-  getLeaveDates(fDate: string, lDate: string, slno: number, empId: string): Observable<GetLeaveDatesResponse> {
+  getLeaveDates(
+    fDate: string,
+    lDate: string,
+    slno: number,
+    empId: string,
+  ): Observable<GetLeaveDatesResponse> {
     return this.apiService.post<GetLeaveDatesResponse>(
       `api/app/apipayroll/?l_Date=${lDate}&slno=${slno}&axn=GetLeaveDates&sfCode=${empId}&f_Date=${fDate}`,
-      null
+      null,
     );
   }
 
-  validateLeaveForm(payload: LeaveFormValidatePayload): Observable<LeaveFormValidateResponse> {
+  validateLeaveForm(
+    payload: LeaveFormValidatePayload,
+  ): Observable<LeaveFormValidateResponse> {
     const sfCode = this.getEmployeeId();
     const data = encodeURIComponent(JSON.stringify(payload));
     return this.apiService.post<LeaveFormValidateResponse>(
       `api/app/apipayroll/?sfCode=${sfCode}&axn=LeaveFormValidate&data=${data}`,
-      null
+      null,
     );
   }
 
-  submitLeaveForm(payload: Omit<LeaveFormPayload, 'sfCode'>): Observable<LeaveFormResponse> {
+  submitLeaveForm(
+    payload: Omit<LeaveFormPayload, 'sfCode'>,
+  ): Observable<LeaveFormResponse> {
     const sfCode = this.getEmployeeId();
     const body: LeaveFormPayload = { ...payload, sfCode };
     return this.apiService.post<LeaveFormResponse>(
       `api/app/apipayroll/?axn=LeaveForm`,
-      body
+      body, // ← raw object as body, matches what worked in Postman
     );
   }
 
@@ -90,23 +102,28 @@ export class LeaveServices {
     const sfCode = this.getEmployeeId();
     return this.apiService.post<GetUnapproveLeaveListResponse>(
       `api/app/apipayroll/?axn=UnapproveLeavelist&sfCode=${sfCode}`,
-      null
+      null,
     );
   }
 
-  getLeaveApprovePerAppli(sl: number): Observable<GetLeaveApprovePerAppliResponse> {
+  getLeaveApprovePerAppli(
+    sl: number,
+  ): Observable<GetLeaveApprovePerAppliResponse> {
     const sfCode = this.getEmployeeId();
     return this.apiService.post<GetLeaveApprovePerAppliResponse>(
       `api/app/apipayroll/?sfCode=${sfCode}&axn=LeaveapprovePerAppli&sl=${sl}`,
-      null
+      null,
     );
   }
 
-  leaveApproveFinalSave(currentUser: string, sl: number): Observable<LeaveApproveFinalSaveResponse> {
+  leaveApproveFinalSave(
+    currentUser: string,
+    sl: number,
+  ): Observable<LeaveApproveFinalSaveResponse> {
     const sfCode = this.getEmployeeId();
     return this.apiService.post<LeaveApproveFinalSaveResponse>(
       `api/app/apipayroll/?axn=LeaveapproveFinalsave&sfCode=${sfCode}&CurrentUser=${currentUser}&sl=${sl}`,
-      null
+      null,
     );
   }
 }

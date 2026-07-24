@@ -49,7 +49,6 @@ export class LeaveComponent implements OnInit {
 
   halfDaySelections: Record<string, string> = {};
 
-  // ---- Leave Form state ----
   leaveTypes: LeaveType[] = [];
   selectedLeaveTypeId: number | null = null;
 

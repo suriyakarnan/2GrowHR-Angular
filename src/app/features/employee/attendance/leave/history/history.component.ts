@@ -28,12 +28,28 @@ export class HistoryComponent implements OnInit {
   filteredList: GetLeaveStatus[] = [];
   isLoading = false;
 
+  currentEmpName = '-'; 
+
   // per-record history modal state
   selectedHistory: GetLeavePerHistory[] = [];
   showHistoryModal = false;
 
   ngOnInit(): void {
+    this.loadCurrentEmployeeName(); 
     this.loadLeaveHistory();
+  }
+
+   private loadCurrentEmployeeName(): void {
+    const userStr = localStorage.getItem('user');
+    if (!userStr) return;
+    try {
+      const user = JSON.parse(userStr);
+      const empId = user.Sf_code || '';
+      const empName = (user.Sf_Name || '').trim();
+      this.currentEmpName = empName && empId ? `${empName} (${empId})` : '-';
+    } catch {
+      this.currentEmpName = '-';
+    }
   }
 
   loadLeaveHistory(): void {

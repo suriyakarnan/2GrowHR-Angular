@@ -53,7 +53,7 @@
             <tbody>
               <tr *ngFor="let rec of filteredList">
                 <td>{{ rec.Emp_Id }}</td>
-                <td>{{ rec.emp_name ?? '-' }}</td>
+                <td>{{ currentEmpName }}</td>
                 <td>{{ rec.Leave_Type }}</td>
                 <td>{{ rec.Created_Date }}</td>
                 <td>{{ rec.No_of_Days }} Days</td>

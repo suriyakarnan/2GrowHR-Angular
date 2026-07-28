@@ -94,7 +94,7 @@ export class LeaveComponent implements OnInit {
 
     try {
       const user = JSON.parse(userStr);
-      const empId = user.sf_emp_id;
+      const empId = user.Sf_code;
       const empName = (user.Sf_Name || '').trim();
 
       if (empId && empName) {
@@ -107,6 +107,20 @@ export class LeaveComponent implements OnInit {
       this.employees = [];
     }
   }
+
+  private getCurrentUser(): { empId: string; empName: string } | null {
+  const userStr = localStorage.getItem('user');
+  if (!userStr) return null;
+  try {
+    const user = JSON.parse(userStr);
+    return {
+      empId: user.Sf_code || '',
+      empName: (user.Sf_Name || '').trim(),
+    };
+  } catch {
+    return null;
+  }
+}
 
   onEmployeeChange(): void {
     this.selectedLeaveTypeId = null;

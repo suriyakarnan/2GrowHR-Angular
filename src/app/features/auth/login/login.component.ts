@@ -1,7 +1,3 @@
-// ============================================================
-// FILE: src/app/features/auth/login/login.component.ts
-// ============================================================
-
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -23,7 +19,7 @@ export class LoginComponent {
   isLoading           = false;
   errorMessage        = '';
 
-  // ── SLIDER DATA
+
   slides = [
     {
       website: 'saneforce',
@@ -82,9 +78,7 @@ export class LoginComponent {
     private router: Router
   ) {}
 
-  // ──────────────────────────────────────────────────────────
-  // SLIDER — NEXT
-  // ──────────────────────────────────────────────────────────
+
   nextSlide() {
     this.previousIndex    = this.currentIndex;
     this.oldImageAnimation = 'slide-out-left';
@@ -96,9 +90,7 @@ export class LoginComponent {
     }, 700);
   }
 
-  // ──────────────────────────────────────────────────────────
-  // SLIDER — PREV
-  // ──────────────────────────────────────────────────────────
+  
   prevSlide() {
     this.previousIndex    = this.currentIndex;
     this.oldImageAnimation = 'slide-out-right';
@@ -125,7 +117,7 @@ export class LoginComponent {
       next: (response) => {
         this.isLoading = false;
 
-        if (response.success && response.Data?.length > 0) {
+        if (response.success) {
           const role = this.authService.getRole();
           this.router.navigate([role === 'admin' ? '/admin/dashboard' : '/employee/dashboard']);
         } else {
@@ -136,17 +128,11 @@ export class LoginComponent {
 
       error: (err) => {
         this.isLoading    = false;
-        this.errorMessage = err?.message || 'Something went wrong. Please try again.';
+        this.errorMessage = err?.message || 'Invalid username or password.';
       }
 
-    });   // ← subscribe({...}) closes HERE
+    });
 
-  }   // ← login() method closes HERE
-
-  // 🚧 TEMPORARY — remove once real Admin login API exists
-  testAsAdmin() {
-    this.authService.setRoleManually('admin');
-    this.router.navigate(['/admin/dashboard']);
   }
 
 }

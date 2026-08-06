@@ -13,6 +13,7 @@
 
 .page-content {
     padding: 0px;
+    margin: 55px 0px;
 }
 
 @media (max-width: 480px) {

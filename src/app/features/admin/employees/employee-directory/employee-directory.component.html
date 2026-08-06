@@ -5,10 +5,13 @@
                 <div class="row align-items-center">
                     <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4 col-xxl-4">
                         <div class="d-flex align-items-center gap-2">
-                            <select selectpicker pickerPlaceholder="Search division..." [multiple]="true" [(ngModel)]="selectedDivision" >
-                                <option>Saneforce</option>
-                                <option>San Media</option>
-                                <option>2GrowHr</option>
+                            <select #divisionPicker="selectpicker" selectpicker *ngIf="divisions.length > 0"
+                                pickerPlaceholder="Search division..." [multiple]="false" [(ngModel)]="selectedDivision"
+                                (ngModelChange)="onDivisionChange()">
+                                <option value="all">--All Division--</option>
+                                <option *ngFor="let div of divisions" [value]="div.div_id">
+                                    {{ div.div_Name }}
+                                </option>
                             </select>
                             <button type="button" class="btn btn-teal" routerLink="add">
                                 + ADD EMPLOYEE
@@ -16,12 +19,12 @@
                         </div>
                     </div>
                     <div class="col-12 col-sm-6 col-md-6 col-lg-2 col-xl-2 col-xxl-2">
-                     
+
 
                     </div>
                     <div class="col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xxl-6 text-end">
                         <div class="d-flex align-items-center justify-content-end gap-2">
-                            
+
                             <button type="button" class="btn btn-light btn-icon">
                                 <i class="fa fa-ellipsis-h"></i>
                             </button>
@@ -38,7 +41,7 @@
             </div>
 
             <div class="card-body">
-                
+
                 <div class="row">
                     <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12">
                         <div class="table-responsive">
@@ -54,37 +57,45 @@
                                 </thead>
                                 <tbody>
                                     <tr *ngFor="let emp of employees">
-                                        <td [class.text-danger]="emp.deactivated">{{ emp.id }}</td>
-                                        <td [class.text-danger]="emp.deactivated">{{ emp.name }}</td>
+                                        <td [class.text-danger]="emp.needsSalaryUpdate">{{ emp.id }}</td>
+                                        <td [class.text-danger]="emp.needsSalaryUpdate">{{ emp.name }}</td>
                                         <td class="d-flex align-items-center">
-                                            <a href="javascript:void(0)" class="link-view">
+                                            <a [routerLink]="[emp.id, 'profile']" class="link-view">
                                                 <i class="bi bi-eye"></i> <span>View</span>
                                             </a>
-                                            <a *ngIf="emp.deactivated" href="javascript:void(0)" class="link-deactivate">
+                                            <a *ngIf="emp.needsSalaryUpdate" href="javascript:void(0)"
+                                                class="link-deactivate">
                                                 <i class="bi bi-person-x f-20 fw-5"></i> Deactivate
                                             </a>
                                         </td>
                                         <td>
-                                            <a href="javascript:void(0)" class="link-view">
-                                                <i class="bi bi-eye"></i> View
+                                            <a [routerLink]="[emp.id, 'profile']" class="link-view">
+                                                <i class="bi bi-eye"></i> <span>View</span>
                                             </a>
                                         </td>
                                         <td>
-                                            <a href="javascript:void(0)" class="link-view">
-                                                <i class="bi bi-eye"></i> View
+                                            <a [routerLink]="[emp.id, 'profile']" class="link-view">
+                                                <i class="bi bi-eye"></i> <span>View</span>
                                             </a>
                                         </td>
                                     </tr>
-                                    <tr *ngIf="employees.length === 0">
+                                    <tr *ngIf="!loading && employees.length === 0">
                                         <td colspan="5" class="text-center no-data">No data available</td>
+                                    </tr>
+                                    <tr *ngIf="loading">
+                                        <td colspan="5" class="text-center">Loading employees...</td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
+
+                        <div *ngIf="errorMessage" class="alert alert-danger mt-2">
+                            {{ errorMessage }}
+                        </div>
                     </div>
                 </div>
 
-                
+
             </div>
         </div>
     </div>

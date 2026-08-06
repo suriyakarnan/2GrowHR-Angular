@@ -1,8 +1,16 @@
-.db-header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:14px 14px 0px 26px;
+.db-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 14px 0px 26px;
+
+  position: fixed;
+  top: 0;
+  left: 100px;
+  right: 0;
+  z-index: 1030;
+  background-color: #f3f3f9;
+ 
 }
 
 .db-title{

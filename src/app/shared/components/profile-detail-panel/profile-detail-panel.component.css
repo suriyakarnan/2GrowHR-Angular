@@ -1,0 +1,73 @@
+
+.detail-card {
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 1px 4px rgba(30, 34, 60, 0.06);
+  margin-bottom: 20px;
+  height: calc(100% - 20px);
+  display: flex;
+  flex-direction: column;
+}
+.detail-card .card-header {
+  background: #f3f3f9;
+  border-bottom: 1px solid #eceef4;
+  padding: 14px 18px;
+}
+.detail-title {
+  color: #405189;
+  font-weight: 600;
+  font-size: 14px;
+}
+.detail-card .card-body {
+  padding: 16px 18px;
+  flex: 1;
+}
+.detail-card .card-footer {
+  background: #fff;
+  border-top: 1px solid #eceef4;
+  padding: 14px 18px;
+}
+.field-block {
+  margin-bottom: 14px;
+}
+.field-label {
+  color: #767679;
+  font-size: 12px;
+  margin-bottom: 2px;
+  font-weight: 500;
+}
+.field-value {
+  color: #000;
+  font-weight: 500;
+  font-size: 14px;
+  word-break: break-word;
+}
+.btn-view-more {
+  border: 1px solid #405189;
+  color: #405189;
+  background: #fff;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  padding: 8px 20px;
+}
+.btn-view-more:hover {
+  background: #363c63;
+  color: #fff;
+}
+
+
+.btn-edit-panel {
+  background: none;
+  border: none;
+  color: #405189;
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.btn-edit-panel:hover {
+  text-decoration: underline;
+}

@@ -1,5 +1,3 @@
-
-
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
@@ -42,6 +40,19 @@ export class ApiService {
       .pipe(catchError(this.handleError));
   }
 
+  public getWithBody<T>(
+    url: string,
+    body: any,
+    params?: HttpParamsRecord,
+  ): Observable<T> {
+    return this.http
+      .request<T>('GET', `${this.baseUrl}${url}`, {
+        body,
+        headers: this.getPrivateHeaders(),
+        params: new HttpParams({ fromObject: params ?? {} }),
+      })
+      .pipe(catchError(this.handleError));
+  }
 
   public postForm<T>(
     url: string,

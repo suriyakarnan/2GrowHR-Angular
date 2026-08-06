@@ -14,17 +14,7 @@ import {
 import { MyDocumentService } from '../../../core/services/mydocument.service';
 import { environment } from '../../../../environments/environment';
 
-interface InfoField {
-  label: string;
-  value: string;
-}
-
-interface InfoPanel {
-  title: string;
-  colSpan: string;
-  leftFields: InfoField[];
-  rightFields: InfoField[];
-}
+import { InfoField, InfoPanel } from '../../../core/models/profile.model';
 
 @Component({
   selector: 'app-profile',

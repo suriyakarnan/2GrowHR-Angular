@@ -1,0 +1,236 @@
+<div class="page-content">
+  <div class="admin-profile-wrap">
+
+    <!-- Loading / Error states -->
+    <div class="row" *ngIf="isLoading">
+      <div class="col-12 text-center py-5">Loading employee profile...</div>
+    </div>
+
+    <div class="row" *ngIf="!isLoading && errorMsg">
+      <div class="col-12 text-center py-5 text-danger">{{ errorMsg }}</div>
+    </div>
+
+    <div class="row profile-row g-0" *ngIf="!isLoading && !errorMsg">
+
+      <!-- Sidebar -->
+      <div class="col-12 col-lg-3 col-xl-2 col-xxl-2 d-block d-md-none d-lg-block">
+        <div class="profile-sidebar">
+          <div class="row">
+            <div class="col-12 text-center">
+              <div class="sidebar-heading">Profile Overview</div>
+              <div class="avatar-wrap mx-auto">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="#95a3d4">
+                  <circle cx="12" cy="8" r="4" />
+                  <path d="M4 20c0-4.4 3.6-7 8-7s8 2.6 8 7" />
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <div class="row mt-3">
+            <div class="col-12">
+              <div class="sidebar-section-title">Basic Info</div>
+              <hr class="sidebar-divider">
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-12">
+              <div class="sidebar-field-label">First Name</div>
+              <div class="sidebar-field-value">{{ employee.firstName || '-' }}</div>
+            </div>
+            <div class="col-12">
+              <div class="sidebar-field-label">Last Name</div>
+              <div class="sidebar-field-value">{{ employee.lastName || '-' }}</div>
+            </div>
+            <div class="col-12">
+              <div class="sidebar-field-label">E-Mail</div>
+              <div class="sidebar-field-value">{{ employee.email || '-' }}</div>
+            </div>
+            <div class="col-12">
+              <div class="sidebar-field-label">Mobile</div>
+              <div class="sidebar-field-value">{{ employee.mobile || '-' }}</div>
+            </div>
+          </div>
+
+          <div class="row mt-3">
+            <div class="col-12">
+              <div class="sidebar-section-title">Official Info</div>
+              <hr class="sidebar-divider">
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-12">
+              <div class="sidebar-field-label">Employee ID</div>
+              <div class="sidebar-field-value">{{ employee.empCode || '-' }}</div>
+            </div>
+            <div class="col-12">
+              <div class="sidebar-field-label">Division</div>
+              <div class="sidebar-field-value">{{ employee.divisionName || '-' }}</div>
+            </div>
+            <div class="col-12">
+              <div class="sidebar-field-label">Department</div>
+              <div class="sidebar-field-value">{{ employee.departmentName || '-' }}</div>
+            </div>
+            <div class="col-12">
+              <div class="sidebar-field-label">Designation</div>
+              <div class="sidebar-field-value">{{ employee.designationName || '-' }}</div>
+            </div>
+          </div>
+
+          <!-- NOTE: "Resignation Request" button intentionally omitted here —
+               that's an employee self-service action, not applicable when
+               an admin is viewing someone else's profile. -->
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="col-12 col-lg-9 col-xl-10 col-xxl-10">
+        <div class="profile-main">
+
+          <!-- Tabs + Reports/Finance links -->
+          <div class="row">
+            <div class="col-12">
+              <div class="tabs-bar">
+                <ul class="nav profile-tabs">
+                  <li class="nav-item" *ngFor="let tab of tabs">
+                    <a href="javascript:void(0)" class="nav-link" [class.active]="activeTab === tab"
+                      (click)="switchTab(tab)">
+                      {{ tab }}
+                    </a>
+                  </li>
+                </ul>
+                <div class="tabs-side-links">
+                  <a href="javascript:void(0)" class="side-link">Reports <i class="bi bi-box-arrow-up-right"></i></a>
+                  <a href="javascript:void(0)" class="side-link">Finance <i class="bi bi-box-arrow-up-right"></i></a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Basic Info Tab -->
+          <div *ngIf="activeTab === 'Basic Info'">
+
+            <div class="row mt-3">
+              <div [ngClass]="panel.colSpan" *ngFor="let panel of basicInfoPanels">
+                <app-profile-detail-panel
+                  [panel]="panel"
+                  [showEdit]="true"
+                  (viewMore)="onViewMoreDetails($event)"
+                  (edit)="onEditPanel($event)">
+                </app-profile-detail-panel>
+              </div>
+            </div>
+
+            <div class="row">
+              <div [ngClass]="householdMembers.colSpan">
+                <div class="card detail-card">
+                  <div class="card-header d-flex justify-content-between align-items-center">
+                    <span class="detail-title">{{ householdMembers.title }}</span>
+                    <button class="btn-edit-panel" (click)="onEditPanel(householdMembers.title)">
+                      <i class="bi bi-pencil"></i> Edit
+                    </button>
+                  </div>
+                  <div class="card-body">
+                    <div class="row" *ngIf="householdMembers.columns.length === 0">
+                      <div class="col-12 text-muted">No household member details added.</div>
+                    </div>
+                    <div class="row" *ngIf="householdMembers.columns.length > 0">
+                      <div class="col-6" style="border-right: 1px solid #efe9e9;"
+                        *ngFor="let column of householdMembers.columns">
+                        <div class="field-block" *ngFor="let field of column">
+                          <div class="field-label">{{ field.label }}</div>
+                          <div class="field-value">{{ field.value }}</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card-footer text-center">
+                    <button class="btn btn-view-more" (click)="onViewMoreDetails(householdMembers.title)">VIEW MORE DETAILS</button>
+                  </div>
+                </div>
+              </div>
+
+              <div [ngClass]="educationalDetails.colSpan">
+                <div class="card detail-card">
+                  <div class="card-header d-flex justify-content-between align-items-center">
+                    <span class="detail-title">{{ educationalDetails.title }}</span>
+                    <button class="btn-edit-panel" (click)="onEditPanel(educationalDetails.title)">
+                      <i class="bi bi-pencil"></i> Edit
+                    </button>
+                  </div>
+                  <div class="card-body">
+                    <div class="row detail-table-header" *ngIf="educationalDetails.rows.length > 0">
+                      <div class="col-6" *ngFor="let h of educationalDetails.headers">{{ h }}</div>
+                    </div>
+                    <div class="row" *ngIf="educationalDetails.rows.length === 0">
+                      <div class="col-12 text-muted">No educational details added.</div>
+                    </div>
+                    <div class="row" *ngFor="let row of educationalDetails.rows">
+                      <div class="col-6"><div class="field-value">{{ row.qualification }}</div></div>
+                      <div class="col-6"><div class="field-value">{{ row.year }}</div></div>
+                    </div>
+                  </div>
+                  <div class="card-footer text-center">
+                    <button class="btn btn-view-more" (click)="onViewMoreDetails(educationalDetails.title)">VIEW MORE DETAILS</button>
+                  </div>
+                </div>
+              </div>
+
+              <div [ngClass]="experienceDetails.colSpan">
+                <div class="card detail-card">
+                  <div class="card-header d-flex justify-content-between align-items-center">
+                    <span class="detail-title">{{ experienceDetails.title }}</span>
+                    <button class="btn-edit-panel" (click)="onEditPanel(experienceDetails.title)">
+                      <i class="bi bi-pencil"></i> Edit
+                    </button>
+                  </div>
+                  <div class="card-body">
+                    <div class="row detail-table-header" *ngIf="experienceDetails.rows.length > 0">
+                      <div class="col-6" *ngFor="let h of experienceDetails.headers">{{ h }}</div>
+                    </div>
+                    <div class="row" *ngIf="experienceDetails.rows.length === 0">
+                      <div class="col-12 text-muted">No experience details added.</div>
+                    </div>
+                    <div class="row" *ngFor="let row of experienceDetails.rows">
+                      <div class="col-6"><div class="field-value">{{ row.company }}</div></div>
+                      <div class="col-6"><div class="field-value">{{ row.year }}</div></div>
+                    </div>
+                  </div>
+                  <div class="card-footer text-center">
+                    <button class="btn btn-view-more" (click)="onViewMoreDetails(experienceDetails.title)">VIEW MORE DETAILS</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Work Info Tab -->
+          <div *ngIf="activeTab === 'Work Info'" class="tab-placeholder">
+            <p>Work Info content goes here.</p>
+          </div>
+
+          <!-- Documents Tab — reuse existing employee Documents logic/service
+               when you wire this up; omitted here to keep this file focused. -->
+          <div *ngIf="activeTab === 'Documents'" class="tab-placeholder">
+            <p>Documents content goes here (reuse MyDocumentService, scoped to {{ employeeId }}).</p>
+          </div>
+
+          <!-- Team Tab -->
+          <div *ngIf="activeTab === 'Team'" class="tab-placeholder">
+            <p>Team content goes here.</p>
+          </div>
+
+          <!-- Access Control Tab — admin-only, doesn't exist in employee self-view -->
+          <div *ngIf="activeTab === 'Access Control'" class="tab-placeholder">
+            <p>Access Control settings for this employee go here.</p>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

@@ -1,15 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms'; 
+import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { TableDatatableDirective } from '../../../../shared/components/data-table/table-datatable.directive';
 import { SelectpickerDirective } from '../../../../shared/components/selectpicker/selectpicker.directive';
-
-interface Employee {
-  id: string;
-  name: string;
-  deactivated: boolean;
-}
+import { Employee, Division } from '../../../../core/models/employee.model';
+import { EmployeeService } from '../../../../core/services/employee.service';
 
 @Component({
   selector: 'app-employee-directory',
@@ -19,18 +15,66 @@ interface Employee {
   styleUrls: ['./employee-directory.component.css']
 })
 export class EmployeeDirectoryComponent implements OnInit {
+  @ViewChild('divisionPicker') divisionPicker!: SelectpickerDirective;
+
   employees: Employee[] = [];
-  selectedDivision: string[] = []; 
+  divisions: Division[] = [];
+  selectedDivision: string = 'all';
+  loading = false;
+  errorMessage = '';
+  orgId = 5;
+
+  constructor(private employeeService: EmployeeService) {}
 
   ngOnInit(): void {
-    this.employees = [
-      { id: '0606', name: 'Sha K', deactivated: false },
-      { id: '10001', name: 'Viknesh H H', deactivated: false },
-      { id: '115', name: 'Was', deactivated: false },
-      { id: '116', name: 'Is S S', deactivated: false },
-      { id: '2406', name: 'Anbarasan', deactivated: false },
-      { id: '52025', name: 'Vijay K', deactivated: true },
-      { id: '52025', name: 'Vijay K', deactivated: true }
-    ];
+    this.loadDivisions();
+    this.loadEmployees();
+  }
+
+  loadDivisions(): void {
+    this.employeeService.getDivisions(this.orgId).subscribe({
+      next: (data) => {
+        this.divisions = data;
+        setTimeout(() => {
+          this.divisionPicker?.refresh();
+        });
+      },
+      error: (err) => console.error('Failed to load divisions:', err)
+    });
+  }
+
+  loadEmployees(): void {
+    this.loading = true;
+    this.errorMessage = '';
+
+    this.employeeService.getEmployeeByOrg(this.orgId).subscribe({
+      next: (data) => { this.employees = data; this.loading = false; },
+      error: (err) => {
+        console.error('Failed to load employees:', err);
+        this.errorMessage = 'Failed to load employee directory.';
+        this.loading = false;
+      }
+    });
+  }
+
+  onDivisionChange(): void {
+    if (!this.selectedDivision || this.selectedDivision === 'all') {
+      this.loadEmployees();
+      return;
+    }
+
+    this.loading = true;
+    this.errorMessage = '';
+
+    const divId = Number(this.selectedDivision);
+
+    this.employeeService.getEmployeesByDivision(this.orgId, divId).subscribe({
+      next: (data) => { this.employees = data; this.loading = false; },
+      error: (err) => {
+        console.error('Failed to load employees by division:', err);
+        this.errorMessage = 'Failed to load employees for selected division.';
+        this.loading = false;
+      }
+    });
   }
 }
